@@ -1,0 +1,17 @@
+{
+  "canisters": {
+    "dexfans_backend": {
+      "candid": "src/dexfans_backend/dexfans_backend.did",
+      "package": "dexfans_backend",
+      "type": "rust"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
