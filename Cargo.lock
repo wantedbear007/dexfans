@@ -453,20 +453,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dabarcodes_backend"
-version = "0.1.0"
-dependencies = [
- "candid",
- "candid-extractor",
- "ic-cdk",
- "ic-cdk-timers",
- "ic-stable-structures",
- "serde",
- "serde_bytes",
- "serde_json",
-]
-
-[[package]]
 name = "data-encoding"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -479,6 +465,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef552e6f588e446098f6ba40d89ac146c8c7b64aade83c051ee00bb5d2bc18d"
 dependencies = [
  "uuid",
+]
+
+[[package]]
+name = "dexfans_backend"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "candid-extractor",
+ "ic-cdk",
+ "ic-cdk-timers",
+ "ic-stable-structures",
+ "serde",
+ "serde_bytes",
+ "serde_json",
 ]
 
 [[package]]

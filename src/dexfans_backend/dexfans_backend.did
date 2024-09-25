@@ -1,3 +1,8 @@
+type Result = variant { Ok : text; Err : text };
+type Result_1 = variant { Ok : UserProfile; Err : text };
+type UserProfile = record { name : text };
 service : {
-    "greet": (text) -> (text) query;
+  api_create_account : (UserProfile) -> (Result);
+  api_get_my_account : () -> (Result_1) query;
+  greet : (text) -> (text) query;
 }
