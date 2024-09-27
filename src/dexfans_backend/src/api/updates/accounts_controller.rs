@@ -1,7 +1,7 @@
 use crate::with_write_state;
 
 pub fn controller_create_account(
-    args: crate::models::user_types::UserProfile,
+    args: crate::models::user::UserProfile,
 ) -> Result<(), String> {
     with_write_state(|state| {
 

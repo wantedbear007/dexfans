@@ -1,7 +1,7 @@
 use crate::utils::guards::*;
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
-pub fn api_create_account(args: crate::models::user_types::UserProfile) -> Result<String, String> {
+pub fn api_create_account(args: crate::models::user::UserProfile) -> Result<String, String> {
     super::accounts_controller::controller_create_account(args).map_err(|err| {
         format!(
             "{}{}",

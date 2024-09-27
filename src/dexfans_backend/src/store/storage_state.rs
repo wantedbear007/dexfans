@@ -1,6 +1,6 @@
 use ic_stable_structures::StableBTreeMap;
 
-use crate::models::user_types::UserProfile;
+use crate::models::user::UserProfile;
 
 use super::memory::StoreMemory;
 
