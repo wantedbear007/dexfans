@@ -1,8 +1,29 @@
+type Membership = variant { Guest; Gold; Platinum; Silver };
 type Result = variant { Ok : text; Err : text };
 type Result_1 = variant { Ok : UserProfile; Err : text };
-type UserProfile = record { name : text };
+type UserInputArgs = record {
+  bio : opt text;
+  username : text;
+  cover_image : opt text;
+  avatar : opt text;
+};
+type UserProfile = record {
+  bio : opt text;
+  username : text;
+  cover_image : opt text;
+  created_at : nat64;
+  user_id : principal;
+  is_bot : bool;
+  likes : vec nat;
+  subscribers : vec principal;
+  subscribing : vec principal;
+  membership : Membership;
+  posts : vec nat;
+  collects : vec nat;
+  avatar : opt text;
+};
 service : {
-  api_create_account : (UserProfile) -> (Result);
+  api_create_account : (UserInputArgs) -> (Result);
   api_get_my_account : () -> (Result_1) query;
   greet : (text) -> (text) query;
 }

@@ -2,8 +2,16 @@ use std::borrow::Cow;
 use candid::{CandidType, Decode, Encode, Principal};
 use ic_stable_structures::{storable::Bound, Storable};
 use serde::{Deserialize, Serialize};
-use crate::models::post::CyclesTopup;  
 use crate::models::types::{CanisterId, PostId, TimestampMillis, Membership};
+
+
+#[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
+pub(crate) struct UserInputArgs {
+    pub username: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+    pub cover_image: Option<String>,
+}
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct UserProfile {
@@ -17,9 +25,9 @@ pub(crate) struct UserProfile {
     pub posts: Vec<PostId>,            // Created posts
     pub likes: Vec<PostId>,            // Liked posts
     pub collects: Vec<PostId>,         // Collected posts
-    pub canister_id: CanisterId,       // Canister for handling user's data
-    pub cycles: Vec<CyclesTopup>,      // List of cycles top-ups
-    pub token_amount: u128,            // Amount of tokens the user owns
+    // pub canister_id: CanisterId,       // Canister for handling user's data
+    // pub cycles: Vec<CyclesTopup>,      // List of cycles top-ups
+    // pub token_amount: u128,            // Amount of tokens the user owns
     pub is_bot: bool,                  // Is this user a bot?
     pub membership: Membership,        // Membership level
     pub created_at: TimestampMillis,   // Timestamp when the user was created
