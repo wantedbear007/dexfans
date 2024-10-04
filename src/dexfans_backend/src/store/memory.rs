@@ -6,6 +6,8 @@ const ACCOUNT_DATA: MemoryId = MemoryId::new(0);
 
 const POST_DATA: MemoryId = MemoryId::new(1);
 
+const COMMENT_DATA_MEMORY_ID: MemoryId = MemoryId::new(2);
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 
@@ -21,4 +23,8 @@ pub fn get_account_data_memory() -> StoreMemory {
 
 pub fn get_post_data_memory() -> StoreMemory {
   MEMORY_MANAGER.with(|m| m.borrow().get(POST_DATA))  // New function for post storage
+}
+
+pub fn get_comment_data_memory() -> StoreMemory {
+  MEMORY_MANAGER.with(|m| m.borrow().get(COMMENT_DATA_MEMORY_ID))
 }

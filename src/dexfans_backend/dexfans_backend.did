@@ -47,9 +47,11 @@ type UserProfile = record {
 service : {
   api_create_account : (UserInputArgs) -> (Result);
   api_get_my_account : () -> (Result_1) query;
+  comment_on_post : (nat, text, opt text, principal) -> (Result_2);
   create_post : (CreatePostArgs, principal) -> (Result_2);
   get_post_by_id : (nat) -> (opt Post) query;
   greet : (text) -> (text) query;
+  like_unlike_post : (nat, principal) -> (Result_2);
   list_all_accounts : () -> (vec UserProfile) query;
   list_all_posts : () -> (vec Post) query;
 }
