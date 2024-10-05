@@ -1,41 +1,29 @@
 #!/bin/bash
 
-# Function to clean and run the project
-clean_and_run() {
-    echo "Cleaning up..."
-    dfx stop
-    dfx start --clean
-    echo "Deploying canisters..."
-    dfx deploy
-    echo "Project started successfully after cleaning."
-}
+# Configs
+# local rust canisters 
+# canisters=("dexfans_backend" "post_canister")
 
-# Function to run without cleaning
-run_without_cleaning() {
-    echo "Running project without cleaning..."
-    dfx stop
-    dfx start
-    echo "Deploying canisters..."
-    dfx deploy
-    echo "Project started successfully without cleaning."
-}
 
-# Script options
-echo "Choose an option:"
-echo "1) Clean and run the project"
-echo "2) Run without cleaning"
+# chmod 777 ./pratap_scripts/main.sh
+# ./pratap_scripts/main.sh $canisters
 
-# Read user input
-read -p "Enter option (1 or 2): " option
+canisters=("post_canister" "dexfans_backend")
 
-case $option in
-    1)
-        clean_and_run
-        ;;
-    2)
-        run_without_cleaning
-        ;;
-    *)
-        echo "Invalid option. Please choose 1 or 2."
-        ;;
-esac
+# Define the path to the script
+script_path="./pratap_scripts/main.sh"
+
+# Check if the script exists
+if [ ! -f "$script_path" ]; then
+    echo "Error: $script_path not found!"
+    exit 1
+fi
+
+# Make the script executable only if it's not already executable
+if [ ! -x "$script_path" ]; then
+    chmod 777 "$script_path"
+fi
+
+# Execute the script with the canisters as arguments
+"$script_path" "${canisters[@]}"
+
