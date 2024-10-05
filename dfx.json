@@ -4,6 +4,16 @@
       "candid": "src/dexfans_backend/dexfans_backend.did",
       "package": "dexfans_backend",
       "type": "rust"
+    },
+    "post_canister": {
+      "candid": "src/post_canister/post_canister.did",
+      "package": "post_canister",
+      "type": "rust"
+    },
+    "ic_asset_handler": {
+      "candid": "src/remote_canisters/wasm_asset_canister/ic_asset_handler.did",
+      "wasm": "src/remote_canisters/wasm_asset_canister/ic_asset_handler.wasm",
+      "type": "custom"
     }
   },
   "defaults": {

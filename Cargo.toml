@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "src/dexfans_backend"
+    "src/dexfans_backend","src/post_canister"
 ]
 resolver = "2"
