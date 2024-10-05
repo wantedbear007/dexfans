@@ -4,6 +4,8 @@ use ic_stable_structures::{memory_manager::{MemoryId, MemoryManager}, DefaultMem
 
 const ACCOUNT_DATA: MemoryId = MemoryId::new(0);
 
+const POST_DATA: MemoryId = MemoryId::new(1);
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 
@@ -14,4 +16,9 @@ thread_local! {
 
 pub fn get_account_data_memory() -> StoreMemory {
   MEMORY_MANAGER.with(|m| m.borrow().get(ACCOUNT_DATA))
+}
+
+
+pub fn get_post_data_memory() -> StoreMemory {
+  MEMORY_MANAGER.with(|m| m.borrow().get(POST_DATA))  // New function for post storage
 }

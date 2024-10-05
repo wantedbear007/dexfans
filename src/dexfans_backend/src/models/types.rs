@@ -9,7 +9,7 @@ pub type PostId = u128;
 pub type TimestampMillis = u64;
 
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub enum PostType {
     Free,
     Silver,

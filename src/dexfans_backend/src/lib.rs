@@ -1,5 +1,7 @@
 use store::storage_state::ApplicationState;
-
+use crate::models::user::UserProfile;
+use candid::Principal;
+use crate::models::post::{Post,CreatePostArgs};
 mod api;
 mod models;
 mod store;
