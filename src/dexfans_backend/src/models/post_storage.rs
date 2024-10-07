@@ -3,9 +3,11 @@ use ic_cdk::{api, query, update};
 use crate::models::post::{Post, CreatePostArgs};
 use crate::store::storage_state::ApplicationState;
 use crate::STATE;
+use rand::seq::SliceRandom;
 
 
 use super::comment::Comment;
+use super::pagination::Pagination;
 use super::user::UserProfile;
 
 // Function to create and store a new post
@@ -91,22 +93,21 @@ pub fn like_unlike_post(post_id: u128, user: Principal) -> Result<(), String> {
     STATE.with(|state| {
         let mut app_state = state.borrow_mut();
 
-        // First, retrieve the post from the map
+        
         if let Some(mut post) = app_state.posts.remove(&post_id) {
-            // Check if the user has already liked the post
+            
             if post.likes.contains(&user) {
-                // If the user has already liked the post, remove the like (unlike)
                 post.likes.retain(|&p| p != user);
             } else {
-                // Otherwise, like the post by adding the user's Principal
+                
                 post.likes.push(user);
             }
 
-            // Reinsert the modified post back into the StableBTreeMap
+            
             app_state.posts.insert(post_id, post);
             Ok(())
         } else {
-            // Return an error if the post doesn't exist
+           
             Err("Post not found.".to_string())
         }
     })
@@ -118,13 +119,13 @@ pub fn comment_on_post(post_id: u128, content: String, image: Option<String>, cr
     STATE.with(|state| {
         let mut app_state = state.borrow_mut();
 
-        // Find the post by its post_id
+        
         if let Some(mut post) = app_state.posts.remove(&post_id) {
-            // Increment the comment counter to get a unique CommentId
+            
             let comment_id = app_state.comment_counter + 1;
             app_state.comment_counter = comment_id;
 
-            // Create a new comment using your existing structure
+            
             let new_comment = Comment {
                 comment_id,
                 content,
@@ -133,17 +134,60 @@ pub fn comment_on_post(post_id: u128, content: String, image: Option<String>, cr
                 created_at: current_timestamp(),
             };
 
-            // Store the comment in the comments map
+            
             app_state.comments.insert(comment_id, new_comment);
 
-            // Add the comment ID to the post's comments list
+            
             post.comments.push(comment_id);
 
-            // Reinsert the modified post back into the posts map
+            
             app_state.posts.insert(post_id, post);
             Ok(())
         } else {
             Err("Post not found.".to_string())
         }
+    })
+}
+
+
+
+
+
+
+#[query]
+pub fn latest_posts(page: usize) -> Vec<Post> {
+    STATE.with(|state| {
+        let app_state = state.borrow();
+
+        
+        let mut all_posts: Vec<Post> = app_state.get_all_posts();
+
+        
+        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+
+        
+        let batch_size = 50;
+
+        
+        let batch_start = (page / 5) * batch_size;  // Each batch is 50 posts, with 10 posts per page
+        let batch_end = std::cmp::min(batch_start + batch_size, all_posts.len());
+
+        
+        let mut current_batch: Vec<Post> = all_posts[batch_start..batch_end].to_vec();
+
+        
+        let mut rng = rand::thread_rng();
+        current_batch.shuffle(&mut rng);
+
+        
+        let batch_page = page % 5;
+        let pagination = Pagination { page: batch_page, page_size: 10 };
+
+       
+        let start = pagination.page * pagination.page_size;
+        let end = std::cmp::min(start + pagination.page_size, current_batch.len());
+
+        
+        current_batch[start..end].to_vec()
     })
 }
