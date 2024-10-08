@@ -17,3 +17,9 @@ serde = { version = "1.0.160", features = ["derive"] }
 serde_json = "1.0"
 candid-extractor = "0.1.2"
 serde_bytes = "0.11.14"
+sha2 = "0.9.8"
+kaires = { git = "https://github.com/wantedbear007/kaires", rev = "9d57f926418efcbbb47d2c2e34f1f3465d4f7cc8" }
+
+
+[features]
+dev_mode = []

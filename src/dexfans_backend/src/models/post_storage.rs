@@ -3,7 +3,7 @@ use ic_cdk::{api, query, update};
 use crate::models::post::{Post, CreatePostArgs};
 use crate::store::storage_state::ApplicationState;
 use crate::STATE;
-use rand::seq::SliceRandom;
+// use rand::seq::SliceRandom;
 
 
 use super::comment::Comment;
@@ -176,8 +176,8 @@ pub fn latest_posts(page: usize) -> Vec<Post> {
         let mut current_batch: Vec<Post> = all_posts[batch_start..batch_end].to_vec();
 
         
-        let mut rng = rand::thread_rng();
-        current_batch.shuffle(&mut rng);
+        // let mut rng = rand::thread_rng();
+        // current_batch.shuffle(&mut rng);
 
         
         let batch_page = page % 5;

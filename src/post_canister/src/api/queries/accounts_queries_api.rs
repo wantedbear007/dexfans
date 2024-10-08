@@ -10,3 +10,4 @@ pub fn api_get_my_account() -> Result<crate::models::user::UserProfile, String> 
         )),
     })
 }
+

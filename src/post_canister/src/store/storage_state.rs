@@ -2,13 +2,14 @@
 use ic_stable_structures::StableBTreeMap;
 
 
-use crate::models::{post::Post, user::UserProfile};
+use crate::models::{post::Post, types::PostId, user::UserProfile};
 
 use super::memory::StoreMemory;
 
 pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, UserProfile, StoreMemory>,
-    pub posts: StableBTreeMap<u128, Post, StoreMemory>,
+    pub posts: StableBTreeMap<PostId, Post, StoreMemory>,
+    // pub canister_meta_data: StableBTreeMap<u8, >
     pub post_counter: u128,
 }
 
@@ -37,6 +38,6 @@ fn init_account_state() -> StableBTreeMap<candid::Principal, UserProfile, StoreM
     StableBTreeMap::init(crate::store::memory::get_account_data_memory())
 }
 
-fn init_post_state() -> StableBTreeMap<u128, Post, StoreMemory> {
+fn init_post_state() -> StableBTreeMap<PostId, Post, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_post_data_memory())
 }

@@ -2,12 +2,13 @@ type CreatePostArgs = record {
   content : text;
   post_type : PostType;
   video : opt text;
-  image : opt text;
+  image : opt ImageData;
   price : opt nat8;
 };
+type ImageData = record { image_canister : principal; image_content : blob };
 type Membership = variant { Guest; Gold; Platinum; Silver };
 type Post = record {
-  post_id : nat;
+  post_id : text;
   content : text;
   post_type : PostType;
   creator_id : principal;
@@ -15,20 +16,13 @@ type Post = record {
   views : vec principal;
   created_at : nat64;
   likes : vec principal;
-  image : opt text;
+  image : opt ImageData;
   comments : vec nat;
   price : opt nat8;
 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok : text; Err : text };
 type Result_1 = variant { Ok : UserProfile; Err : text };
-type Result_2 = variant { Ok; Err : text };
-type UserInputArgs = record {
-  bio : opt text;
-  username : text;
-  cover_image : opt text;
-  avatar : opt text;
-};
 type UserProfile = record {
   bio : opt text;
   username : text;
@@ -36,19 +30,19 @@ type UserProfile = record {
   created_at : nat64;
   user_id : principal;
   is_bot : bool;
-  likes : vec nat;
+  likes : vec text;
   subscribers : vec principal;
   subscribing : vec principal;
   membership : Membership;
-  posts : vec nat;
-  collects : vec nat;
+  posts : vec text;
+  collects : vec text;
   avatar : opt text;
 };
 service : {
-  api_create_account : (UserInputArgs) -> (Result);
+  api_create_new_post : (CreatePostArgs) -> (Result);
+  api_get_all_post : () -> (vec Post) query;
   api_get_my_account : () -> (Result_1) query;
-  create_post : (CreatePostArgs, principal) -> (Result_2);
-  get_post_by_id : (nat) -> (opt Post) query;
+  get_post_by_id : (text) -> (opt Post) query;
   greet : (text) -> (text) query;
   list_all_accounts : () -> (vec UserProfile) query;
   list_all_posts : () -> (vec Post) query;

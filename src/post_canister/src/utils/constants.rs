@@ -10,6 +10,13 @@ pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered w
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
+pub const SUCCESS_POST_CREATED: &str = "Post successfully created";
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;
+
+pub const DEV_MODE: bool = false;
+
+
+
+// 

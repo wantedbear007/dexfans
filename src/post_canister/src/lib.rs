@@ -7,6 +7,8 @@ mod models;
 mod store;
 mod utils;
 
+use kaires::call_inter_canister;
+
 #[ic_cdk::query]
 fn greet(name: String) -> String {
     format!(
@@ -15,6 +17,8 @@ fn greet(name: String) -> String {
         crate::utils::constants::ESSENTIALS_APP_NAME
     )
 }
+
+
 
 thread_local! {
     static STATE: std::cell::RefCell<ApplicationState> = std::cell::RefCell::new(ApplicationState::new());
