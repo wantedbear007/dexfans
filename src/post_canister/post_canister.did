@@ -1,3 +1,7 @@
+type CanisterMetaData = record {
+  parent_canister : principal;
+  asset_canister : vec principal;
+};
 type CreatePostArgs = record {
   content : text;
   post_type : PostType;
@@ -16,7 +20,7 @@ type Post = record {
   views : vec principal;
   created_at : nat64;
   likes : vec principal;
-  image : opt ImageData;
+  image : opt text;
   comments : vec nat;
   price : opt nat8;
 };
@@ -38,10 +42,11 @@ type UserProfile = record {
   collects : vec text;
   avatar : opt text;
 };
-service : {
+service : (CanisterMetaData) -> {
   api_create_new_post : (CreatePostArgs) -> (Result);
   api_get_all_post : () -> (vec Post) query;
   api_get_my_account : () -> (Result_1) query;
+  get_canister_meta_data : () -> (CanisterMetaData) query;
   get_post_by_id : (text) -> (opt Post) query;
   greet : (text) -> (text) query;
   list_all_accounts : () -> (vec UserProfile) query;

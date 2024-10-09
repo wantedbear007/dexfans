@@ -46,7 +46,7 @@ pub struct Comment {
 pub struct Post {
     pub post_id: PostId,
     pub content: String,
-    pub image: Option<ImageData>,
+    pub image: Option<String>,
     pub video: Option<String>,
     pub post_type: PostType,
     pub price: Option<u8>, // Has a value only if post_type is Paid
