@@ -6,6 +6,8 @@ mod models;
 mod store;
 mod utils;
 
+use candid::Principal;
+
 #[ic_cdk::query]
 fn greet(name: String) -> String {
     format!(

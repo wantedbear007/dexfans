@@ -19,7 +19,9 @@ candid-extractor = "0.1.2"
 serde_bytes = "0.11.14"
 sha2 = "0.9.8"
 kaires = { git = "https://github.com/wantedbear007/kaires", rev = "9d57f926418efcbbb47d2c2e34f1f3465d4f7cc8" }
-
+rand = "0.7.3"
+wasm-bindgen = "0.2.92"
+getrandom = { version = "0.2.3", features = ["js"]}
 
 [features]
 dev_mode = []

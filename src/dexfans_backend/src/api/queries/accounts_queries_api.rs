@@ -1,5 +1,9 @@
+use candid::Principal;
+
+
+use crate::models::user::UserProfile;
 use crate::utils::guards::*;
-use crate::with_read_state;
+use crate::{with_read_state, STATE};
 
 #[ic_cdk::query(guard=guard_prevent_anonymous)]
 pub fn api_get_my_account() -> Result<crate::models::user::UserProfile, String> {
@@ -8,5 +12,25 @@ pub fn api_get_my_account() -> Result<crate::models::user::UserProfile, String> 
         None => Err(String::from(
             crate::utils::constants::ERROR_ACCOUNT_NOT_REGISTERED,
         )),
+    })
+}
+
+
+#[ic_cdk::query]
+pub fn api_get_user_account(user_id: Principal) -> Result<crate::models::user::UserProfile, String> {
+    with_read_state(|state| {
+        state.account.get(&user_id)
+            .map(|acc| acc.clone())
+            .ok_or_else(|| String::from(crate::utils::constants::ERROR_ACCOUNT_NOT_REGISTERED))
+    })
+}
+
+
+
+#[ic_cdk::query]
+pub fn list_all_accounts() -> Vec<UserProfile> {
+    STATE.with(|state| {
+        let app_state = state.borrow();
+        app_state.get_all_accounts()  
     })
 }

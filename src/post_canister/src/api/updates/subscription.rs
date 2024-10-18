@@ -1,0 +1,147 @@
+use candid::Principal;
+use ic_cdk::call;
+
+use crate::{models::notification::Notification, STATE};
+
+use super::post::current_timestamp;
+
+
+
+#[ic_cdk::update]
+async fn subscribe(dexfans_backend_canister_id: Principal, subscriber: Principal, target_user: Principal) -> Result<(), String> {
+
+    let (subscriber_profile,): (Result<crate::models::user::UserProfile, String>,) = 
+        call(dexfans_backend_canister_id, "api_get_user_account", (subscriber,))
+            .await
+            .map_err(|_| "Failed to fetch subscriber profile".to_string())?;
+
+    let (target_profile,): (Result<crate::models::user::UserProfile, String>,) = 
+        call(dexfans_backend_canister_id, "api_get_user_account", (target_user,))
+            .await
+            .map_err(|_| "Failed to fetch target user profile".to_string())?;
+
+    if let (Ok(mut subscriber_profile), Ok(mut target_profile)) = (subscriber_profile, target_profile) {
+
+        if !target_profile.subscribers.contains(&subscriber) {
+            target_profile.subscribers.push(subscriber);
+        }
+
+        if !subscriber_profile.subscribing.contains(&target_user) {
+            subscriber_profile.subscribing.push(target_user);
+        }
+
+        let (update_result_subscriber,): (Result<(), String>,) = call(
+            dexfans_backend_canister_id,
+            "update_user_profile",
+            (subscriber, subscriber_profile.clone()),  
+        )
+        .await
+        .map_err(|_| "Failed to update subscriber profile".to_string())?;
+
+        let (update_result_target,): (Result<(), String>,) = call(
+            dexfans_backend_canister_id,
+            "update_user_profile",
+            (target_user, target_profile.clone()),  
+        )
+        .await
+        .map_err(|_| "Failed to update target user profile".to_string())?;
+
+        if update_result_subscriber.is_ok() && update_result_target.is_ok() {
+            Ok(())
+        } else {
+            Err("Failed to update one or both user profiles.".to_string())
+        }
+    } else {
+        Err("One or both users not found.".to_string())
+    }
+}
+
+
+
+
+
+
+#[ic_cdk::update]
+async fn unsubscribe(dexfans_backend_canister_id: Principal, subscriber: Principal, target_user: Principal) -> Result<(), String> {
+
+    let (subscriber_profile,): (Result<crate::models::user::UserProfile, String>,) = 
+        call(dexfans_backend_canister_id, "api_get_user_account", (subscriber,))
+            .await
+            .map_err(|_| "Failed to fetch subscriber profile".to_string())?;
+
+    let (target_profile,): (Result<crate::models::user::UserProfile, String>,) = 
+        call(dexfans_backend_canister_id, "api_get_user_account", (target_user,))
+            .await
+            .map_err(|_| "Failed to fetch target user profile".to_string())?;
+
+    if let (Ok(mut subscriber_profile), Ok(mut target_profile)) = (subscriber_profile, target_profile) {
+
+        target_profile.subscribers.retain(|&s| s != subscriber);
+
+        subscriber_profile.subscribing.retain(|&s| s != target_user);
+
+        let (update_result_subscriber,): (Result<(), String>,) = call(
+            dexfans_backend_canister_id,
+            "update_user_profile",
+            (subscriber, subscriber_profile.clone()),  
+        )
+        .await
+        .map_err(|_| "Failed to update subscriber profile".to_string())?;
+
+        let (update_result_target,): (Result<(), String>,) = call(
+            dexfans_backend_canister_id,
+            "update_user_profile",
+            (target_user, target_profile.clone()), 
+        )
+        .await
+        .map_err(|_| "Failed to update target user profile".to_string())?;
+
+        if update_result_subscriber.is_ok() && update_result_target.is_ok() {
+            Ok(())
+        } else {
+            Err("Failed to update one or both user profiles.".to_string())
+        }
+    } else {
+        Err("One or both users not found.".to_string())
+    }
+}
+
+
+
+
+
+#[ic_cdk::update]
+async fn notify_subscribers(dexfans_backend_canister_id: Principal, user: Principal, message: String) -> Result<(), String> {
+
+    let (user_profile,): (Result<crate::models::user::UserProfile, String>,) = 
+        call(dexfans_backend_canister_id, "api_get_user_account", (user,))
+            .await
+            .map_err(|_| "Failed to fetch user profile".to_string())?;
+
+    if let Ok(user_profile) = user_profile {
+        let current_time = current_timestamp();
+        let notification = Notification {
+            recipient: user,
+            message: message.clone(),
+            created_at: current_time,
+        };
+
+        STATE.with(|state| {
+            let mut app_state = state.borrow_mut();
+            for subscriber in &user_profile.subscribers {
+                app_state
+                    .notifications
+                    .entry(*subscriber)
+                    .or_insert_with(Vec::new)
+                    .push(notification.clone());
+            }
+        });
+
+        Ok(())
+    } else {
+        Err("User not found.".to_string())
+    }
+}
+
+
+

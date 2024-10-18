@@ -6,11 +6,9 @@ type CreatePostArgs = record {
   content : text;
   post_type : PostType;
   video : opt text;
-  image : opt ImageData;
+  image : opt text;
   price : opt nat8;
 };
-type ImageData = record { image_canister : principal; image_content : blob };
-type Membership = variant { Guest; Gold; Platinum; Silver };
 type Post = record {
   post_id : text;
   content : text;
@@ -25,30 +23,22 @@ type Post = record {
   price : opt nat8;
 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
-type Result = variant { Ok : text; Err : text };
-type Result_1 = variant { Ok : UserProfile; Err : text };
-type UserProfile = record {
-  bio : opt text;
-  username : text;
-  cover_image : opt text;
-  created_at : nat64;
-  user_id : principal;
-  is_bot : bool;
-  likes : vec text;
-  subscribers : vec principal;
-  subscribing : vec principal;
-  membership : Membership;
-  posts : vec text;
-  collects : vec text;
-  avatar : opt text;
-};
+type Result = variant { Ok; Err : text };
+type Result_1 = variant { Ok : vec Post; Err : text };
+type Result_2 = variant { Ok : vec principal; Err : text };
 service : (CanisterMetaData) -> {
-  api_create_new_post : (CreatePostArgs) -> (Result);
-  api_get_all_post : () -> (vec Post) query;
-  api_get_my_account : () -> (Result_1) query;
+  comment_on_post : (nat, text, opt text, principal) -> (Result);
+  create_post : (principal, CreatePostArgs, principal) -> (Result);
   get_canister_meta_data : () -> (CanisterMetaData) query;
-  get_post_by_id : (text) -> (opt Post) query;
+  get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_1);
+  get_post_by_id : (nat) -> (opt Post) query;
+  get_user_posts_paginated : (principal, principal, nat32) -> (Result_1);
   greet : (text) -> (text) query;
-  list_all_accounts : () -> (vec UserProfile) query;
+  latest_posts : (nat64) -> (vec Post) query;
+  like_unlike_post : (principal, nat, principal) -> (Result);
   list_all_posts : () -> (vec Post) query;
+  list_subscribers : (principal, principal) -> (Result_2);
+  notify_subscribers : (principal, principal, text) -> (Result);
+  subscribe : (principal, principal, principal) -> (Result);
+  unsubscribe : (principal, principal, principal) -> (Result);
 }

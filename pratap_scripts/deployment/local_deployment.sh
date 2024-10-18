@@ -21,3 +21,5 @@ dfx deploy post_canister --argument "( record {
       parent_canister = principal \"${dexfans_backend}\";
   }
 )"
+
+dfx deploy 
