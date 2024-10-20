@@ -2,17 +2,17 @@
 set -e
 
 # for creating canisters IDS
-dfx canister create ic_asset_handler
+# dfx canister create ic_asset_handler
 dfx canister create post_canister
 dfx canister create dexfans_backend
 
 # for compiling canisters
-dfx build ic_asset_handler
+# dfx build ic_asset_handler
 dfx build post_canister
 dfx build dexfans_backend
 
 # Canister IDS
-IC_ASSET_CANISTER=$(dfx canister id ic_asset_handler)
+IC_ASSET_CANISTER=$(dfx canister id dexfans_backend)
 dexfans_backend=$(dfx canister id dexfans_backend)
 
 # deploy post canisters 

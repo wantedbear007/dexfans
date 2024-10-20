@@ -10,10 +10,14 @@
       "package": "post_canister",
       "type": "rust"
     },
-    "ic_asset_handler": {
-      "candid": "src/remote_canisters/wasm_asset_canister/ic_asset_handler.did",
-      "wasm": "src/remote_canisters/wasm_asset_canister/ic_asset_handler.wasm",
-      "type": "custom"
+    "asset_handler": {
+      "candid": "src/ic_asset_handler/ic_oss_bucket/ic_oss_bucket.did",
+      "declarations": {
+        "node_compatibility": true
+      },
+      "package": "ic_oss_bucket",
+      "optimize": "cycles",
+      "type": "rust"
     }
   },
   "defaults": {
