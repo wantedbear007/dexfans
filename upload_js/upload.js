@@ -22,18 +22,18 @@ const files = [
     name: '',
     contentType: ''
   },
-  {
-    parent: 0,
-    content: '30mvideo.mp4',
-    name: '',
-    contentType: ''
-  },
-  {
-    parent: 0,
-    content: 'video.mp4',
-    name: '',
-    contentType: ''
-  }
+  // {
+  //   parent: 0,
+  //   content: '30mvideo.mp4',
+  //   name: '',
+  //   contentType: ''
+  // },
+  // {
+  //   parent: 0,
+  //   content: 'video.mp4',
+  //   name: '',
+  //   contentType: ''
+  // }
 ]
 
 async function main() {
