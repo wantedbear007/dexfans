@@ -10,6 +10,7 @@
 
 canisters=("post_canister" "dexfans_backend")
 
+./generate_did.sh
 # Define the path to the script
 script_path="./pratap_scripts/main.sh"
 
@@ -26,6 +27,7 @@ fi
 
 # Execute the script with the canisters as arguments
 "$script_path" "${canisters[@]}"
+
 
 
 

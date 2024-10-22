@@ -1,13 +1,20 @@
+type CanisterInitArgs = record {
+  controllers : vec principal;
+  asset_canister : principal;
+  post_canister : principal;
+};
 type CanisterMetaData = record {
   controllers : vec principal;
   asset_canister : principal;
+  all_post_canisters : vec principal;
   post_canister : principal;
 };
 type Membership = variant { Guest; Gold; Platinum; Silver };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
 type Result_2 = variant { Ok : UserProfile; Err : text };
-type Result_3 = variant { Ok : principal; Err : text };
+type Result_3 = variant { Ok : CanisterMetaData; Err : text };
+type Result_4 = variant { Ok : principal; Err : text };
 type UserInputArgs = record {
   bio : opt text;
   username : text;
@@ -31,15 +38,16 @@ type UserProfile = record {
   collects : vec nat;
   avatar : opt text;
 };
-service : (CanisterMetaData) -> {
+service : (CanisterInitArgs) -> {
+  add_controller : (principal) -> (Result);
   add_post_id_to_user : (principal, nat) -> (Result);
   api_create_account : (UserInputArgs) -> (Result_1);
   api_get_my_account : () -> (Result_2) query;
-  get_asset_canister : () -> (Result_3) query;
-  get_post_canister : () -> (Result_3) query;
+  get_canister_meta_data : () -> (Result_3) query;
   greet : (text) -> (text) query;
   list_all_accounts : () -> (vec UserProfile) query;
-  set_post_canister : (principal) -> (Result_3);
+  remove_controller : (principal) -> (Result);
+  set_post_canister : (principal) -> (Result_4);
   update_user_likes : (principal, nat, bool) -> (Result);
   update_user_profile : (principal, UserProfile) -> (Result);
 }

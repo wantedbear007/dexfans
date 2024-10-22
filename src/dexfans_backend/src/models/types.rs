@@ -12,12 +12,23 @@ pub type TimestampMillis = u64;
 
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub struct CanisterMetaData {
+pub struct CanisterInitArgs {
     pub asset_canister: Principal,
-    pub controllers: Vec<Principal>,
+    pub controllers: std::collections::HashSet<Principal>,
     pub post_canister: Principal,
+    
     // more to be added later
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+pub struct CanisterMetaData {
+    pub asset_canister: Principal,
+    pub controllers: std::collections::HashSet<Principal>,
+    pub post_canister: Principal,
+    pub all_post_canisters: std::collections::HashSet<Principal>
+    // more to be added later
+}
+
 
 impl ic_stable_structures::Storable for CanisterMetaData {
     fn to_bytes(&self) -> Cow<[u8]> {

@@ -1,4 +1,3 @@
-use candid::Principal;
 
 
 use crate::models::user::UserProfile;
