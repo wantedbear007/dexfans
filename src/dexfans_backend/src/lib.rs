@@ -2,7 +2,6 @@ use crate::models::user::UserProfile;
 use candid::Principal;
 use models::types::CanisterMetaData;
 use store::storage_state::ApplicationState;
-// use crate::models::post::;
 mod api;
 mod models;
 mod store;
@@ -13,7 +12,7 @@ fn greet(name: String) -> String {
     format!(
         "Hello, {}! from {}",
         name,
-        crate::utils::constants::ESSENTIALS_APP_NAME
+        dexfans_types::constants::ESSENTIALS_APP_NAME
     )
 }
 
@@ -43,15 +42,15 @@ async fn init(args: crate::models::types::CanisterInitArgs) {
                         std::collections::HashMap::with_capacity(args.canister_ids.len());
 
                     canister_ids.insert(
-                        crate::utils::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
+                        dexfans_types::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
                         args.canister_ids["asset_canister"],
                     );
                     canister_ids.insert(
-                        crate::utils::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
+                        dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
                         args.canister_ids["post_canister"],
                     );
                     canister_ids.insert(
-                        crate::utils::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE,
+                        dexfans_types::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE,
                         args.canister_ids["ledger_canister"],
                     );
                     canister_ids

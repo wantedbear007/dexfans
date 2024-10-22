@@ -40,8 +40,3 @@ use crate::STATE;
 //         Ok(all_post_ids)
 //     })
 // }
-
-#[ic_cdk::query]
-pub fn atest_101(args: std::collections::HashMap<String, String>) -> std::collections::HashMap<String, String> {
-  args
-}

@@ -40,10 +40,9 @@ service : (CanisterInitArgs) -> {
   add_controller : (principal) -> (Result);
   api_add_post_id_to_user : (principal, nat) -> (Result);
   api_create_account : (UserInputArgs) -> (Result_1);
-  api_get_my_account : () -> (Result_2) query;
+  api_get_my_profile : () -> (Result_2) query;
+  api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
-  api_update_user_profile : (principal, UserProfile) -> (Result);
-  atest_101 : (vec record { text; text }) -> (vec record { text; text }) query;
   get_asset_canister : () -> (Result_3) query;
   get_canister_meta_data : () -> (Result_4) query;
   get_post_canister : () -> (Result_3) query;

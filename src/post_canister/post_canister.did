@@ -26,7 +26,6 @@ type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : CanisterMetaData; Err : text };
 type Result_2 = variant { Ok : vec Post; Err : text };
-type Result_3 = variant { Ok : vec principal; Err : text };
 service : (CanisterMetaData) -> {
   comment_on_post : (nat, text, opt text) -> (Result);
   create_post : (CreatePostArgs) -> (Result);
@@ -38,8 +37,4 @@ service : (CanisterMetaData) -> {
   latest_posts : (nat64) -> (vec Post) query;
   like_unlike_post : (nat) -> (Result);
   list_all_posts : () -> (vec Post) query;
-  list_subscribers : (principal, principal) -> (Result_3);
-  notify_subscribers : (principal, principal, text) -> (Result);
-  subscribe : (principal) -> (Result);
-  unsubscribe : (principal, principal, principal) -> (Result);
 }

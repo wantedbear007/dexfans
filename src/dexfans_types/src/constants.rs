@@ -17,9 +17,14 @@ pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered w
 pub const ERROR_CANISTER_ID: &str = "canister not found";
 pub const ERROR_FAILED_CANISTER_DATA: &str = "Failed to get canister meta data";
 pub const ERROR_FAILED_CALL: &str = "Failed to perform operation, try again later";
+pub const ERROR_ENCODE_FAILED: &str = "Failed to encode data";
+pub const ERROR_DECODE_FAILED: &str = "Failed to decode data";
+pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
+pub const SUCCESS_POST_CREATED: &str = "Post successfully created";
+
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;

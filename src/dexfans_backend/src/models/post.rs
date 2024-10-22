@@ -25,6 +25,7 @@ pub struct CreatePostArgs {
 
 
 
+
 #[derive(Serialize, Deserialize, Debug, Clone, CandidType)]
 pub struct Post {
     pub post_id: PostId,

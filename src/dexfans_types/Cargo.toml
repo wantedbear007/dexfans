@@ -1,0 +1,9 @@
+[package]
+name = "dexfans_types"
+version.workspace = true
+edition.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+
+[dependencies]

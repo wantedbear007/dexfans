@@ -1,35 +1,43 @@
 use candid::Principal;
 
-use crate::{utils::guards::*, STATE};
+use crate::{utils::guards::*, with_write_state, STATE};
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub fn api_create_account(args: crate::models::user::UserInputArgs) -> Result<String, String> {
     super::accounts_controller::controller_create_account(args).map_err(|err| {
         format!(
             "{}{}",
-            crate::utils::constants::ERROR_ACCOUNT_ERROR,
+            dexfans_types::constants::ERROR_ACCOUNT_ERROR,
             err.to_string()
         )
     })?;
 
     Ok(String::from(
-        crate::utils::constants::SUCCESS_ACCOUNT_CREATED,
+        dexfans_types::constants::SUCCESS_ACCOUNT_CREATED,
     ))
 }
 
-#[ic_cdk::update]
-pub fn api_update_user_profile(
-    user_id: Principal,
-    updated_profile: crate::models::user::UserProfile,
+#[ic_cdk::update(guard=guard_prevent_anonymous)]
+pub fn api_update_profile(
+    // user_id: Principal,
+    args: crate::models::user::UserInputArgs,
 ) -> Result<(), String> {
-    STATE.with(|state| {
-        let mut app_state = state.borrow_mut();
-        if app_state.account.contains_key(&user_id) {
-            app_state.account.insert(user_id, updated_profile);
+    with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(val) => {
+            state.account.insert(
+                ic_cdk::api::caller(),
+                crate::models::user::UserProfile {
+                    username: args.username,
+                    bio: args.bio,
+                    avatar: args.avatar,
+                    cover_image: args.cover_image,
+                    ..val
+                },
+            );
+
             Ok(())
-        } else {
-            Err("User profile not found".to_string())
         }
+        None => return Err(String::from(dexfans_types::constants::ERROR_PROFILE_UPDATE)),
     })
 }
 
@@ -49,7 +57,11 @@ pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), 
 }
 
 #[ic_cdk::update]
-pub fn api_update_user_likes(user_id: Principal, post_id: u128, is_liked: bool) -> Result<(), String> {
+pub fn api_update_user_likes(
+    user_id: Principal,
+    post_id: u128,
+    is_liked: bool,
+) -> Result<(), String> {
     STATE.with(|state| {
         let mut app_state = state.borrow_mut();
 

@@ -13,7 +13,7 @@ fn greet(name: String) -> String {
     format!(
         "Hello, {}! from {}",
         name,
-        crate::utils::constants::ESSENTIALS_APP_NAME
+        dexfans_types::constants::ESSENTIALS_APP_NAME
     )
 }
 
