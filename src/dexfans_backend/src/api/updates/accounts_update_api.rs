@@ -3,7 +3,7 @@ use candid::Principal;
 use crate::{utils::guards::*, with_write_state, STATE};
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
-pub fn api_create_account(args: crate::models::user::UserInputArgs) -> Result<String, String> {
+pub fn api_create_account(args: crate::models::types::UserInputArgs) -> Result<String, String> {
     super::accounts_controller::controller_create_account(args).map_err(|err| {
         format!(
             "{}{}",
@@ -20,13 +20,13 @@ pub fn api_create_account(args: crate::models::user::UserInputArgs) -> Result<St
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub fn api_update_profile(
     // user_id: Principal,
-    args: crate::models::user::UserInputArgs,
+    args: crate::models::types::UserInputArgs,
 ) -> Result<(), String> {
     with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(val) => {
             state.account.insert(
                 ic_cdk::api::caller(),
-                crate::models::user::UserProfile {
+                crate::models::types::UserProfile {
                     username: args.username,
                     bio: args.bio,
                     avatar: args.avatar,

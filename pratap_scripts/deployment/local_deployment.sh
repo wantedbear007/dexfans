@@ -58,6 +58,7 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 
 
 dfx deploy dexfans_backend --argument "( record {
+    payment_recipient = principal \"${CONTROLLER01}\";
     controllers = vec {
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";

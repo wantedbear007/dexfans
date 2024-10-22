@@ -1,11 +1,13 @@
-type CanisterInitArgs = record {
-  controllers : vec principal;
-  canister_ids : vec record { text; principal };
-};
 type CanisterMetaData = record {
   controllers : vec principal;
   canister_ids : vec record { nat8; principal };
   all_post_canisters : vec principal;
+  payment_recipient : principal;
+};
+type DexFansCanisterInitArgs = record {
+  controllers : vec principal;
+  canister_ids : vec record { text; principal };
+  payment_recipient : principal;
 };
 type Membership = variant { Guest; Gold; Platinum; Silver };
 type Result = variant { Ok; Err : text };
@@ -28,15 +30,16 @@ type UserProfile = record {
   user_id : principal;
   is_bot : bool;
   likes : vec nat;
-  post_canister_id : principal;
+  active_post_canister : principal;
   subscribers : vec principal;
   subscribing : vec principal;
   membership : Membership;
   posts : vec nat;
   collects : vec nat;
+  all_post_canisters : vec principal;
   avatar : opt text;
 };
-service : (CanisterInitArgs) -> {
+service : (DexFansCanisterInitArgs) -> {
   add_controller : (principal) -> (Result);
   api_add_post_id_to_user : (principal, nat) -> (Result);
   api_create_account : (UserInputArgs) -> (Result_1);
@@ -47,7 +50,6 @@ service : (CanisterInitArgs) -> {
   get_canister_meta_data : () -> (Result_4) query;
   get_post_canister : () -> (Result_3) query;
   greet : (text) -> (text) query;
-  list_all_accounts : () -> (vec UserProfile) query;
   remove_controller : (principal) -> (Result);
   set_post_canister : (principal) -> (Result_3);
 }

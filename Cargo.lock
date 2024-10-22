@@ -308,6 +308,10 @@ dependencies = [
 [[package]]
 name = "dexfans_types"
 version = "0.9.3"
+dependencies = [
+ "candid",
+ "serde",
+]
 
 [[package]]
 name = "digest"

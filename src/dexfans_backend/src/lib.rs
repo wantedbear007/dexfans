@@ -1,4 +1,4 @@
-use crate::models::user::UserProfile;
+use crate::models::types::*;
 use candid::Principal;
 use models::types::CanisterMetaData;
 use store::storage_state::ApplicationState;
@@ -32,7 +32,7 @@ pub(crate) fn with_read_state<R>(f: impl FnOnce(&ApplicationState) -> R) -> R {
 
 // init args
 #[ic_cdk::init]
-async fn init(args: crate::models::types::CanisterInitArgs) {
+async fn init(args: crate::models::types::DexFansCanisterInitArgs) {
     with_write_state(|state| {
         state.canister_meta_data.insert(
             0,
@@ -56,6 +56,7 @@ async fn init(args: crate::models::types::CanisterInitArgs) {
                     canister_ids
                 },
                 controllers: args.controllers,
+                payment_recipient: args.payment_recipient,
                 all_post_canisters: {
                     let mut post_canisters = std::collections::HashSet::new();
                     post_canisters.insert(args.canister_ids["post_canister"]);

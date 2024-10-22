@@ -1,12 +1,10 @@
 
 
-use crate::models::user::UserProfile;
 use crate::utils::guards::*;
-use crate::{with_read_state, STATE};
 
 #[ic_cdk::query(guard=guard_prevent_anonymous)]
-pub fn api_get_my_profile() -> Result<crate::models::user::UserProfile, String> {
-    with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
+    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => Ok(acc),
         None => Err(String::from(
             dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
@@ -26,10 +24,10 @@ pub fn api_get_my_profile() -> Result<crate::models::user::UserProfile, String> 
 
 
 
-#[ic_cdk::query(guard=guard_only_admin)]
-pub fn list_all_accounts() -> Vec<UserProfile> {
-    STATE.with(|state| {
-        let app_state = state.borrow();
-        app_state.get_all_accounts()  
-    })
-}
+// #[ic_cdk::query(guard=guard_only_admin)]
+// pub fn list_all_accounts() -> Vec<UserProfile> {
+//     STATE.with(|state| {
+//         let app_state = state.borrow();
+//         app_state.get_all_accounts()  
+//     })
+// }

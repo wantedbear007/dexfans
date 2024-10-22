@@ -10,10 +10,10 @@ pub type PostId = u128;
 pub type TimestampMillis = u64;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub struct CanisterInitArgs {
+pub struct DexFansCanisterInitArgs {
     pub canister_ids: std::collections::HashMap<String, candid::Principal>,
     pub controllers: std::collections::HashSet<Principal>,
-    // more to be added later
+    pub payment_recipient: candid::Principal, // more to be added later
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
@@ -21,7 +21,51 @@ pub struct CanisterMetaData {
     pub controllers: std::collections::HashSet<Principal>,
     pub canister_ids: std::collections::HashMap<u8, candid::Principal>,
     pub all_post_canisters: std::collections::HashSet<Principal>,
-    // more to be added later
+    pub payment_recipient: candid::Principal, // more to be added later
+}
+
+#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
+pub(crate) struct UserInputArgs {
+    pub username: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+    pub cover_image: Option<String>,
+    // pub asset_canister_id:
+}
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub(crate) struct UserProfile {
+    pub user_id: Principal,
+    pub active_post_canister: Principal,
+    pub all_post_canisters: std::collections::HashSet<Principal>,
+    pub username: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+    pub asset_canister_id: Principal,
+    pub cover_image: Option<String>,
+    pub subscribers: Vec<Principal>, // Subscribers for the user
+    pub subscribing: Vec<Principal>, // Users this user is subscribing to
+    pub posts: Vec<PostId>,          // Created posts
+    pub likes: Vec<PostId>,          // Liked posts
+    pub collects: Vec<PostId>,       // Collected posts
+    pub is_bot: bool,                // Is this user a bot?
+    pub membership: dexfans_types::types::Membership, // Membership level
+    pub created_at: TimestampMillis, // Timestamp when the user was created
+}
+
+impl ic_stable_structures::Storable for UserProfile {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
 }
 
 impl ic_stable_structures::Storable for CanisterMetaData {
@@ -37,21 +81,4 @@ impl ic_stable_structures::Storable for CanisterMetaData {
 
     const BOUND: ic_stable_structures::storable::Bound =
         ic_stable_structures::storable::Bound::Unbounded;
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub enum PostType {
-    Free,
-    Silver,
-    Gold,
-    Platinum,
-    Paid,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub enum Membership {
-    Guest,
-    Silver,
-    Gold,
-    Platinum,
 }

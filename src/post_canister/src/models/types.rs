@@ -9,23 +9,39 @@ pub type CommentId = u128;
 pub type Cycles = u128;
 pub type PostId = String;
 pub type TimestampMillis = u64;
-// pub struct Error(String);
 
-// impl Default for Error {
-//     fn default() -> Self {
-//         Error(String::from("None"))
-//     }
-// }
+#[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
+pub(crate) struct UserInputArgs {
+    pub username: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+    pub cover_image: Option<String>,
+}
 
-// impl Error {
-//     fn created() -> Self {
-//         Error(String::from("Create operation was success"))
-//     }
+#[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
+pub(crate) struct UserProfile {
+    pub user_id: Principal,
+    pub username: String,
+    pub posts: Vec<PostId>,
+    pub likes: Vec<PostId>,
+    pub collects: Vec<PostId>,
+    pub membership: Membership,
+}
 
-//     fn failed() -> Self {
-//         Error(String::from("Operation failed"))
-//     }
-// }
+impl ic_stable_structures::Storable for UserProfile {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub enum PostType {

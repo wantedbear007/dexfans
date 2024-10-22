@@ -1,5 +1,4 @@
 use crate::models::post::{CreatePostArgs, Post};
-use crate::models::user::UserProfile;
 use store::storage_state::ApplicationState;
 mod api;
 mod models;
