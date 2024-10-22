@@ -1,4 +1,10 @@
+// app essentials
 pub const ESSENTIALS_APP_NAME: &str = "dexfans !";
+// CANISTER ID KEYs
+pub const ESSENTIAL_POST_CANISTER_ID_CODE: u8 = 1;
+pub const ESSENTIAL_ASSET_CANISTER_ID_CODE: u8 = 2; 
+pub const ESSENTIAL_LEDGER_CANISTER_ID_CODE: u8 = 3; 
+
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous principal not allowed !";
@@ -17,3 +23,6 @@ pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;
+
+
+

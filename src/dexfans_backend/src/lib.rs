@@ -38,18 +38,33 @@ async fn init(args: crate::models::types::CanisterInitArgs) {
         state.canister_meta_data.insert(
             0,
             CanisterMetaData {
-                asset_canister: args.asset_canister,
+                canister_ids: {
+                    let mut canister_ids: std::collections::HashMap<u8, candid::Principal> =
+                        std::collections::HashMap::with_capacity(args.canister_ids.len());
+
+                    canister_ids.insert(
+                        crate::utils::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
+                        args.canister_ids["asset_canister"],
+                    );
+                    canister_ids.insert(
+                        crate::utils::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
+                        args.canister_ids["post_canister"],
+                    );
+                    canister_ids.insert(
+                        crate::utils::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE,
+                        args.canister_ids["ledger_canister"],
+                    );
+                    canister_ids
+                },
                 controllers: args.controllers,
-                post_canister: args.post_canister,
                 all_post_canisters: {
                     let mut post_canisters = std::collections::HashSet::new();
-                    post_canisters.insert(args.post_canister);
+                    post_canisters.insert(args.canister_ids["post_canister"]);
                     post_canisters
                 },
             },
         );
     });
-
 }
 
 ic_cdk::export_candid!();

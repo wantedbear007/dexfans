@@ -13,19 +13,23 @@ pub type TimestampMillis = u64;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterInitArgs {
-    pub asset_canister: Principal,
+    // pub asset_canister: Principal,
+    pub canister_ids: std::collections::HashMap<String, candid::Principal>,
     pub controllers: std::collections::HashSet<Principal>,
-    pub post_canister: Principal,
+    // pub post_canister: Principal,
+    // pub icp_ledger_canister: Principal
     
     // more to be added later
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
-    pub asset_canister: Principal,
+    // pub asset_canister: Principal,
     pub controllers: std::collections::HashSet<Principal>,
-    pub post_canister: Principal,
-    pub all_post_canisters: std::collections::HashSet<Principal>
+    // pub post_canister: Principal,
+    pub canister_ids: std::collections::HashMap<u8, candid::Principal>,
+    pub all_post_canisters: std::collections::HashSet<Principal>,
+    // pub canister_ids: std::collections::HashMap<String, candid::Principal>
     // more to be added later
 }
 
