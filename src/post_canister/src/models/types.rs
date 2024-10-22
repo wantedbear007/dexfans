@@ -44,6 +44,14 @@ pub enum Membership {
     Platinum,
 }
 
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+pub enum CanisterMeta {
+    AssetCanister,
+    ParentCanister,
+}
+
+
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
     pub asset_canister: Vec<Principal>,

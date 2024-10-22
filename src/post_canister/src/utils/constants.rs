@@ -7,6 +7,7 @@ pub const WARNING_ACCOUNT_EXISTS: &str = "Principal ID is already registered wit
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
 pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered with the platform";
+pub const ERROR_FAILED_CANISTER_DATA: &str = "Failed to get canister meta data";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";

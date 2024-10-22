@@ -37,10 +37,10 @@ async fn init(args: crate::models::types::CanisterMetaData) {
     with_write_state(|state| state.canister_meta_data.insert(0, args));
 }
 
-// for development only
-#[ic_cdk::query]
-fn get_canister_meta_data() -> crate::models::types::CanisterMetaData {
-    with_read_state(|state| state.canister_meta_data.get(&0).unwrap())
-}
+// // for development only
+// #[ic_cdk::query]
+// fn get_canister_meta_data() -> crate::models::types::CanisterMetaData {
+//     with_read_state(|state| state.canister_meta_data.get(&0).unwrap())
+// }
 
 ic_cdk::export_candid!();
