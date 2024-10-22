@@ -48,6 +48,8 @@ pub enum Membership {
 pub struct CanisterMetaData {
     pub asset_canister: Vec<Principal>,
     pub parent_canister: Principal,
+    // pub post_canister: Principal
+    
     // more to be added later
 }
 

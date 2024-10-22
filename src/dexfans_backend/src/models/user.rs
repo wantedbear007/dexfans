@@ -17,6 +17,7 @@ pub(crate) struct UserInputArgs {
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct UserProfile {
     pub user_id: Principal,
+    pub post_canister_id: Principal,
     pub username: String,
     pub bio: Option<String>,
     pub avatar: Option<String>,

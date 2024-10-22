@@ -14,7 +14,8 @@ pub type TimestampMillis = u64;
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
     pub asset_canister: Principal,
-    pub controllers: Vec<Principal>
+    pub controllers: Vec<Principal>,
+    pub post_canister: Principal,
     // more to be added later
 }
 

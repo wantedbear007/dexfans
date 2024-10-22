@@ -8,7 +8,7 @@ pub const WARNING_ADMIN_ONLY: &str = "Admin access required";
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
 pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered with the platform";
-pub const ERROR_ASSET_CANISTER: &str = "Asset canister id not found";
+pub const ERROR_CANISTER_ID: &str = "canister not found";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";

@@ -27,3 +27,5 @@ fi
 # Execute the script with the canisters as arguments
 "$script_path" "${canisters[@]}"
 
+
+

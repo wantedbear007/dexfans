@@ -1,4 +1,4 @@
-use crate::{utils::functions::get_asset_canister, with_write_state};
+use crate::{utils::functions::{get_asset_canister, get_post_canister}, with_write_state};
 
 pub fn controller_create_account(
     args: crate::models::user::UserInputArgs,
@@ -10,7 +10,6 @@ pub fn controller_create_account(
             return Err(String::from(
                 crate::utils::constants::WARNING_ACCOUNT_EXISTS,
             ));
-        } else {
         }
         state.account.insert(ic_cdk::api::caller(),crate::models::user::UserProfile {
             avatar: args.avatar,
@@ -26,7 +25,8 @@ pub fn controller_create_account(
             subscribing: Vec::new(),
             user_id: ic_cdk::api::caller(),
             username: args.username,
-            asset_canister_id: get_asset_canister().unwrap()
+            asset_canister_id: get_asset_canister().unwrap(),
+            post_canister_id: get_post_canister().unwrap()
         });
         Ok(())
     })

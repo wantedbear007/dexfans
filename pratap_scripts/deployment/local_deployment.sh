@@ -22,6 +22,7 @@ dfx build dexfans_backend
 # Canister IDS
 IC_ASSET_CANISTER=$(dfx canister id asset_handler)
 dexfans_backend=$(dfx canister id dexfans_backend)
+POST_CANSTER=$(dfx canister id post_canister)
 
 
 
@@ -29,6 +30,8 @@ dexfans_backend=$(dfx canister id dexfans_backend)
 dfx deploy dexfans_backend --argument "( record {
       controllers =  vec { principal \"${CONTROLLER01}\" };
       asset_canister = principal \"${IC_ASSET_CANISTER}\";
+      post_canister = principal \"${POST_CANSTER}\";
+
   }
 )"
 
