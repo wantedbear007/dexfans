@@ -8,3 +8,15 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
 
     Ok(())
 }
+
+
+// controllers accesss 
+pub fn guard_only_admin() -> Result<(), String> {
+
+    guard_prevent_anonymous()?;
+
+    crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
+        Some(_val) => Ok(()),
+        None => return Err(String::from(super::constants::WARNING_ADMIN_ONLY))
+    })
+}

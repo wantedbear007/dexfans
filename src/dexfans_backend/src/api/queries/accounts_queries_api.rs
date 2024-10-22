@@ -16,18 +16,18 @@ pub fn api_get_my_account() -> Result<crate::models::user::UserProfile, String> 
 }
 
 
-#[ic_cdk::query]
-pub fn api_get_user_account(user_id: Principal) -> Result<crate::models::user::UserProfile, String> {
-    with_read_state(|state| {
-        state.account.get(&user_id)
-            .map(|acc| acc.clone())
-            .ok_or_else(|| String::from(crate::utils::constants::ERROR_ACCOUNT_NOT_REGISTERED))
-    })
-}
+// #[ic_cdk::query]
+// pub fn api_get_user_account(user_id: Principal) -> Result<crate::models::user::UserProfile, String> {
+//     with_read_state(|state| {
+//         state.account.get(&user_id)
+//             .map(|acc| acc.clone())
+//             .ok_or_else(|| String::from(crate::utils::constants::ERROR_ACCOUNT_NOT_REGISTERED))
+//     })
+// }
 
 
 
-#[ic_cdk::query]
+#[ic_cdk::query(guard=guard_only_admin)]
 pub fn list_all_accounts() -> Vec<UserProfile> {
     STATE.with(|state| {
         let app_state = state.borrow();

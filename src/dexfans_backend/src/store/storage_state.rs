@@ -12,6 +12,8 @@ pub(crate) struct ApplicationState {
     pub comments: StableBTreeMap<CommentId, Comment, StoreMemory>,
     pub post_counter: u128,
     pub comment_counter: u128,
+    pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
+
 }
 
 impl ApplicationState {
@@ -22,6 +24,7 @@ impl ApplicationState {
             comments: init_comment_state(), 
             post_counter: 0,
             comment_counter: 0,
+            canister_meta_data: init_canister_meta_data_state(),
         }
     }
 
@@ -48,4 +51,9 @@ fn init_post_state() -> StableBTreeMap<u128, Post, StoreMemory> {
 
 fn init_comment_state() -> StableBTreeMap<CommentId, Comment, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_comment_data_memory())
+}
+
+fn init_canister_meta_data_state(
+) -> StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory> {
+    StableBTreeMap::init(crate::store::memory::get_canister_metadata_memory())
 }

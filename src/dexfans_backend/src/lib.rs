@@ -32,4 +32,13 @@ pub(crate) fn with_read_state<R>(f: impl FnOnce(&ApplicationState) -> R) -> R {
     STATE.with(|cell| f(&cell.borrow()))
 }
 
+// init args
+#[ic_cdk::init]
+async fn init(args: crate::models::types::CanisterMetaData) {
+    with_write_state(|state| state.canister_meta_data.insert(0, args));
+}
+
+
 ic_cdk::export_candid!();
+
+

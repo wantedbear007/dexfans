@@ -11,6 +11,7 @@ pub(crate) struct UserInputArgs {
     pub bio: Option<String>,
     pub avatar: Option<String>,
     pub cover_image: Option<String>,
+    // pub asset_canister_id: 
 }
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
@@ -19,6 +20,7 @@ pub(crate) struct UserProfile {
     pub username: String,
     pub bio: Option<String>,
     pub avatar: Option<String>,
+    pub asset_canister_id: Principal,
     pub cover_image: Option<String>,
     pub subscribers: Vec<Principal>,  // Subscribers for the user
     pub subscribing: Vec<Principal>,  // Users this user is subscribing to

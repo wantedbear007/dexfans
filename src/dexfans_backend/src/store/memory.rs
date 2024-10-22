@@ -8,6 +8,9 @@ const POST_DATA: MemoryId = MemoryId::new(1);
 
 const COMMENT_DATA_MEMORY_ID: MemoryId = MemoryId::new(2);
 
+const CANISTER_DATA: MemoryId = MemoryId::new(3);
+
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 
@@ -27,4 +30,8 @@ pub fn get_post_data_memory() -> StoreMemory {
 
 pub fn get_comment_data_memory() -> StoreMemory {
   MEMORY_MANAGER.with(|m| m.borrow().get(COMMENT_DATA_MEMORY_ID))
+}
+
+pub fn get_canister_metadata_memory() -> StoreMemory {
+  MEMORY_MANAGER.with(|m| m.borrow().get(CANISTER_DATA))  // New function for post storage
 }

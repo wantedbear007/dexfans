@@ -1,4 +1,4 @@
-pub const ESSENTIALS_APP_NAME: &str = "dabarcodes";
+pub const ESSENTIALS_APP_NAME: &str = "dexfans posts";
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous principal not allowed !";
