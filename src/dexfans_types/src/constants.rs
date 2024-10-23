@@ -19,6 +19,7 @@ pub const ERROR_FAILED_CANISTER_DATA: &str = "Failed to get canister meta data";
 pub const ERROR_FAILED_CALL: &str = "Failed to perform operation, try again later";
 pub const ERROR_ENCODE_FAILED: &str = "Failed to encode data";
 pub const ERROR_DECODE_FAILED: &str = "Failed to decode data";
+pub const ERROR_FAILED_INTER_CANISTER: &str = "Failed to perform intercanister call";
 pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 
 // SUCCESS

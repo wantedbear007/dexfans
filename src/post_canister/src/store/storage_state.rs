@@ -54,13 +54,13 @@ use candid::Principal;
 use ic_stable_structures::StableBTreeMap;
 
 use crate::models::{
-    comment::Comment, notification::Notification, post::Post, types::CommentId, types::UserProfile,
+    comment::Comment, notification::Notification, post::Post, types::CommentId, types::UserProfileInterCanister,
 };
 
 use super::memory::StoreMemory;
 
 pub(crate) struct ApplicationState {
-    pub account: StableBTreeMap<candid::Principal, UserProfile, StoreMemory>,
+    pub account: StableBTreeMap<candid::Principal, UserProfileInterCanister, StoreMemory>,
     pub posts: StableBTreeMap<u128, Post, StoreMemory>,
     pub comments: StableBTreeMap<CommentId, Comment, StoreMemory>,
     pub post_counter: u128,
@@ -88,7 +88,7 @@ impl ApplicationState {
     }
 
     // Function to retrieve all accounts as a Vec<UserProfile> for serialization
-    pub fn get_all_accounts(&self) -> Vec<UserProfile> {
+    pub fn get_all_accounts(&self) -> Vec<UserProfileInterCanister> {
         self.account
             .iter()
             .map(|(_, account)| account.clone())
@@ -96,7 +96,7 @@ impl ApplicationState {
     }
 }
 
-fn init_account_state() -> StableBTreeMap<candid::Principal, UserProfile, StoreMemory> {
+fn init_account_state() -> StableBTreeMap<candid::Principal, UserProfileInterCanister, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_account_data_memory())
 }
 

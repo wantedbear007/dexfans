@@ -1,16 +1,23 @@
 use candid::Principal;
 
-use crate::{utils::guards::*, with_write_state, STATE};
+use crate::{
+    utils::{functions::get_post_canister, guards::*},
+    with_write_state, STATE,
+};
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
-pub fn api_create_account(args: crate::models::types::UserInputArgs) -> Result<String, String> {
-    super::accounts_controller::controller_create_account(args).map_err(|err| {
-        format!(
-            "{}{}",
-            dexfans_types::constants::ERROR_ACCOUNT_ERROR,
-            err.to_string()
-        )
-    })?;
+pub async fn api_create_account(
+    args: crate::models::types::UserInputArgs,
+) -> Result<String, String> {
+    super::accounts_controller::controller_create_account(args)
+        .await
+        .map_err(|err| {
+            format!(
+                "{}{}",
+                dexfans_types::constants::ERROR_ACCOUNT_ERROR,
+                err.to_string()
+            )
+        })?;
 
     Ok(String::from(
         dexfans_types::constants::SUCCESS_ACCOUNT_CREATED,

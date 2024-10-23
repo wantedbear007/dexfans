@@ -17,3 +17,4 @@ serde_bytes = { workspace = true }
 serde = { workspace = true }
 ciborium = { workspace = true }
 dexfans_types = { workspace = true }
+kaires ={ workspace = true}

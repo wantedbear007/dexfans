@@ -300,6 +300,7 @@ dependencies = [
  "dexfans_types",
  "ic-cdk 0.16.0",
  "ic-stable-structures",
+ "kaires",
  "serde",
  "serde_bytes",
  "serde_json",

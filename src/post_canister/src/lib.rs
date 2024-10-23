@@ -4,7 +4,6 @@ mod api;
 mod models;
 mod store;
 mod utils;
-
 use candid::Principal;
 
 #[ic_cdk::query]

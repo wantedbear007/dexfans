@@ -19,7 +19,7 @@ pub(crate) struct UserInputArgs {
 }
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
-pub(crate) struct UserProfile {
+pub(crate) struct UserProfileInterCanister {
     pub user_id: Principal,
     pub username: String,
     pub posts: Vec<PostId>,
@@ -28,7 +28,7 @@ pub(crate) struct UserProfile {
     pub membership: Membership,
 }
 
-impl ic_stable_structures::Storable for UserProfile {
+impl ic_stable_structures::Storable for UserProfileInterCanister {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
         ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);

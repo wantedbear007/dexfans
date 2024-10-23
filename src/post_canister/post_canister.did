@@ -9,6 +9,7 @@ type CreatePostArgs = record {
   image : opt text;
   price : opt nat8;
 };
+type Membership = variant { Guest; Gold; Platinum; Silver };
 type Post = record {
   post_id : text;
   content : text;
@@ -24,15 +25,27 @@ type Post = record {
 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
-type Result_1 = variant { Ok : CanisterMetaData; Err : text };
-type Result_2 = variant { Ok : vec Post; Err : text };
+type Result_1 = variant { Ok : UserProfileInterCanister; Err : text };
+type Result_2 = variant { Ok : CanisterMetaData; Err : text };
+type Result_3 = variant { Ok : vec Post; Err : text };
+type UserProfileInterCanister = record {
+  username : text;
+  user_id : principal;
+  likes : vec text;
+  membership : Membership;
+  posts : vec text;
+  collects : vec text;
+};
 service : (CanisterMetaData) -> {
+  admin_add_user_profile : (UserProfileInterCanister) -> (Result);
   comment_on_post : (nat, text, opt text) -> (Result);
   create_post : (CreatePostArgs) -> (Result);
-  get_canister_meta_data : () -> (Result_1) query;
-  get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_2);
+  debug_get_all_profile : () -> (vec UserProfileInterCanister) query;
+  debug_get_user_profile : () -> (Result_1) query;
+  get_canister_meta_data : () -> (Result_2) query;
+  get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_3);
   get_post_by_id : (nat) -> (opt Post) query;
-  get_user_posts_paginated : (principal, principal, nat32) -> (Result_2);
+  get_user_posts_paginated : (principal, principal, nat32) -> (Result_3);
   greet : (text) -> (text) query;
   latest_posts : (nat64) -> (vec Post) query;
   like_unlike_post : (nat) -> (Result);

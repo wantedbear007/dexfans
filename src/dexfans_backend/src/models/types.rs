@@ -53,6 +53,44 @@ pub(crate) struct UserProfile {
     pub created_at: TimestampMillis, // Timestamp when the user was created
 }
 
+#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
+pub(crate) struct UserProfileInterCanister {
+    pub user_id: Principal,
+    pub username: String,
+    pub posts: Vec<PostId>,
+    pub likes: Vec<PostId>,
+    pub collects: Vec<PostId>,
+    pub membership: dexfans_types::types::Membership,
+}
+
+impl Default for UserProfileInterCanister {
+    fn default() -> Self {
+        Self {
+            user_id: candid::Principal::anonymous(),
+            username: String::from("NA"),
+            posts: Vec::new(),
+            likes: Vec::new(),
+            collects: Vec::new(),
+            membership: dexfans_types::types::Membership::Gold,
+        }
+    }
+}
+
+impl ic_stable_structures::Storable for UserProfileInterCanister {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
+}
+
 impl ic_stable_structures::Storable for UserProfile {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
