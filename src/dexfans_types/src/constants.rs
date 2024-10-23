@@ -24,11 +24,12 @@ pub const ERROR_ENCODE_FAILED: &str = "Failed to encode data";
 pub const ERROR_DECODE_FAILED: &str = "Failed to decode data";
 pub const ERROR_FAILED_INTER_CANISTER: &str = "Failed to perform intercanister call";
 pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
+pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
 pub const SUCCESS_POST_CREATED: &str = "Post successfully created";
-
+pub const SUCESSS_POST_UPDATED: &str = "Post updated successfully";
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;

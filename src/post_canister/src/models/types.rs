@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub type CanisterId = Principal;
 pub type CommentId = u128;
 pub type Cycles = u128;
-pub type PostId = String;
+pub type PostId = u128;
 pub type TimestampMillis = u64;
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]

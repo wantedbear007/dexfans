@@ -1,9 +1,10 @@
 use candid::Principal;
 use ic_cdk::{api::time, call, query, update};
 use rand::{rngs::StdRng, seq::SliceRandom, SeedableRng};
+use crate::utils::guards::*;
 
 use crate::{
-    models::{post::Post},
+    models::post::Post,
     STATE,
 };
 
@@ -15,7 +16,7 @@ pub fn get_post_by_id(post_id: u128) -> Option<Post> {
     })
 }
 
-#[query]
+#[query(guard=guard_prevent_anonymous)]
 pub fn list_all_posts() -> Vec<Post> {
     STATE.with(|state| {
         let app_state = state.borrow();

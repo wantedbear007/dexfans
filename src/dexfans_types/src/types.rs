@@ -5,7 +5,8 @@ use serde::{Deserialize, Serialize};
 pub type CanisterId = Principal;
 pub type CommentId = u128;
 pub type Cycles = u128;
-pub type PostId = String;
+
+pub type PostId = u128;
 pub type TimestampMillis = u64;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
@@ -52,4 +53,10 @@ pub struct UpdateUserProfileArgsIC {
     pub user_id: Principal,
     pub username: String,
     // pub membership: Membership,
+}
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct SubscribeAccountIC {
+    pub subscribed_to: Principal,
+    pub subscribed_by: Principal
 }
