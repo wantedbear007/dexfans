@@ -12,7 +12,7 @@ canisters=("post_canister" "dexfans_backend")
 
 ./generate_did.sh
 # Define the path to the script
-script_path="./pratap_scripts/main.sh"
+script_path="./scripts/main.sh"
 
 # Check if the script exists
 if [ ! -f "$script_path" ]; then

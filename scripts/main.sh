@@ -13,7 +13,7 @@ frontend_canister=("")
 # Function to generate DID
 generate_did() {
     for element in "$@"; do
-        ./pratap_scripts/deps/generate_did.sh "$element"
+        ./scripts/deps/generate_did.sh "$element"
         echo "Generated DID for: $element"
     done
 }
@@ -21,19 +21,19 @@ generate_did() {
 # Function to generate DID and deploy locally
 generate_did_and_deploy_local() {
     generate_did "$@"
-    chmod 777 ./pratap_scripts/deployment/local_deployment.sh
+    chmod 777 ./scripts/deployment/local_deployment.sh
     for element in "$@"; do
-        ./pratap_scripts/deployment/local_deployment.sh "$element"
+        ./scripts/deployment/local_deployment.sh "$element"
         echo "Deployed all cainsters locally."
     done
 }
 
 # Function to generate DID and deploy to main network
 generate_did_and_deploy_main() {
-  chmod 777 ./pratap_scripts/deployment/main_deployment.sh
+  chmod 777 ./scripts/deployment/main_deployment.sh
     generate_did "$@"
     for element in "$@"; do
-        ./pratap_scripts/deployment/main_deployment.sh "$element"
+        ./scripts/deployment/main_deployment.sh "$element"
         echo "Deployed all to the main network."
     done
 }
