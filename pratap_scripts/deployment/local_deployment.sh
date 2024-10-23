@@ -26,6 +26,8 @@ LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
 IC_ASSET_CANISTER=$(dfx canister id asset_handler)
 DEXFANS_BACKEND=$(dfx canister id dexfans_backend)
 POST_CANISTER=$(dfx canister id post_canister)
+FRONTEND_CANISTER=$(dfx canister id post_canister)
+
 # FOR ICP LEDGER
 MINTER_ACCOUNT_ID=$(dfx --identity anonymous ledger account-id)
 DEFAULT_ACCOUNT_ID=$(dfx --identity default ledger account-id)
@@ -68,6 +70,7 @@ dfx deploy dexfans_backend --argument "( record {
       record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };
+      record { \"frontend_canister\"; principal \"${FRONTEND_CANISTER}\" };
     };
   }
 )"

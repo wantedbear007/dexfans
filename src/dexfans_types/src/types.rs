@@ -1,4 +1,3 @@
-
 use candid::{CandidType, Decode, Encode, Principal};
 
 use serde::{Deserialize, Serialize};
@@ -26,11 +25,16 @@ pub enum Membership {
     Platinum,
 }
 
-
 #[derive(Serialize, Deserialize)]
 pub struct Pagination {
-  pub page: usize,
-  pub page_size: usize
+    pub page: usize,
+    pub page_size: usize,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct UpdateMembershipIC {
+    pub user: Principal,
+    pub membership: Membership,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
@@ -41,4 +45,11 @@ pub struct UserProfile {
     pub likes: Vec<PostId>,
     pub collects: Vec<PostId>,
     pub membership: Membership,
+}
+
+#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
+pub struct UpdateUserProfileArgsIC {
+    pub user_id: Principal,
+    pub username: String,
+    // pub membership: Membership,
 }

@@ -4,6 +4,8 @@ pub const ESSENTIALS_APP_NAME: &str = "dexfans !";
 pub const ESSENTIAL_POST_CANISTER_ID_CODE: u8 = 1;
 pub const ESSENTIAL_ASSET_CANISTER_ID_CODE: u8 = 2; 
 pub const ESSENTIAL_LEDGER_CANISTER_ID_CODE: u8 = 3; 
+pub const ESSENTIAL_FRONTEND_CANISTER_ID_CODE: u8 = 4; 
+
 
 
 // WARNINGS
@@ -11,6 +13,7 @@ pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous principal not allowed !";
 pub const WARNING_ACCOUNT_EXISTS: &str = "Principal ID is already registered with the platform";
 pub const WARNING_ADMIN_ONLY: &str = "Admin access required";
 pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already present";
+pub const WARNING_SAME_VALUE: &str = "User already have this membership";
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
 pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered with the platform";

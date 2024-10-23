@@ -18,17 +18,17 @@ pub(crate) struct UserInputArgs {
     pub cover_image: Option<String>,
 }
 
-#[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
-pub(crate) struct UserProfileInterCanister {
+#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
+pub(crate) struct UserProfileIC {
     pub user_id: Principal,
     pub username: String,
     pub posts: Vec<PostId>,
     pub likes: Vec<PostId>,
     pub collects: Vec<PostId>,
-    pub membership: Membership,
+    pub membership: dexfans_types::types::Membership,
 }
 
-impl ic_stable_structures::Storable for UserProfileInterCanister {
+impl ic_stable_structures::Storable for UserProfileIC {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
         ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
@@ -43,23 +43,22 @@ impl ic_stable_structures::Storable for UserProfileInterCanister {
         ic_stable_structures::storable::Bound::Unbounded;
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub enum PostType {
-    Free,
-    Silver,
-    Gold,
-    Platinum,
-    Paid,
-}
+// #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+// pub enum PostType {
+//     Free,
+//     Silver,
+//     Gold,
+//     Platinum,
+//     Paid,
+// }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-pub enum Membership {
-    Guest,
-    Silver,
-    Gold,
-    Platinum,
-}
-
+// #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+// pub enum Membership {
+//     Guest,
+//     Silver,
+//     Gold,
+//     Platinum,
+// }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub enum CanisterMeta {
@@ -67,13 +66,12 @@ pub enum CanisterMeta {
     ParentCanister,
 }
 
-
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
     pub asset_canister: Vec<Principal>,
     pub parent_canister: Principal,
     // pub post_canister: Principal
-    
+
     // more to be added later
 }
 

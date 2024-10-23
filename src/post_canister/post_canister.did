@@ -25,10 +25,12 @@ type Post = record {
 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
-type Result_1 = variant { Ok : UserProfileInterCanister; Err : text };
+type Result_1 = variant { Ok : UserProfileIC; Err : text };
 type Result_2 = variant { Ok : CanisterMetaData; Err : text };
 type Result_3 = variant { Ok : vec Post; Err : text };
-type UserProfileInterCanister = record {
+type UpdateMembershipIC = record { user : principal; membership : Membership };
+type UpdateUserProfileArgsIC = record { username : text; user_id : principal };
+type UserProfileIC = record {
   username : text;
   user_id : principal;
   likes : vec text;
@@ -37,10 +39,12 @@ type UserProfileInterCanister = record {
   collects : vec text;
 };
 service : (CanisterMetaData) -> {
-  admin_add_user_profile : (UserProfileInterCanister) -> (Result);
+  admin_add_user_profile : (UserProfileIC) -> (Result);
+  admin_update_membership : (UpdateMembershipIC) -> (Result);
+  admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
   comment_on_post : (nat, text, opt text) -> (Result);
   create_post : (CreatePostArgs) -> (Result);
-  debug_get_all_profile : () -> (vec UserProfileInterCanister) query;
+  debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_2) query;
   get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_3);

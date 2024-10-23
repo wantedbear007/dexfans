@@ -1,9 +1,9 @@
 use candid::Principal;
+use dexfans_types::types::Membership;
 
-use crate::{
-    utils::{functions::get_post_canister, guards::*},
-    with_write_state, STATE,
-};
+use crate::{utils::guards::*, STATE};
+
+use super::accounts_controller::ic_update_membership;
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
@@ -24,17 +24,18 @@ pub async fn api_create_account(
     ))
 }
 
+// update profile
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
-pub fn api_update_profile(
+pub async fn api_update_profile(
     // user_id: Principal,
     args: crate::models::types::UserInputArgs,
 ) -> Result<(), String> {
-    with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+    match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(val) => {
             state.account.insert(
                 ic_cdk::api::caller(),
                 crate::models::types::UserProfile {
-                    username: args.username,
+                    username: args.username.clone(),
                     bio: args.bio,
                     avatar: args.avatar,
                     cover_image: args.cover_image,
@@ -45,7 +46,62 @@ pub fn api_update_profile(
             Ok(())
         }
         None => return Err(String::from(dexfans_types::constants::ERROR_PROFILE_UPDATE)),
-    })
+    }) {
+        Ok(()) => {
+            match super::accounts_controller::ic_update_profile(
+                dexfans_types::types::UpdateUserProfileArgsIC {
+                    user_id: ic_cdk::api::caller(),
+                    username: args.username,
+                },
+            )
+            .await
+            {
+                Ok(()) => Ok(()),
+                Err(err) => {
+                    // add rollback if call fails
+
+                    return Err(err);
+                }
+            }
+        }
+        Err(err) => return Err(err),
+    }
+
+    // Ok(())
+}
+
+// update membership
+// TODO add frontend canister guard
+#[ic_cdk::update]
+pub async fn api_update_membership(args: dexfans_types::types::Membership) -> Result<(), String> {
+    // msp to save the current state of membership
+    let mut msp: Membership = Membership::Guest;
+    match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(mut val) => {
+            if &val.membership == &args {
+                return Err(String::from(dexfans_types::constants::WARNING_SAME_VALUE));
+            }
+            msp = val.membership;
+            val.membership = args.clone();
+            state.account.insert(ic_cdk::api::caller(), val);
+            Ok(())
+        }
+        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+    }) {
+        Ok(()) => {
+            // to update membership on post canister
+            match ic_update_membership(args).await {
+                Ok(()) => Ok(()),
+                Err(err) => {
+                    // roll back
+                    super::accounts_controller::rb_membership_update(msp)
+                        .expect(dexfans_types::constants::ERROR_FAILED_CALL);
+                    return Err(err);
+                }
+            }
+        }
+        Err(err) => return Err(err),
+    }
 }
 
 #[ic_cdk::update]

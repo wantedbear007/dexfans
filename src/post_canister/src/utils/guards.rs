@@ -13,6 +13,7 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
 
 // to allow parnet canister only (for intercanister calls)
 pub fn guard_parent_canister_only() -> Result<(), String> {
+    guard_prevent_anonymous()?;
     with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
             if val.parent_canister == ic_cdk::api::caller() {
@@ -28,3 +29,5 @@ pub fn guard_parent_canister_only() -> Result<(), String> {
         }
     })
 }
+
+

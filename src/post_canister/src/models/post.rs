@@ -89,14 +89,12 @@
 //         ic_stable_structures::storable::Bound::Unbounded;
 // }
 
-
 use std::borrow::Cow;
 
+use crate::models::types::{CommentId, Cycles, PostId, TimestampMillis};
 use candid::{CandidType, Decode, Encode, Principal};
 use ic_stable_structures::Storable;
 use serde::{Deserialize, Serialize};
-use crate::models::types::{PostId, TimestampMillis, PostType, CommentId, Cycles};
-
 
 #[derive(Serialize, Deserialize, Debug, Clone, CandidType, PartialEq)]
 pub struct CyclesTopup {
@@ -104,34 +102,29 @@ pub struct CyclesTopup {
     pub amount: Cycles,
 }
 
-
-#[derive(Serialize, Deserialize, Debug, Clone, CandidType)]
+#[derive(Serialize, Deserialize, Clone, CandidType)]
 pub struct CreatePostArgs {
     pub content: String,
     pub image: Option<String>,
     pub video: Option<String>,
-    pub post_type: PostType,
+    pub post_type: dexfans_types::types::PostType,
     pub price: Option<u8>,
 }
 
-
-
-
-#[derive(Serialize, Deserialize, Debug, Clone, CandidType)]
+#[derive(Serialize, Deserialize, Clone, CandidType)]
 pub struct Post {
     pub post_id: PostId,
     pub content: String,
     pub image: Option<String>,
     pub video: Option<String>,
-    pub post_type: PostType,
-    pub price: Option<u8>,  // Has a value only if post_type is Paid
+    pub post_type: dexfans_types::types::PostType,
+    pub price: Option<u8>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
     pub comments: Vec<CommentId>,
     pub creator_id: Principal,
     pub created_at: TimestampMillis,
 }
-
 
 impl Storable for Post {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -142,5 +135,6 @@ impl Storable for Post {
         Decode!(bytes.as_ref(), Self).unwrap()
     }
 
-    const BOUND: ic_stable_structures::storable::Bound = ic_stable_structures::storable::Bound::Unbounded;
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
 }
