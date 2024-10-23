@@ -1,6 +1,6 @@
 
 BIO="hello from suraj"
-USERNAME="wantedbear006"
+USERNAME="prataptech"
 COVER_IMAGE="1"
 AVATAR="1"
 
