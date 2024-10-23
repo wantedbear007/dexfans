@@ -24,4 +24,4 @@ dfx canister call asset_handler admin_update_bucket "(
 )"
 
 # to access file
-# http://ASSET_HANDLER_CANISTER_ID.localhost:4943/f/FILE_ID
+# http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943/f/0

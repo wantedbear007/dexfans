@@ -6,9 +6,9 @@ set -e
 # dfx identity use Bhanu
 CONTROLLER01=$(dfx identity get-principal --identity default)
 
-dfx deps init
-dfx deps deploy 
-dfx deps pull
+# dfx deps init
+# dfx deps deploy 
+# dfx deps pull
 # for creating canisters IDS
 dfx canister create icp_ledger_canister
 dfx canister create asset_handler

@@ -30,6 +30,14 @@ type Result_2 = variant { Ok : UserProfileIC; Err : text };
 type Result_3 = variant { Ok : CanisterMetaData; Err : text };
 type Result_4 = variant { Ok : vec Post; Err : text };
 type UpdateMembershipIC = record { user : principal; membership : Membership };
+type UpdatePostArgs = record {
+  id : nat;
+  content : text;
+  post_type : PostType;
+  video : opt text;
+  image : opt text;
+  price : opt nat8;
+};
 type UpdateUserProfileArgsIC = record { username : text; user_id : principal };
 type UserProfileIC = record {
   username : text;
@@ -44,6 +52,7 @@ service : (CanisterMetaData) -> {
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
   api_create_new_post : (CreatePostArgs) -> (Result_1);
+  api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_2) query;
   get_canister_meta_data : () -> (Result_3) query;
