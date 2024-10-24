@@ -46,3 +46,72 @@ pub(super) fn controller_update_post(
     })
 }
 
+
+//to delete post
+pub(super) fn controller_delete_post(post_id: u128) -> Result<(), String> {
+    crate::with_write_state(|state| {
+        if state.posts.remove(&post_id).is_some() {
+            Ok(())
+        } else {
+            Err(String::from(dexfans_types::constants::ERROR_POST_NOT_EXIST))
+        }
+    })
+}
+
+
+
+pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String> {
+    let caller = ic_cdk::api::caller();
+
+    crate::with_write_state(|state| {
+        if let Some(mut post) = state.posts.remove(&post_id) {
+            let is_liked = post.likes.contains(&caller);
+
+            if is_liked {
+                post.likes.retain(|&p| p != caller);
+            } else {
+                post.likes.push(caller);
+            }
+
+            state.posts.insert(post_id, post); 
+            Ok(!is_liked) 
+        } else {
+            Err("Post not found.".to_string())
+        }
+    })
+}
+
+
+
+
+pub(super) fn controller_comment_on_post(
+    post_id: u128,
+    content: String,
+    image: Option<String>,
+) -> Result<(), String> {
+    let caller = ic_cdk::api::caller();
+
+    crate::with_write_state(|state| {
+        if let Some(mut post) = state.posts.remove(&post_id) {
+            let comment_id = state.comment_counter + 1;
+            state.comment_counter = comment_id;
+            
+            let now_ms = ic_cdk::api::time() / 1_000_000;
+            let new_comment = crate::models::comment::Comment {
+                comment_id,
+                content,
+                image,
+                creator_id: caller, // Set the creator ID to the caller
+                created_at: now_ms,
+            };
+
+            state.comments.insert(comment_id, new_comment);
+            post.comments.push(comment_id); // Add the new comment ID to the post
+
+            state.posts.insert(post_id, post); // Reinsert the updated post
+            Ok(())
+        } else {
+            Err("Post not found.".to_string())
+        }
+    })
+}

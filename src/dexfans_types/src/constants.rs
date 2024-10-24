@@ -31,6 +31,7 @@ pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
 pub const SUCCESS_POST_CREATED: &str = "Post successfully created";
 pub const SUCESSS_POST_UPDATED: &str = "Post updated successfully";
+pub const SUCCESS_POST_DELETED: &str = "Post deleted successfully";
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;

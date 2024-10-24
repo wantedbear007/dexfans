@@ -1,6 +1,6 @@
 use crate::utils::guards::*;
 
-use super::post_controller::controller_update_post;
+use super::post_controller::{controller_comment_on_post, controller_delete_post, controller_like_unlike_post, controller_update_post};
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_create_new_post(
@@ -28,3 +28,39 @@ pub(self) async fn api_update_post(
 // pending apis
 // delete post
 // 
+
+
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub async fn api_delete_post(
+    post_id: u128,
+) -> Result<String, String> {
+    controller_delete_post(post_id).map_err(|err| format!("{}", err))?;
+    Ok(String::from(dexfans_types::constants::SUCCESS_POST_DELETED))
+}
+
+
+
+
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub async fn api_like_unlike_post(
+    post_id: u128,
+) -> Result<String, String> {
+    let is_liked = controller_like_unlike_post(post_id).map_err(|err| format!("{}", err))?;
+    let action = if is_liked { "liked" } else { "unliked" };
+    Ok(format!("Post successfully {}", action))
+}
+
+
+
+
+
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn api_comment_on_post(
+    post_id: u128,
+    content: String,
+    image: Option<String>,
+) -> Result<String, String> {
+    controller_comment_on_post(post_id, content, image)
+        .map_err(|err| format!("{}", err))?; 
+    Ok(String::from("Comment added successfully"))
+}
