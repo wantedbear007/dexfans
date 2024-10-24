@@ -60,3 +60,10 @@ pub struct SubscribeAccountIC {
     pub subscribed_to: Principal,
     pub subscribed_by: Principal
 }
+
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct UnsubscribeAccountIC {
+    pub unsubscribed_to: Principal,
+    pub unsubscribed_by: Principal
+}
