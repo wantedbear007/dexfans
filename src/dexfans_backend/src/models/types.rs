@@ -71,7 +71,7 @@ impl Default for UserProfileInterCanister {
             posts: Vec::new(),
             likes: Vec::new(),
             collects: Vec::new(),
-            membership: dexfans_types::types::Membership::Gold,
+            membership: dexfans_types::types::Membership::Guest,
         }
     }
 }

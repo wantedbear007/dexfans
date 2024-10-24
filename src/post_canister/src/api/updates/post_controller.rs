@@ -31,7 +31,6 @@ pub(super) async fn controller_create_post(args: crate::CreatePostArgs) -> Resul
 
 // to update post
 pub(super) fn controller_update_post(
-    // post_id: &u128,
     args: crate::models::post::UpdatePostArgs,
 ) -> Result<(), String> {
     crate::with_write_state(|state| match state.posts.get(&args.id) {
@@ -46,5 +45,4 @@ pub(super) fn controller_update_post(
         None => return Err(String::from(dexfans_types::constants::ERROR_POST_NOT_EXIST)),
     })
 }
-
 

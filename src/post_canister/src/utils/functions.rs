@@ -1,6 +1,8 @@
+use std::path::Prefix;
+
 use sha2::Digest;
 
-use crate::with_write_state;
+use crate::{with_read_state, with_write_state};
 
 // function to get uuid
 pub async fn commons_get_uuid() -> String {
@@ -28,6 +30,17 @@ pub fn utils_get_new_post_id() -> u128 {
 pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => Ok(val),
+        None => {
+            return Err(String::from(
+                dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+            ))
+        }
+    })
+}
+
+pub fn get_parent_canister() -> Result<candid::Principal, String> {
+    with_read_state(|state| match state.canister_meta_data.get(&0) {
+        Some(val) => Ok(val.parent_canister),
         None => {
             return Err(String::from(
                 dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,

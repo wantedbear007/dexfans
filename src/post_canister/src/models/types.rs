@@ -70,6 +70,7 @@ pub enum CanisterMeta {
 pub struct CanisterMetaData {
     pub asset_canister: Vec<Principal>,
     pub parent_canister: Principal,
+    // Todo add user data at instavce 
     // pub post_canister: Principal
 
     // more to be added later

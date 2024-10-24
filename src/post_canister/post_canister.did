@@ -53,6 +53,7 @@ service : (CanisterMetaData) -> {
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
   api_create_new_post : (CreatePostArgs) -> (Result_1);
   api_update_post : (UpdatePostArgs) -> (Result_1);
+  controller_subscribe : (principal) -> (Result);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_2) query;
   get_canister_meta_data : () -> (Result_3) query;

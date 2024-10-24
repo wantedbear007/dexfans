@@ -1,8 +1,9 @@
-use crate::with_write_state;
-
+use crate::utils::guards::*;
 // to add subscribers
+// add post canister guard
+#[ic_cdk::update(guard = guard_post_canister_exclusive)]
 pub fn ic_subscribe_account(args: dexfans_types::types::SubscribeAccountIC) -> Result<(), String> {
-    with_write_state(|state| {
+    crate::with_write_state(|state| {
         let mut subscribed_by = state
             .account
             .get(&args.subscribed_by)

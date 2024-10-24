@@ -25,6 +25,7 @@ pub const ERROR_DECODE_FAILED: &str = "Failed to decode data";
 pub const ERROR_FAILED_INTER_CANISTER: &str = "Failed to perform intercanister call";
 pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
+pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
