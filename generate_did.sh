@@ -1,6 +1,6 @@
-cargo build --release --target wasm32-unknown-unknown --package dexfans_backend
+cargo build --release --target wasm32-unknown-unknown --package index_canister
 
-candid-extractor target/wasm32-unknown-unknown/release/dexfans_backend.wasm >src/dexfans_backend/dexfans_backend.did
+candid-extractor target/wasm32-unknown-unknown/release/index_canister.wasm >src/index_canister/index_canister.did
 
 cargo build --release --target wasm32-unknown-unknown --package post_canister
 

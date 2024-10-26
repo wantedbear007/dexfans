@@ -2,13 +2,13 @@
 
 # Configs
 # local rust canisters 
-# canisters=("dexfans_backend" "post_canister")
+# canisters=("index_canister" "post_canister")
 
 
 # chmod 777 ./pratap_scripts/main.sh
 # ./pratap_scripts/main.sh $canisters
 
-canisters=("post_canister" "dexfans_backend")
+canisters=("post_canister" "index_canister")
 
 ./generate_did.sh
 # Define the path to the script

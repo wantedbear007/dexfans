@@ -6,7 +6,7 @@
 set -e 
 
 
-canisters=("post_canister" "dexfans_backend")
+canisters=("post_canister" "index_canister")
 frontend_canister=("")
 
 

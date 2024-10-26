@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use candid::{CandidType, Decode, Encode, Principal};
+use candid::{CandidType, Principal};
 
 use serde::{Deserialize, Serialize};
 

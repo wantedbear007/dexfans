@@ -1,2 +1,2 @@
-RES=$(dfx canister call dexfans_backend api_get_my_profile)
+RES=$(dfx canister call index_canister api_get_my_profile)
 echo $RES

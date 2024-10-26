@@ -1,5 +1,5 @@
 [package]
-name = "dexfans_backend"
+name = "index_canister"
 version = "0.1.0"
 edition = "2021"
 

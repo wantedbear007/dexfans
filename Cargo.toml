@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "src/dexfans_backend","src/post_canister", "src/ic_asset_handler/ic_oss_bucket", "src/ic_asset_handler/ic_oss_types", "src/dexfans_types",
+    "src/index_canister","src/post_canister", "src/ic_asset_handler/ic_oss_bucket", "src/ic_asset_handler/ic_oss_types", "src/dexfans_types",
 ]
 resolver = "2"
 

@@ -292,21 +292,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dexfans_backend"
-version = "0.1.0"
-dependencies = [
- "candid",
- "ciborium",
- "dexfans_types",
- "ic-cdk 0.16.0",
- "ic-stable-structures",
- "kaires",
- "serde",
- "serde_bytes",
- "serde_json",
-]
-
-[[package]]
 name = "dexfans_types"
 version = "0.9.3"
 dependencies = [
@@ -736,6 +721,21 @@ checksum = "634d9b1461af396cad843f47fdba5597a4f9e6ddd4bfb6ff5d85028c25cb12f6"
 dependencies = [
  "unicode-bidi",
  "unicode-normalization",
+]
+
+[[package]]
+name = "index_canister"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ciborium",
+ "dexfans_types",
+ "ic-cdk 0.16.0",
+ "ic-stable-structures",
+ "kaires",
+ "serde",
+ "serde_bytes",
+ "serde_json",
 ]
 
 [[package]]

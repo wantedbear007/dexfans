@@ -1,9 +1,9 @@
 {
   "dfx": "0.23.0",
   "canisters": {
-    "dexfans_backend": {
-      "candid": "src/dexfans_backend/dexfans_backend.did",
-      "package": "dexfans_backend",
+    "index_canister": {
+      "candid": "src/index_canister/index_canister.did",
+      "package": "index_canister",
       "type": "rust"
     },
     "internet_identity": {

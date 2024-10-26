@@ -4,7 +4,7 @@ USERNAME="prataptech"
 COVER_IMAGE="1"
 AVATAR="1"
 
-RES=$(dfx canister call dexfans_backend api_update_profile "(
+RES=$(dfx canister call index_canister api_update_profile "(
   record {
     bio = opt \"$BIO\";
     username = \"$USERNAME\";

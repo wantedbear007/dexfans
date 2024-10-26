@@ -13,18 +13,18 @@ CONTROLLER01=$(dfx identity get-principal --identity default)
 dfx canister create icp_ledger_canister
 dfx canister create asset_handler
 dfx canister create post_canister
-dfx canister create dexfans_backend
+dfx canister create index_canister
 
 # for compiling canisters
 dfx build icp_ledger_canister
 dfx build asset_handler
 dfx build post_canister
-dfx build dexfans_backend
+dfx build index_canister
 
 # Canister IDS
 LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
 IC_ASSET_CANISTER=$(dfx canister id asset_handler)
-DEXFANS_BACKEND=$(dfx canister id dexfans_backend)
+INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
 FRONTEND_CANISTER=$(dfx canister id post_canister)
 
@@ -59,7 +59,7 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 
 
 
-dfx deploy dexfans_backend --argument "( record {
+dfx deploy index_canister --argument "( record {
     payment_recipient = principal \"${CONTROLLER01}\";
     controllers = vec {
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
@@ -84,31 +84,27 @@ dfx deploy post_canister --argument "(
     };
     canister_ids = vec {
       record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
+      record { \"index_canister\"; principal \"${INDEX_CANISTER}\" };
+
     };
     accounts = vec {
     
-  record {
-        username = \"bhanuprata\";
-        user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
-        membership = variant { Guest };
-       
-      };
+ 
     };
   },
 )"
 
 
 
+# FOR TESTING INIT ARGS OF POST CANISTER
+ # record {
+  #       username = \"bhanuprata\";
+  #       user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
+  #       membership = variant { Guest };
+       
+  #     };
 
 dfx deploy 
 
 
 
-  # record {
-  #       username = \"bhanuprata\";
-  #       user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
-  #       likes = vec { 1 : nat };
-  #       membership = variant { Guest };
-  #       posts = vec {};
-  #       collects = vec {};
-  #     };
