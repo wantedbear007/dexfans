@@ -5,6 +5,7 @@ use super::post_controller::{
     controller_update_post,
 };
 
+
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_create_new_post(
     args: crate::models::post::CreatePostArgs,

@@ -2,11 +2,11 @@
 pub const ESSENTIALS_APP_NAME: &str = "dexfans !";
 // CANISTER ID KEYs
 pub const ESSENTIAL_POST_CANISTER_ID_CODE: u8 = 1;
-pub const ESSENTIAL_ASSET_CANISTER_ID_CODE: u8 = 2; 
-pub const ESSENTIAL_LEDGER_CANISTER_ID_CODE: u8 = 3; 
-pub const ESSENTIAL_FRONTEND_CANISTER_ID_CODE: u8 = 4; 
-pub const ESSENTIAL_NOTIFICATION_EXPIRING:  u64 = 24 * 60 * 60 * 1_000_000_000; // 1 day 
-
+pub const ESSENTIAL_ASSET_CANISTER_ID_CODE: u8 = 2;
+pub const ESSENTIAL_LEDGER_CANISTER_ID_CODE: u8 = 3;
+pub const ESSENTIAL_FRONTEND_CANISTER_ID_CODE: u8 = 4;
+pub const ESSENTIAL_NOTIFICATION_EXPIRING: u64 = 24 * 60 * 60 * 1_000_000_000; // 1 day
+pub const ESSENTIAL_POST_PARENT_CANISTER: &str = "parent_id";
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous principal not allowed !";
@@ -29,7 +29,6 @@ pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 
-
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
 pub const SUCCESS_POST_CREATED: &str = "Post successfully created";
@@ -38,6 +37,3 @@ pub const SUCCESS_POST_DELETED: &str = "Post deleted successfully";
 
 // storable value sizes
 pub const STORABLE_USER_MAX_VALUE_SIZE: u32 = 600;
-
-
-

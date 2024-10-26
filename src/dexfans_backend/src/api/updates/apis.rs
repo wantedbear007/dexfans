@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use candid::Principal;
 use dexfans_types::types::Membership;
 
@@ -259,6 +257,13 @@ pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> R
     })
 }
 
+// delete this
+#[ic_cdk::query]
+pub fn init_lol(
+    args: crate::models::types::UserProfileInterCanister,
+) -> crate::models::types::UserProfileInterCanister {
+    args
+}
 
 // TODO COMPLETE BELOW
 // // notify new subscriber

@@ -16,7 +16,9 @@ pub fn guard_parent_canister_only() -> Result<(), String> {
     guard_prevent_anonymous()?;
     with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
-            if val.parent_canister == ic_cdk::api::caller() {
+            if val.canister_ids[dexfans_types::constants::ESSENTIAL_POST_PARENT_CANISTER]
+                == ic_cdk::api::caller()
+            {
                 return Ok(());
             } else {
                 return Err(String::from(dexfans_types::constants::WARNING_ADMIN_ONLY));
@@ -29,5 +31,3 @@ pub fn guard_parent_canister_only() -> Result<(), String> {
         }
     })
 }
-
-

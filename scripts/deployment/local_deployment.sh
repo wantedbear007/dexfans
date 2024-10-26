@@ -70,20 +70,45 @@ dfx deploy dexfans_backend --argument "( record {
       record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };
-      record { \"frontend_canister\"; principal \"${FRONTEND_CANISTER}\" };
     };
   }
 )"
 
 
-
-# deploy post canisters 
-dfx deploy post_canister --argument "( record {
-      asset_canister =  vec { principal \"${IC_ASSET_CANISTER}\" };
-      parent_canister = principal \"${DEXFANS_BACKEND}\";
-  }
+dfx deploy post_canister --argument "(
+  record {
+    controllers = vec {
+      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
+      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
+      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
+    };
+    canister_ids = vec {
+      record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
+    };
+    accounts = vec {
+    
+  record {
+        username = \"bhanuprata\";
+        user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
+        membership = variant { Guest };
+       
+      };
+    };
+  },
 )"
+
+
+
 
 dfx deploy 
 
-# (vec { record { "hello"; "world" } })
+
+
+  # record {
+  #       username = \"bhanuprata\";
+  #       user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
+  #       likes = vec { 1 : nat };
+  #       membership = variant { Guest };
+  #       posts = vec {};
+  #       collects = vec {};
+  #     };

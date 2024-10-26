@@ -68,6 +68,14 @@ type UserProfile = record {
   all_post_canisters : vec principal;
   avatar : opt text;
 };
+type UserProfileInterCanister = record {
+  username : text;
+  user_id : principal;
+  likes : vec nat;
+  membership : Membership;
+  posts : vec nat;
+  collects : vec nat;
+};
 service : (DexFansCanisterInitArgs) -> {
   admin_add_controller : (principal) -> (Result);
   admin_remove_controller : (principal) -> (Result);
@@ -90,6 +98,7 @@ service : (DexFansCanisterInitArgs) -> {
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);
   ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
   ic_update_membership : (Membership) -> (Result);
+  init_lol : (UserProfileInterCanister) -> (UserProfileInterCanister) query;
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);
   notify_subscribers_newpost : () -> (Result);

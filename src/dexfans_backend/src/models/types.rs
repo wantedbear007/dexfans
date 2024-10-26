@@ -1,11 +1,11 @@
-use std::{borrow::Cow, path::PrefixComponent};
+use std::borrow::Cow;
 
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
 // pub type CanisterId = Principal;
-pub type CommentId = u128;
-pub type Cycles = u128;
+// pub type CommentId = u128;
+// pub type Cycles = u128;
 pub type PostId = u128;
 pub type TimestampMillis = u64;
 

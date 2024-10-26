@@ -42,9 +42,9 @@ pub struct UpdateMembershipIC {
 pub struct UserProfile {
     pub user_id: Principal,
     pub username: String,
-    pub posts: Vec<PostId>,
-    pub likes: Vec<PostId>,
-    pub collects: Vec<PostId>,
+    // pub posts: Vec<PostId>,
+    // pub likes: Vec<PostId>,
+    // pub collects: Vec<PostId>,
     pub membership: Membership,
 }
 
@@ -66,7 +66,6 @@ pub struct UnsubscribeAccountIC {
     pub unsubscribed_to: Principal,
     pub unsubscribed_by: Principal,
 }
-
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct NotificationBody {
@@ -90,13 +89,19 @@ pub enum NotificationType {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct LikeNotificationArgs {
     pub post_url: String,
-    pub post_owner: Principal
+    pub post_owner: Principal,
 }
-
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct CommentNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal,
-    pub description: String
+    pub description: String,
+}
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct PostCanisterInitArgs {
+    pub accounts: Vec<UserProfile>,
+    pub canister_ids: std::collections::HashMap<String, candid::Principal>,
+    pub controllers: std::collections::HashSet<Principal>,
 }

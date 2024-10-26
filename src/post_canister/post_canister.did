@@ -1,6 +1,6 @@
 type CanisterMetaData = record {
-  parent_canister : principal;
-  asset_canister : vec principal;
+  controllers : vec principal;
+  canister_ids : vec record { text; principal };
 };
 type CreatePostArgs = record {
   content : text;
@@ -23,6 +23,11 @@ type Post = record {
   comments : vec nat;
   price : opt nat8;
 };
+type PostCanisterInitArgs = record {
+  controllers : vec principal;
+  canister_ids : vec record { text; principal };
+  accounts : vec UserProfile;
+};
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
@@ -39,6 +44,11 @@ type UpdatePostArgs = record {
   price : opt nat8;
 };
 type UpdateUserProfileArgsIC = record { username : text; user_id : principal };
+type UserProfile = record {
+  username : text;
+  user_id : principal;
+  membership : Membership;
+};
 type UserProfileIC = record {
   username : text;
   user_id : principal;
@@ -47,7 +57,7 @@ type UserProfileIC = record {
   posts : vec nat;
   collects : vec nat;
 };
-service : (CanisterMetaData) -> {
+service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
@@ -60,6 +70,7 @@ service : (CanisterMetaData) -> {
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_2) query;
+  get_all_controllers : () -> (vec principal) query;
   get_canister_meta_data : () -> (Result_3) query;
   get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_4);
   get_post_by_id : (nat) -> (opt Post) query;

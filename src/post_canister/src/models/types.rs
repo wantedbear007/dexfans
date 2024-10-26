@@ -4,7 +4,7 @@ use candid::{CandidType, Decode, Encode, Principal};
 
 use serde::{Deserialize, Serialize};
 
-pub type CanisterId = Principal;
+// pub type CanisterId = Principal;
 pub type CommentId = u128;
 pub type Cycles = u128;
 pub type PostId = u128;
@@ -26,6 +26,19 @@ pub(crate) struct UserProfileIC {
     pub likes: Vec<PostId>,
     pub collects: Vec<PostId>,
     pub membership: dexfans_types::types::Membership,
+}
+
+impl Default for UserProfileIC {
+    fn default() -> Self {
+        Self {
+            user_id: candid::Principal::anonymous(),
+            username: String::from(""),
+            posts: Vec::new(),
+            likes: Vec::new(),
+            collects: Vec::new(),
+            membership: dexfans_types::types::Membership::Guest,
+        }
+    }
 }
 
 impl ic_stable_structures::Storable for UserProfileIC {
@@ -68,23 +81,31 @@ pub enum CanisterMeta {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
-    pub asset_canister: Vec<Principal>,
-    pub parent_canister: Principal,
-    // Todo add user data at instavce 
-    // pub post_canister: Principal
-
-    // more to be added later
+    pub canister_ids: std::collections::HashMap<String, candid::Principal>,
+    pub controllers: std::collections::HashSet<Principal>,
 }
 
 impl ic_stable_structures::Storable for CanisterMetaData {
     fn to_bytes(&self) -> Cow<[u8]> {
-        Cow::Owned(Encode!(self).unwrap())
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
     }
 
-    fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        Decode!(bytes.as_ref(), Self).unwrap()
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =
         ic_stable_structures::storable::Bound::Unbounded;
+    // fn to_bytes(&self) -> Cow<[u8]> {
+    //     Cow::Owned(Encode!(self).unwrap())
+    // }
+
+    // fn from_bytes(bytes: Cow<[u8]>) -> Self {
+    //     Decode!(bytes.as_ref(), Self).unwrap()
+    // }
+
+    // const BOUND: ic_stable_structures::storable::Bound =
+    //     ic_stable_structures::storable::Bound::Unbounded;
 }
