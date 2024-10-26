@@ -4,6 +4,11 @@ type CanisterMetaData = record {
   all_post_canisters : vec principal;
   payment_recipient : principal;
 };
+type CommentNotificationArgs = record {
+  post_url : text;
+  post_owner : principal;
+  description : text;
+};
 type DexFansCanisterInitArgs = record {
   controllers : vec principal;
   canister_ids : vec record { text; principal };
@@ -85,6 +90,7 @@ service : (DexFansCanisterInitArgs) -> {
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);
   ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
   ic_update_membership : (Membership) -> (Result);
+  notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);
   notify_subscribers_newpost : () -> (Result);
 }

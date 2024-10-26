@@ -136,12 +136,12 @@ pub fn rb_membership_update(args: dexfans_types::types::Membership) -> Result<()
     })
 }
 
-// to create notification
-pub fn controller_create_notification(
-    args: crate::models::types::Notification,
-) -> Result<(), String> {
+// // to create notification
+// pub fn controller_create_notification(
+//     args: crate::models::types::Notification,
+// ) -> Result<(), String> {
 
     
 
-    Ok(())
-}
+//     Ok(())
+// }

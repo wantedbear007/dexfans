@@ -230,4 +230,61 @@ pub fn notify_likes(args: dexfans_types::types::LikeNotificationArgs) -> Result<
     })
 }
 
-// 
+// notify comments
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> Result<(), String> {
+    crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
+        Some(mut val) => {
+            val.notifications
+                .push(dexfans_types::types::NotificationBody {
+                    by: Some(ic_cdk::api::caller()),
+                    category: dexfans_types::types::NotificationType::NewComment,
+                    created_on: ic_cdk::api::time(),
+                    expiring_on: ic_cdk::api::time()
+                        + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                    description: None,
+                    title: format!(
+                        "{} commented on your post, {}{}",
+                        ic_cdk::api::caller(),
+                        args.description,
+                        args.post_url
+                    ),
+                });
+
+            state.notifications.insert(val.acc, val);
+
+            Ok(())
+        }
+        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+    })
+}
+
+
+// TODO COMPLETE BELOW
+// // notify new subscriber
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
+// pub fn notify_new_subscriber(id: candid::Principal) -> Result<(), String> {
+//     crate::with_write_state(|state| match state.notifications.get(&ic_cdk::api::caller()) {
+//         Some(mut val) => {
+//             val.notifications
+//                 .push(dexfans_types::types::NotificationBody {
+//                     by: Some(ic_cdk::api::caller()),
+//                     category: dexfans_types::types::NotificationType::NewComment,
+//                     created_on: ic_cdk::api::time(),
+//                     expiring_on: ic_cdk::api::time()
+//                         + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+//                     description: None,
+//                     title: format!(
+//                         "{} has subscribed you",
+//                         ic_cdk::api::,
+
+//                     ),
+//                 });
+
+//             state.notifications.insert(val.acc, val);
+
+//             Ok(())
+//         }
+//         None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+//     })
+// }

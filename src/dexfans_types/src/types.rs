@@ -92,3 +92,11 @@ pub struct LikeNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal
 }
+
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct CommentNotificationArgs {
+    pub post_url: String,
+    pub post_owner: Principal,
+    pub description: String
+}
