@@ -1,15 +1,10 @@
 use ic_stable_structures::StableBTreeMap;
 
-// use crate::models::{comment::Comment, post::Post, types::CommentId, user::UserProfile};
 
 use super::memory::StoreMemory;
 
 pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, crate::models::types::UserProfile, StoreMemory>,
-    // pub posts: StableBTreeMap<u128, Post, StoreMemory>,
-    // pub comments: StableBTreeMap<CommentId, Comment, StoreMemory>,
-    // pub post_counter: u128,
-    // pub comment_counter: u128,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
 }
 
@@ -17,10 +12,6 @@ impl ApplicationState {
     pub fn new() -> Self {
         Self {
             account: init_account_state(),
-            // posts: init_post_state(),
-            // comments: init_comment_state(),
-            // post_counter: 0,
-            // comment_counter: 0,
             canister_meta_data: init_canister_meta_data_state(),
         }
     }
