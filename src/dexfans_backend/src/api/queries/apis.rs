@@ -25,3 +25,14 @@ pub fn api_get_subscribers() -> std::collections::HashSet<candid::Principal> {
         None => std::collections::HashSet::new(),
     })
 }
+
+// TODO add guard
+#[ic_cdk::query]
+fn api_get_notifications() -> Vec<crate::NotificationBody> {
+    crate::with_read_state(
+        |state| match state.notifications.get(&ic_cdk::api::caller()) {
+            Some(noti) => noti.notifications,
+            None => Vec::new(),
+        },
+    )
+}

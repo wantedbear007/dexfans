@@ -42,6 +42,10 @@ pub async fn controller_create_account(
                         [&dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE],
                 },
             );
+
+            state
+                .notifications
+                .insert(ic_cdk::api::caller(), crate::Notification::default());
         }
 
         Ok(())
@@ -132,4 +136,12 @@ pub fn rb_membership_update(args: dexfans_types::types::Membership) -> Result<()
     })
 }
 
+// to create notification
+pub fn controller_create_notification(
+    args: crate::models::types::Notification,
+) -> Result<(), String> {
 
+    
+
+    Ok(())
+}

@@ -6,6 +6,7 @@ mod api;
 mod models;
 mod store;
 mod utils;
+use dexfans_types::types::*;
 
 #[ic_cdk::query]
 fn greet(name: String) -> String {

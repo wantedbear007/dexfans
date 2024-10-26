@@ -9,11 +9,27 @@ type DexFansCanisterInitArgs = record {
   canister_ids : vec record { text; principal };
   payment_recipient : principal;
 };
+type LikeNotificationArgs = record { post_url : text; post_owner : principal };
 type Membership = variant { Guest; Gold; Platinum; Silver };
+type NotificationBody = record {
+  by : opt principal;
+  title : text;
+  description : opt text;
+  created_on : nat64;
+  category : NotificationType;
+  expiring_on : nat64;
+};
+type NotificationType = variant {
+  NewComment;
+  NewLike;
+  NewPost;
+  NewSubscribingPost;
+  NewSubscriber;
+};
 type Result = variant { Ok; Err : text };
-type Result_1 = variant { Ok : text; Err : text };
-type Result_2 = variant { Ok : UserProfile; Err : text };
-type Result_3 = variant { Ok : principal; Err : text };
+type Result_1 = variant { Ok : principal; Err : text };
+type Result_2 = variant { Ok : text; Err : text };
+type Result_3 = variant { Ok : UserProfile; Err : text };
 type Result_4 = variant { Ok : CanisterMetaData; Err : text };
 type SubscribeAccountIC = record {
   subscribed_by : principal;
@@ -48,10 +64,13 @@ type UserProfile = record {
   avatar : opt text;
 };
 service : (DexFansCanisterInitArgs) -> {
-  add_controller : (principal) -> (Result);
+  admin_add_controller : (principal) -> (Result);
+  admin_remove_controller : (principal) -> (Result);
+  admin_set_post_canister : (principal) -> (Result_1);
   api_add_post_id_to_user : (principal, nat) -> (Result);
-  api_create_account : (UserInputArgs) -> (Result_1);
-  api_get_my_profile : () -> (Result_2) query;
+  api_create_account : (UserInputArgs) -> (Result_2);
+  api_get_my_profile : () -> (Result_3) query;
+  api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec principal) query;
   api_get_subscribers : () -> (vec principal) query;
   api_subscribe_account : (principal) -> (Result);
@@ -59,13 +78,13 @@ service : (DexFansCanisterInitArgs) -> {
   api_update_membership : (Membership) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
-  get_asset_canister : () -> (Result_3) query;
+  get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_4) query;
-  get_post_canister : () -> (Result_3) query;
+  get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);
   ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
   ic_update_membership : (Membership) -> (Result);
-  remove_controller : (principal) -> (Result);
-  set_post_canister : (principal) -> (Result_3);
+  notify_likes : (LikeNotificationArgs) -> (Result);
+  notify_subscribers_newpost : () -> (Result);
 }

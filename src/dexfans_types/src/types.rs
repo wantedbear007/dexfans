@@ -1,4 +1,4 @@
-use candid::{CandidType, Decode, Encode, Principal};
+use candid::{CandidType, Principal};
 
 use serde::{Deserialize, Serialize};
 
@@ -58,12 +58,37 @@ pub struct UpdateUserProfileArgsIC {
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct SubscribeAccountIC {
     pub subscribed_to: Principal,
-    pub subscribed_by: Principal
+    pub subscribed_by: Principal,
 }
-
 
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct UnsubscribeAccountIC {
     pub unsubscribed_to: Principal,
-    pub unsubscribed_by: Principal
+    pub unsubscribed_by: Principal,
+}
+
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct NotificationBody {
+    pub category: NotificationType,
+    pub description: Option<String>,
+    pub title: String,
+    pub created_on: TimestampMillis,
+    pub expiring_on: TimestampMillis,
+    pub by: Option<Principal>,
+}
+
+#[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
+pub enum NotificationType {
+    NewPost,
+    NewComment,
+    NewSubscriber,
+    NewLike,
+    NewSubscribingPost,
+}
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct LikeNotificationArgs {
+    pub post_url: String,
+    pub post_owner: Principal
 }

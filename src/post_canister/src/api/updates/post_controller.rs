@@ -19,6 +19,7 @@ pub(super) async fn controller_create_post(args: crate::CreatePostArgs) -> Resul
                     ..Default::default()
                 },
             );
+
             Ok(())
         }
         None => {
@@ -46,7 +47,6 @@ pub(super) fn controller_update_post(
     })
 }
 
-
 //to delete post
 pub(super) fn controller_delete_post(post_id: u128) -> Result<(), String> {
     crate::with_write_state(|state| {
@@ -57,8 +57,6 @@ pub(super) fn controller_delete_post(post_id: u128) -> Result<(), String> {
         }
     })
 }
-
-
 
 pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String> {
     let caller = ic_cdk::api::caller();
@@ -73,16 +71,13 @@ pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String>
                 post.likes.push(caller);
             }
 
-            state.posts.insert(post_id, post); 
-            Ok(!is_liked) 
+            state.posts.insert(post_id, post);
+            Ok(!is_liked)
         } else {
             Err("Post not found.".to_string())
         }
     })
 }
-
-
-
 
 pub(super) fn controller_comment_on_post(
     post_id: u128,
@@ -95,7 +90,7 @@ pub(super) fn controller_comment_on_post(
         if let Some(mut post) = state.posts.remove(&post_id) {
             let comment_id = state.comment_counter + 1;
             state.comment_counter = comment_id;
-            
+
             let now_ms = ic_cdk::api::time() / 1_000_000;
             let new_comment = crate::models::comment::Comment {
                 comment_id,

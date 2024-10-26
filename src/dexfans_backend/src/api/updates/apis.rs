@@ -1,15 +1,17 @@
+use std::fmt::format;
+
 use candid::Principal;
 use dexfans_types::types::Membership;
 
 use crate::{utils::guards::*, STATE};
 
-use super::accounts_controller::ic_update_membership;
+use super::controllers::ic_update_membership;
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
     args: crate::models::types::UserInputArgs,
 ) -> Result<String, String> {
-    super::accounts_controller::controller_create_account(args)
+    super::controllers::controller_create_account(args)
         .await
         .map_err(|err| {
             format!(
@@ -48,7 +50,7 @@ pub async fn api_update_profile(
         None => return Err(String::from(dexfans_types::constants::ERROR_PROFILE_UPDATE)),
     }) {
         Ok(()) => {
-            match super::accounts_controller::ic_update_profile(
+            match super::controllers::ic_update_profile(
                 dexfans_types::types::UpdateUserProfileArgsIC {
                     user_id: ic_cdk::api::caller(),
                     username: args.username,
@@ -94,7 +96,7 @@ pub async fn api_update_membership(args: dexfans_types::types::Membership) -> Re
                 Ok(()) => Ok(()),
                 Err(err) => {
                     // roll back
-                    super::accounts_controller::rb_membership_update(msp)
+                    super::controllers::rb_membership_update(msp)
                         .expect(dexfans_types::constants::ERROR_FAILED_CALL);
                     return Err(err);
                 }
@@ -163,7 +165,69 @@ pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
     })
 }
 
+// to create notification for new post
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn notify_subscribers_newpost() -> Result<(), String> {
+    crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(acc) => {
+            for x in acc.subscribers.iter() {
+                match state.notifications.get(&x) {
+                    Some(mut usr) => {
+                        usr.notifications
+                            .push(dexfans_types::types::NotificationBody {
+                                by: None,
 
+                                category: dexfans_types::types::NotificationType::NewPost,
+                                created_on: ic_cdk::api::time(),
+                                expiring_on: ic_cdk::api::time()
+                                    + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                                description: None,
+                                title: format!("{} has recently posted", ic_cdk::api::caller()),
+                            });
 
-// subscribers
-// subscribed
+                        state.notifications.insert(usr.acc, usr);
+                    }
+                    None => {}
+                }
+            }
+
+            Ok(())
+        }
+        None => {
+            return Err(String::from(
+                dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+            ))
+        }
+    })
+}
+
+// likes notification
+// TODO add guard
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn notify_likes(args: dexfans_types::types::LikeNotificationArgs) -> Result<(), String> {
+    crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
+        Some(mut val) => {
+            val.notifications
+                .push(dexfans_types::types::NotificationBody {
+                    by: Some(ic_cdk::api::caller()),
+                    category: dexfans_types::types::NotificationType::NewLike,
+                    created_on: ic_cdk::api::time(),
+                    expiring_on: ic_cdk::api::time()
+                        + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                    description: None,
+                    title: format!(
+                        "{} liked your post {}",
+                        ic_cdk::api::caller(),
+                        args.post_url
+                    ),
+                });
+
+            state.notifications.insert(val.acc, val);
+
+            Ok(())
+        }
+        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+    })
+}
+
+// 

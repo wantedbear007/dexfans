@@ -1,11 +1,11 @@
 use ic_stable_structures::StableBTreeMap;
 
-
 use super::memory::StoreMemory;
 
 pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, crate::models::types::UserProfile, StoreMemory>,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
+    pub notifications: StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory>,
 }
 
 impl ApplicationState {
@@ -13,6 +13,7 @@ impl ApplicationState {
         Self {
             account: init_account_state(),
             canister_meta_data: init_canister_meta_data_state(),
+            notifications: init_notifications_state()
         }
     }
 
@@ -43,4 +44,9 @@ fn init_account_state(
 fn init_canister_meta_data_state(
 ) -> StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_canister_metadata_memory())
+}
+
+fn init_notifications_state(
+) -> StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory> {
+    StableBTreeMap::init(crate::store::memory::get_notification_data_memory())
 }

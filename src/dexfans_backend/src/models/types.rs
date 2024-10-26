@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, path::PrefixComponent};
 
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
@@ -45,12 +45,12 @@ pub(crate) struct UserProfile {
     pub cover_image: Option<String>,
     pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
     pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
-    pub posts: Vec<PostId>,          // Created posts
-    pub likes: Vec<PostId>,          // Liked posts
-    pub collects: Vec<PostId>,       // Collected posts
-    pub is_bot: bool,                // Is this user a bot?
-    pub membership: dexfans_types::types::Membership, // Membership level
-    pub created_at: TimestampMillis, // Timestamp when the user was created
+    pub posts: Vec<PostId>,                                // Created posts
+    pub likes: Vec<PostId>,                                // Liked posts
+    pub collects: Vec<PostId>,                             // Collected posts
+    pub is_bot: bool,                                      // Is this user a bot?
+    pub membership: dexfans_types::types::Membership,      // Membership level
+    pub created_at: TimestampMillis,                       // Timestamp when the user was created
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
@@ -61,6 +61,44 @@ pub(crate) struct UserProfileInterCanister {
     pub likes: Vec<PostId>,
     pub collects: Vec<PostId>,
     pub membership: dexfans_types::types::Membership,
+}
+
+// #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
+// pub(crate) enum NotificationType {
+//     NewPost,
+//     NewComment,
+//     NewSubscriber,
+//     NewLike,
+//     NewSubscribingPost,
+// }
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub(crate) struct Notification {
+    pub acc: candid::Principal,
+    pub notifications: Vec<dexfans_types::types::NotificationBody>,
+}
+
+impl Default for Notification {
+    fn default() -> Self {
+        Self {
+            notifications: Vec::new(),
+            acc: ic_cdk::api::caller(),
+        }
+    }
+}
+
+// #[derive(Clone, CandidType, Serialize, Deserialize)]
+// pub(crate) struct NotificationBody {
+//     pub category: NotificationType,
+//     pub description: Option<String>,
+//     pub title: String,
+//     pub created_on: TimestampMillis,
+//     pub expiring_on: TimestampMillis,
+// }
+
+#[derive(CandidType, Serialize, Deserialize, Clone)]
+pub(crate) struct NotifySubscribersArgs {
+    pub title_of_post: Option<String>,
 }
 
 impl Default for UserProfileInterCanister {
@@ -74,6 +112,21 @@ impl Default for UserProfileInterCanister {
             membership: dexfans_types::types::Membership::Guest,
         }
     }
+}
+
+impl ic_stable_structures::Storable for Notification {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
 }
 
 impl ic_stable_structures::Storable for UserProfileInterCanister {
