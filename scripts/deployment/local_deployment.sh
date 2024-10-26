@@ -65,8 +65,8 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 dfx deploy index_canister --argument "( record {
     payment_recipient = principal \"${BHANU}\";
     membership_plans = vec {
-      record { variant { Gold }; 12 : nat32 };
-      record { variant { Platinum }; 65 : nat32 };
+      record { variant { Gold }; 12 : nat64 };
+      record { variant { Platinum }; 65 : nat64 };
     };
     controllers = vec {
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";

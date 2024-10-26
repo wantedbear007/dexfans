@@ -181,11 +181,6 @@ pub fn controller_membership(args: core::types::Membership) -> Result<(), String
                 });
             }
 
-            // if &acc.membership
-
-            // if acc.membership_till <= 0 {
-            //     return Err(())
-            // }
             Ok(())
         }
         None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
