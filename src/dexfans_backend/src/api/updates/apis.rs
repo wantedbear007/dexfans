@@ -149,7 +149,7 @@ pub fn api_update_user_likes(
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
-    super::apis_canister::ic_subscribe_account(dexfans_types::types::SubscribeAccountIC {
+    super::apis_ic::ic_subscribe_account(dexfans_types::types::SubscribeAccountIC {
         subscribed_by: ic_cdk::api::caller(),
         subscribed_to: id,
     })
@@ -157,7 +157,7 @@ pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
-    super::apis_canister::ic_unsubscribe_account(dexfans_types::types::UnsubscribeAccountIC {
+    super::apis_ic::ic_unsubscribe_account(dexfans_types::types::UnsubscribeAccountIC {
         unsubscribed_by: ic_cdk::api::caller(),
         unsubscribed_to: id,
     })
