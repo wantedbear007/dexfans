@@ -32,8 +32,8 @@ pub async fn controller_create_account(
                     created_at: ic_cdk::api::time(),
                     is_bot: false,
                     membership: dexfans_types::types::Membership::Guest,
-                    subscribers: Vec::new(),
-                    subscribing: Vec::new(),
+                    subscribers: std::collections::HashSet::new(),
+                    subscribing: std::collections::HashSet::new(),
                     user_id: ic_cdk::api::caller(),
                     username: args.username.clone(),
                     asset_canister_id: canister_meta_data
@@ -131,3 +131,5 @@ pub fn rb_membership_update(args: dexfans_types::types::Membership) -> Result<()
         None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
     })
 }
+
+

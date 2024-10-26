@@ -43,8 +43,8 @@ pub(crate) struct UserProfile {
     pub avatar: Option<String>,
     pub asset_canister_id: Principal,
     pub cover_image: Option<String>,
-    pub subscribers: Vec<Principal>, // Subscribers for the user
-    pub subscribing: Vec<Principal>, // Users this user is subscribing to
+    pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
+    pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
     pub posts: Vec<PostId>,          // Created posts
     pub likes: Vec<PostId>,          // Liked posts
     pub collects: Vec<PostId>,       // Collected posts

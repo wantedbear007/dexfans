@@ -8,8 +8,8 @@ pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, crate::models::types::UserProfile, StoreMemory>,
     // pub posts: StableBTreeMap<u128, Post, StoreMemory>,
     // pub comments: StableBTreeMap<CommentId, Comment, StoreMemory>,
-    pub post_counter: u128,
-    pub comment_counter: u128,
+    // pub post_counter: u128,
+    // pub comment_counter: u128,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
 }
 
@@ -19,8 +19,8 @@ impl ApplicationState {
             account: init_account_state(),
             // posts: init_post_state(),
             // comments: init_comment_state(),
-            post_counter: 0,
-            comment_counter: 0,
+            // post_counter: 0,
+            // comment_counter: 0,
             canister_meta_data: init_canister_meta_data_state(),
         }
     }

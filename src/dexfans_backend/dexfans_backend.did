@@ -19,6 +19,10 @@ type SubscribeAccountIC = record {
   subscribed_by : principal;
   subscribed_to : principal;
 };
+type UnsubscribeAccountIC = record {
+  unsubscribed_by : principal;
+  unsubscribed_to : principal;
+};
 type UserInputArgs = record {
   bio : opt text;
   username : text;
@@ -48,6 +52,10 @@ service : (DexFansCanisterInitArgs) -> {
   api_add_post_id_to_user : (principal, nat) -> (Result);
   api_create_account : (UserInputArgs) -> (Result_1);
   api_get_my_profile : () -> (Result_2) query;
+  api_get_subscribed : () -> (vec principal) query;
+  api_get_subscribers : () -> (vec principal) query;
+  api_subscribe_account : (principal) -> (Result);
+  api_unsubscribe_account : (principal) -> (Result);
   api_update_membership : (Membership) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
@@ -56,6 +64,7 @@ service : (DexFansCanisterInitArgs) -> {
   get_post_canister : () -> (Result_3) query;
   greet : (text) -> (text) query;
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);
+  ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
   ic_update_membership : (Membership) -> (Result);
   remove_controller : (principal) -> (Result);
   set_post_canister : (principal) -> (Result_3);

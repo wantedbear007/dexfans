@@ -1,19 +1,13 @@
-use candid::Principal;
-
-use crate::with_read_state;
-
 // to subscribe
-// TODO add anonymos call
-#[ic_cdk::update]
-pub async fn controller_subscribe(to: candid::Principal) -> Result<(), String> {
+pub(super) async fn controller_subscribe(to: candid::Principal) -> Result<(), String> {
     let parent_canister_id = crate::utils::functions::get_parent_canister()
         .expect(dexfans_types::constants::ERROR_FAILED_CANISTER_DATA);
 
-    with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(_val) => {
             ic_cdk::spawn(async move {
-                
-                    let _ = kaires::call_inter_canister::<dexfans_types::types::SubscribeAccountIC, ()>(
+                let _ =
+                    kaires::call_inter_canister::<dexfans_types::types::SubscribeAccountIC, ()>(
                         "ic_subscribe_account",
                         dexfans_types::types::SubscribeAccountIC {
                             subscribed_by: ic_cdk::api::caller(),
@@ -37,36 +31,31 @@ pub async fn controller_subscribe(to: candid::Principal) -> Result<(), String> {
     })
 }
 
-
-
-
-#[ic_cdk::update]
-pub async fn controller_unsubscribe(to: candid::Principal) -> Result<(), String> {
+pub(super) async fn controller_unsubscribe(to: candid::Principal) -> Result<(), String> {
     let parent_canister_id = crate::utils::functions::get_parent_canister()
         .expect(dexfans_types::constants::ERROR_FAILED_CANISTER_DATA);
 
-    with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(_val) => {
             ic_cdk::spawn(async move {
-                let _ = kaires::call_inter_canister::<dexfans_types::types::UnsubscribeAccountIC, ()>(
-                    "ic_unsubscribe_account",
-                    dexfans_types::types::UnsubscribeAccountIC {
-                        unsubscribed_by: ic_cdk::api::caller(),
-                        unsubscribed_to: to,
-                    },
-                    parent_canister_id,
-                )
-                .await
-                .map_err(|err| format!("{}", err));
+                let _ =
+                    kaires::call_inter_canister::<dexfans_types::types::UnsubscribeAccountIC, ()>(
+                        "ic_unsubscribe_account",
+                        dexfans_types::types::UnsubscribeAccountIC {
+                            unsubscribed_by: ic_cdk::api::caller(),
+                            unsubscribed_to: to,
+                        },
+                        parent_canister_id,
+                    )
+                    .await
+                    .map_err(|err| format!("{}", err));
             });
 
             Ok(())
         }
-        None => {
-            Err(String::from(
-                dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-            ))
-        }
+        None => Err(String::from(
+            dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+        )),
     })
 }
 

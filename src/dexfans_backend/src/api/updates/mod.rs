@@ -1,3 +1,3 @@
-mod accounts_controller;
-pub(super) mod accounts_update_api;
-pub(super) mod canister_update;
+pub(super) mod accounts_controller;
+pub(super) mod apis;
+pub(super) mod apis_canister;

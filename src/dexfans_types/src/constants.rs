@@ -14,6 +14,8 @@ pub const WARNING_ACCOUNT_EXISTS: &str = "Principal ID is already registered wit
 pub const WARNING_ADMIN_ONLY: &str = "Admin access required";
 pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already present";
 pub const WARNING_SAME_VALUE: &str = "User already have this membership";
+pub const WARNING_ALERADY_EXIST: &str = "Already exist";
+
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
 pub const ERROR_ACCOUNT_NOT_REGISTERED: &str = "Principal id is not registered with the platform";
@@ -26,6 +28,7 @@ pub const ERROR_FAILED_INTER_CANISTER: &str = "Failed to perform intercanister c
 pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
+
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";

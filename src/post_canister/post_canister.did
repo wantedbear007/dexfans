@@ -51,9 +51,13 @@ service : (CanisterMetaData) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
+  api_comment_on_post : (nat, text, opt text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_1);
+  api_delete_post : (nat) -> (Result_1);
+  api_like_unlike_post : (nat) -> (Result_1);
+  api_subscribe_account : (principal) -> (Result);
+  api_unsubscribe_account : (principal) -> (Result);
   api_update_post : (UpdatePostArgs) -> (Result_1);
-  controller_subscribe : (principal) -> (Result);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_2) query;
   get_canister_meta_data : () -> (Result_3) query;
