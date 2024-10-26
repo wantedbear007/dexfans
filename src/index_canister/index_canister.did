@@ -33,9 +33,10 @@ type NotificationType = variant {
 };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
-type Result_2 = variant { Ok : text; Err : text };
-type Result_3 = variant { Ok : UserProfile; Err : text };
-type Result_4 = variant { Ok : CanisterMetaData; Err : text };
+type Result_2 = variant { Ok : nat; Err : text };
+type Result_3 = variant { Ok : text; Err : text };
+type Result_4 = variant { Ok : UserProfile; Err : text };
+type Result_5 = variant { Ok : CanisterMetaData; Err : text };
 type SubscribeAccountIC = record {
   subscribed_by : principal;
   subscribed_to : principal;
@@ -73,8 +74,9 @@ service : (DexFansCanisterInitArgs) -> {
   admin_remove_controller : (principal) -> (Result);
   admin_set_post_canister : (principal) -> (Result_1);
   api_add_post_id_to_user : (principal, nat) -> (Result);
-  api_create_account : (UserInputArgs) -> (Result_2);
-  api_get_my_profile : () -> (Result_3) query;
+  api_complete_payment : (nat64, principal) -> (Result_2);
+  api_create_account : (UserInputArgs) -> (Result_3);
+  api_get_my_profile : () -> (Result_4) query;
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec principal) query;
   api_get_subscribers : () -> (vec principal) query;
@@ -84,7 +86,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
   get_asset_canister : () -> (Result_1) query;
-  get_canister_meta_data : () -> (Result_4) query;
+  get_canister_meta_data : () -> (Result_5) query;
   get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);

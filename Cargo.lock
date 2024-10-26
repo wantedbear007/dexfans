@@ -732,6 +732,7 @@ dependencies = [
  "core",
  "ic-cdk 0.16.0",
  "ic-stable-structures",
+ "icrc-ledger-types",
  "kaires",
  "serde",
  "serde_bytes",

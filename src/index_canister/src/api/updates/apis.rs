@@ -1,4 +1,4 @@
-use candid::Principal;
+use candid::{Nat, Principal};
 use core::types::Membership;
 
 use crate::{utils::guards::*, STATE};
@@ -19,9 +19,7 @@ pub async fn api_create_account(
             )
         })?;
 
-    Ok(String::from(
-        core::constants::SUCCESS_ACCOUNT_CREATED,
-    ))
+    Ok(String::from(core::constants::SUCCESS_ACCOUNT_CREATED))
 }
 
 // update profile
@@ -48,12 +46,10 @@ pub async fn api_update_profile(
         None => return Err(String::from(core::constants::ERROR_PROFILE_UPDATE)),
     }) {
         Ok(()) => {
-            match super::controllers::ic_update_profile(
-                core::types::UpdateUserProfileArgsIC {
-                    user_id: ic_cdk::api::caller(),
-                    username: args.username,
-                },
-            )
+            match super::controllers::ic_update_profile(core::types::UpdateUserProfileArgsIC {
+                user_id: ic_cdk::api::caller(),
+                username: args.username,
+            })
             .await
             {
                 Ok(()) => Ok(()),
@@ -171,17 +167,16 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
             for x in acc.subscribers.iter() {
                 match state.notifications.get(&x) {
                     Some(mut usr) => {
-                        usr.notifications
-                            .push(core::types::NotificationBody {
-                                by: None,
+                        usr.notifications.push(core::types::NotificationBody {
+                            by: None,
 
-                                category: core::types::NotificationType::NewPost,
-                                created_on: ic_cdk::api::time(),
-                                expiring_on: ic_cdk::api::time()
-                                    + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                                description: None,
-                                title: format!("{} has recently posted", ic_cdk::api::caller()),
-                            });
+                            category: core::types::NotificationType::NewPost,
+                            created_on: ic_cdk::api::time(),
+                            expiring_on: ic_cdk::api::time()
+                                + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                            description: None,
+                            title: format!("{} has recently posted", ic_cdk::api::caller()),
+                        });
 
                         state.notifications.insert(usr.acc, usr);
                     }
@@ -191,11 +186,7 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
 
             Ok(())
         }
-        None => {
-            return Err(String::from(
-                core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-            ))
-        }
+        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
 
@@ -205,20 +196,18 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
 pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), String> {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
-            val.notifications
-                .push(core::types::NotificationBody {
-                    by: Some(ic_cdk::api::caller()),
-                    category: core::types::NotificationType::NewLike,
-                    created_on: ic_cdk::api::time(),
-                    expiring_on: ic_cdk::api::time()
-                        + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                    description: None,
-                    title: format!(
-                        "{} liked your post {}",
-                        ic_cdk::api::caller(),
-                        args.post_url
-                    ),
-                });
+            val.notifications.push(core::types::NotificationBody {
+                by: Some(ic_cdk::api::caller()),
+                category: core::types::NotificationType::NewLike,
+                created_on: ic_cdk::api::time(),
+                expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                description: None,
+                title: format!(
+                    "{} liked your post {}",
+                    ic_cdk::api::caller(),
+                    args.post_url
+                ),
+            });
 
             state.notifications.insert(val.acc, val);
 
@@ -233,21 +222,19 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
 pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(), String> {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
-            val.notifications
-                .push(core::types::NotificationBody {
-                    by: Some(ic_cdk::api::caller()),
-                    category: core::types::NotificationType::NewComment,
-                    created_on: ic_cdk::api::time(),
-                    expiring_on: ic_cdk::api::time()
-                        + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                    description: None,
-                    title: format!(
-                        "{} commented on your post, {}{}",
-                        ic_cdk::api::caller(),
-                        args.description,
-                        args.post_url
-                    ),
-                });
+            val.notifications.push(core::types::NotificationBody {
+                by: Some(ic_cdk::api::caller()),
+                category: core::types::NotificationType::NewComment,
+                created_on: ic_cdk::api::time(),
+                expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                description: None,
+                title: format!(
+                    "{} commented on your post, {}{}",
+                    ic_cdk::api::caller(),
+                    args.description,
+                    args.post_url
+                ),
+            });
 
             state.notifications.insert(val.acc, val);
 
@@ -255,6 +242,11 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
         }
         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
+}
+
+#[ic_cdk::update]
+pub async fn api_complete_payment(amt: u64, payer: candid::Principal) -> Result<Nat, String> {
+    super::payment_controller::icp_transfer_handler(amt, payer).await
 }
 
 // TODO COMPLETE BELOW

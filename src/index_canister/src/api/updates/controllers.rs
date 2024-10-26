@@ -136,12 +136,4 @@ pub fn rb_membership_update(args: core::types::Membership) -> Result<(), String>
     })
 }
 
-// // to create notification
-// pub fn controller_create_notification(
-//     args: crate::models::types::Notification,
-// ) -> Result<(), String> {
-
-    
-
-//     Ok(())
-// }
+// payment

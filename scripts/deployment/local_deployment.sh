@@ -4,7 +4,7 @@ set -e
 # Controller ids
 # dfx identity new Bhanu
 # dfx identity use Bhanu
-CONTROLLER01=$(dfx identity get-principal --identity default)
+BHANU=$(dfx identity get-principal --identity Bhanu)
 
 # dfx deps init
 # dfx deps deploy 
@@ -59,14 +59,18 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 
 
 
+# IMP: Review below warnings
+# Update code in /src/index_canister/src/lib.rs if below keys are changed 
+
 dfx deploy index_canister --argument "( record {
-    payment_recipient = principal \"${CONTROLLER01}\";
+    payment_recipient = principal \"${BHANU}\";
     controllers = vec {
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
     canister_ids = vec {
+    
       record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };

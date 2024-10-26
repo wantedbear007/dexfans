@@ -7,6 +7,7 @@ mod models;
 mod store;
 mod utils;
 use core::types::*;
+use candid::Nat;
 
 #[ic_cdk::query]
 fn greet(name: String) -> String {

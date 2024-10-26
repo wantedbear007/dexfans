@@ -28,6 +28,7 @@ pub const ERROR_FAILED_INTER_CANISTER: &str = "Failed to perform intercanister c
 pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
+pub const ERROR_PAYMENT_FAILED: &str = "ICP payment failed, try again or contact admin";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";

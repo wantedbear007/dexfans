@@ -18,3 +18,4 @@ serde = { workspace = true }
 ciborium = { workspace = true }
 core = { workspace = true }
 kaires ={ workspace = true}
+icrc-ledger-types = {workspace = true}
