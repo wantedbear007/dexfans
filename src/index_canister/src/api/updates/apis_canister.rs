@@ -22,7 +22,7 @@ pub fn admin_add_controller(id: candid::Principal) -> Result<(), String> {
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
@@ -45,7 +45,7 @@ pub fn admin_remove_controller(id: candid::Principal) -> Result<(), String> {
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
@@ -57,14 +57,14 @@ pub fn admin_set_post_canister(id: candid::Principal) -> Result<candid::Principa
             canister_meta_data.all_post_canisters.insert(id);
 
             canister_meta_data.canister_ids.insert(
-                dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
+                core::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
                 id,
             );
             state.canister_meta_data.insert(0, canister_meta_data);
 
             Ok(id)
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_CANISTER_ID)),
+        None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
 
@@ -74,7 +74,7 @@ pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData
         Some(val) => Ok(val),
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+                core::constants::ERROR_FAILED_CANISTER_DATA,
             ))
         }
     })

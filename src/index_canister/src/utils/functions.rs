@@ -2,9 +2,9 @@
 pub fn get_asset_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
-            Ok(val.canister_ids[&dexfans_types::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE])
+            Ok(val.canister_ids[&core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE])
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_CANISTER_ID)),
+        None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
 
@@ -12,9 +12,9 @@ pub fn get_asset_canister() -> Result<candid::Principal, String> {
 pub fn get_post_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
-            Ok(val.canister_ids[&dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE])
+            Ok(val.canister_ids[&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE])
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_CANISTER_ID)),
+        None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
 
@@ -37,7 +37,7 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
 
 //             Ok(())
 //         }
-//         None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
 //     })
 // }
 
@@ -60,7 +60,7 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
 
 //             Ok(())
 //         }
-//         None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
 //     })
 // }
 
@@ -72,14 +72,14 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
 //             canister_meta_data.all_post_canisters.insert(id);
 
 //             canister_meta_data.canister_ids.insert(
-//                 dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
+//                 core::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
 //                 id,
 //             );
 //             state.canister_meta_data.insert(0, canister_meta_data);
 
 //             Ok(id)
 //         }
-//         None => return Err(String::from(dexfans_types::constants::ERROR_CANISTER_ID)),
+//         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
 //     })
 // }
 
@@ -89,7 +89,7 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
 //         Some(val) => Ok(val),
 //         None => {
 //             return Err(String::from(
-//                 dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+//                 core::constants::ERROR_FAILED_CANISTER_DATA,
 //             ))
 //         }
 //     })

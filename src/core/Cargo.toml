@@ -1,5 +1,5 @@
 [package]
-name = "dexfans_types"
+name = "core"
 version.workspace = true
 edition.workspace = true
 keywords.workspace = true

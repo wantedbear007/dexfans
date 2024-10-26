@@ -1,21 +1,21 @@
 use crate::utils::guards::*;
 
 #[ic_cdk::update(guard = guard_post_canister_exclusive)]
-pub fn ic_subscribe_account(args: dexfans_types::types::SubscribeAccountIC) -> Result<(), String> {
+pub fn ic_subscribe_account(args: core::types::SubscribeAccountIC) -> Result<(), String> {
     // TODO add validation if user has already subscribed
     crate::with_write_state(|state| {
         let mut subscribed_by = state
             .account
             .get(&args.subscribed_by)
-            .expect(dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+            .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
         let mut subscribed_to = state
             .account
             .get(&args.subscribed_to)
-            .expect(dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+            .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
         if subscribed_by.subscribing.contains(&args.subscribed_to) {
             return Err(String::from(
-                dexfans_types::constants::WARNING_ALERADY_EXIST,
+                core::constants::WARNING_ALERADY_EXIST,
             ));
         }
 
@@ -34,18 +34,18 @@ pub fn ic_subscribe_account(args: dexfans_types::types::SubscribeAccountIC) -> R
 
 #[ic_cdk::update(guard = guard_post_canister_exclusive)]
 pub fn ic_unsubscribe_account(
-    args: dexfans_types::types::UnsubscribeAccountIC,
+    args: core::types::UnsubscribeAccountIC,
 ) -> Result<(), String> {
     crate::with_write_state(|state| {
         let mut unsubscribed_by = state
             .account
             .get(&args.unsubscribed_by)
-            .expect(dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+            .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
         let mut unsubscribed_to = state
             .account
             .get(&args.unsubscribed_to)
-            .expect(dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+            .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
         // Remove the unsubscribed_to from the unsubscribed_by's subscriptions
         unsubscribed_by

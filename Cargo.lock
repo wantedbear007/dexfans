@@ -184,6 +184,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
+name = "core"
+version = "0.9.3"
+dependencies = [
+ "candid",
+ "serde",
+]
+
+[[package]]
 name = "coset"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -289,14 +297,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4"
 dependencies = [
  "powerfmt",
-]
-
-[[package]]
-name = "dexfans_types"
-version = "0.9.3"
-dependencies = [
- "candid",
- "serde",
 ]
 
 [[package]]
@@ -729,7 +729,7 @@ version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
- "dexfans_types",
+ "core",
  "ic-cdk 0.16.0",
  "ic-stable-structures",
  "kaires",
@@ -905,7 +905,7 @@ version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
- "dexfans_types",
+ "core",
  "getrandom 0.2.15",
  "ic-cdk 0.16.0",
  "ic-stable-structures",

@@ -32,7 +32,7 @@ pub fn latest_posts(page: usize) -> Vec<Post> {
         let mut all_posts: Vec<Post> = app_state.get_all_posts();
         all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
-        let batch_pagination = dexfans_types::types::Pagination {
+        let batch_pagination = core::types::Pagination {
             page: page / 5,
             page_size: 50,
         };
@@ -45,7 +45,7 @@ pub fn latest_posts(page: usize) -> Vec<Post> {
         let mut rng = StdRng::seed_from_u64(seed);
         current_batch.shuffle(&mut rng);
 
-        let inner_pagination = dexfans_types::types::Pagination {
+        let inner_pagination = core::types::Pagination {
             page: page % 5,
             page_size: 10,
         };

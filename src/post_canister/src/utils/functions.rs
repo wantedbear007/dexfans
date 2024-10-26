@@ -26,7 +26,7 @@ pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData
         Some(val) => Ok(val),
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+                core::constants::ERROR_FAILED_CANISTER_DATA,
             ))
         }
     })
@@ -34,10 +34,10 @@ pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData
 
 pub fn get_parent_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(val) => Ok(val.canister_ids[dexfans_types::constants::ESSENTIAL_POST_PARENT_CANISTER]),
+        Some(val) => Ok(val.canister_ids[core::constants::ESSENTIAL_POST_PARENT_CANISTER]),
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+                core::constants::ERROR_FAILED_CANISTER_DATA,
             ))
         }
     })

@@ -13,7 +13,7 @@ pub(self) async fn api_create_new_post(
     let _x = super::post_controller::controller_create_post(args)
         .await
         .map_err(|err| return format!("{}", err));
-    Ok(String::from(dexfans_types::constants::SUCCESS_POST_CREATED))
+    Ok(String::from(core::constants::SUCCESS_POST_CREATED))
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
@@ -21,7 +21,7 @@ pub(self) async fn api_update_post(
     args: crate::models::post::UpdatePostArgs,
 ) -> Result<String, String> {
     controller_update_post(args).map_err(|err| format!("{}", err))?;
-    Ok(String::from(dexfans_types::constants::SUCESSS_POST_UPDATED))
+    Ok(String::from(core::constants::SUCESSS_POST_UPDATED))
 }
 
 // #[ic_cdk::update(guard = guard_prevent_anonymous)]
@@ -34,7 +34,7 @@ pub(self) async fn api_update_post(
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_delete_post(post_id: u128) -> Result<String, String> {
     controller_delete_post(post_id).map_err(|err| format!("{}", err))?;
-    Ok(String::from(dexfans_types::constants::SUCCESS_POST_DELETED))
+    Ok(String::from(core::constants::SUCCESS_POST_DELETED))
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]

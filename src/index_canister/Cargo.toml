@@ -16,5 +16,5 @@ serde_bytes = { workspace = true }
 # candid-extractor = "0.1.2"
 serde = { workspace = true }
 ciborium = { workspace = true }
-dexfans_types = { workspace = true }
+core = { workspace = true }
 kaires ={ workspace = true}

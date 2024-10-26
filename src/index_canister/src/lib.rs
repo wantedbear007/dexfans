@@ -6,14 +6,14 @@ mod api;
 mod models;
 mod store;
 mod utils;
-use dexfans_types::types::*;
+use core::types::*;
 
 #[ic_cdk::query]
 fn greet(name: String) -> String {
     format!(
         "Hello, {}! from {}",
         name,
-        dexfans_types::constants::ESSENTIALS_APP_NAME
+        core::constants::ESSENTIALS_APP_NAME
     )
 }
 
@@ -43,15 +43,15 @@ async fn init(args: crate::models::types::DexFansCanisterInitArgs) {
                         std::collections::HashMap::with_capacity(args.canister_ids.len());
 
                     canister_ids.insert(
-                        dexfans_types::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
+                        core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
                         args.canister_ids["asset_canister"],
                     );
                     canister_ids.insert(
-                        dexfans_types::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
+                        core::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
                         args.canister_ids["post_canister"],
                     );
                     canister_ids.insert(
-                        dexfans_types::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE,
+                        core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE,
                         args.canister_ids["ledger_canister"],
                     );
                     canister_ids

@@ -15,7 +15,7 @@ pub struct CyclesTopup {
 //     pub content: String,
 //     pub image: Option<String>,
 //     pub video: Option<String>,
-//     pub post_type: dexfans_types::types::PostType,
+//     pub post_type: core::types::PostType,
 //     pub price: Option<u8>,
 // }
 
@@ -25,7 +25,7 @@ pub struct Post {
     pub content: String,
     pub image: Option<String>,
     pub video: Option<String>,
-    pub post_type: dexfans_types::types::PostType,
+    pub post_type: core::types::PostType,
     pub price: Option<u8>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
@@ -39,7 +39,7 @@ pub struct CreatePostArgs {
     pub content: String,
     pub image: Option<String>,
     pub video: Option<String>,
-    pub post_type: dexfans_types::types::PostType,
+    pub post_type: core::types::PostType,
     pub price: Option<u8>,
 }
 
@@ -49,7 +49,7 @@ pub struct UpdatePostArgs {
     pub content: String,
     pub image: Option<String>,
     pub video: Option<String>,
-    pub post_type: dexfans_types::types::PostType,
+    pub post_type: core::types::PostType,
     pub price: Option<u8>,
 }
 
@@ -59,7 +59,7 @@ impl Default for Post {
             content: String::from(""),
             image: None,
             video: None,
-            post_type: dexfans_types::types::PostType::Free,
+            post_type: core::types::PostType::Free,
             price: None,
             comments: Vec::new(),
             created_at: ic_cdk::api::time(),
@@ -87,12 +87,12 @@ impl Default for Post {
 impl ic_stable_structures::Storable for Post {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
-        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
         Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =

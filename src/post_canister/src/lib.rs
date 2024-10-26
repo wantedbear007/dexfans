@@ -22,7 +22,7 @@ pub(crate) fn with_read_state<R>(f: impl FnOnce(&ApplicationState) -> R) -> R {
 
 // init args
 #[ic_cdk::init]
-async fn init(args: dexfans_types::types::PostCanisterInitArgs) {
+async fn init(args: core::types::PostCanisterInitArgs) {
     with_write_state(|state| {
         for x in args.accounts.iter() {
             state.account.insert(

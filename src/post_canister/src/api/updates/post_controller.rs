@@ -24,7 +24,7 @@ pub(super) async fn controller_create_post(args: crate::CreatePostArgs) -> Resul
         }
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+                core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
             ))
         }
     })
@@ -43,7 +43,7 @@ pub(super) fn controller_update_post(
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_POST_NOT_EXIST)),
+        None => return Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
     })
 }
 
@@ -53,7 +53,7 @@ pub(super) fn controller_delete_post(post_id: u128) -> Result<(), String> {
         if state.posts.remove(&post_id).is_some() {
             Ok(())
         } else {
-            Err(String::from(dexfans_types::constants::ERROR_POST_NOT_EXIST))
+            Err(String::from(core::constants::ERROR_POST_NOT_EXIST))
         }
     })
 }

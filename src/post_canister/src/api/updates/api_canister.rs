@@ -11,7 +11,7 @@ pub fn admin_add_user_profile(args: crate::models::types::UserProfileIC) -> Resu
 // to update user details
 #[ic_cdk::update(guard = guard_parent_canister_only)]
 pub fn admin_update_user_profile(
-    args: dexfans_types::types::UpdateUserProfileArgsIC,
+    args: core::types::UpdateUserProfileArgsIC,
 ) -> Result<(), String> {
     crate::with_write_state(|state| match state.account.get(&args.user_id) {
         Some(mut val) => {
@@ -28,7 +28,7 @@ pub fn admin_update_user_profile(
             Ok(())
         }
         None => Err(String::from(
-            dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
         )),
     })
 }
@@ -37,7 +37,7 @@ pub fn admin_update_user_profile(
 // add parent canister guard
 #[ic_cdk::update(guard = guard_parent_canister_only)]
 pub fn admin_update_membership(
-    args: dexfans_types::types::UpdateMembershipIC,
+    args: core::types::UpdateMembershipIC,
 ) -> Result<(), String> {
     crate::with_write_state(|state| match state.account.get(&args.user) {
         Some(mut val) => {
@@ -47,7 +47,7 @@ pub fn admin_update_membership(
             Ok(())
         }
         None => Err(String::from(
-            dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
         )),
     })
 }

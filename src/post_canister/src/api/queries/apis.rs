@@ -3,7 +3,7 @@ fn greet(name: String) -> String {
     format!(
         "Hello, {}! from {}",
         name,
-        dexfans_types::constants::ESSENTIALS_APP_NAME
+        core::constants::ESSENTIALS_APP_NAME
     )
 }
 

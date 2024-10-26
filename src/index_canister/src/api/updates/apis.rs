@@ -1,5 +1,5 @@
 use candid::Principal;
-use dexfans_types::types::Membership;
+use core::types::Membership;
 
 use crate::{utils::guards::*, STATE};
 
@@ -14,13 +14,13 @@ pub async fn api_create_account(
         .map_err(|err| {
             format!(
                 "{}{}",
-                dexfans_types::constants::ERROR_ACCOUNT_ERROR,
+                core::constants::ERROR_ACCOUNT_ERROR,
                 err.to_string()
             )
         })?;
 
     Ok(String::from(
-        dexfans_types::constants::SUCCESS_ACCOUNT_CREATED,
+        core::constants::SUCCESS_ACCOUNT_CREATED,
     ))
 }
 
@@ -45,11 +45,11 @@ pub async fn api_update_profile(
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_PROFILE_UPDATE)),
+        None => return Err(String::from(core::constants::ERROR_PROFILE_UPDATE)),
     }) {
         Ok(()) => {
             match super::controllers::ic_update_profile(
-                dexfans_types::types::UpdateUserProfileArgsIC {
+                core::types::UpdateUserProfileArgsIC {
                     user_id: ic_cdk::api::caller(),
                     username: args.username,
                 },
@@ -73,20 +73,20 @@ pub async fn api_update_profile(
 // update membership
 // TODO add frontend canister guard
 #[ic_cdk::update]
-pub async fn api_update_membership(args: dexfans_types::types::Membership) -> Result<(), String> {
+pub async fn api_update_membership(args: core::types::Membership) -> Result<(), String> {
     // msp to save the current state of membership
     let mut msp: Membership = Membership::Guest;
     match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(mut val) => {
             if &val.membership == &args {
-                return Err(String::from(dexfans_types::constants::WARNING_SAME_VALUE));
+                return Err(String::from(core::constants::WARNING_SAME_VALUE));
             }
             msp = val.membership;
             val.membership = args.clone();
             state.account.insert(ic_cdk::api::caller(), val);
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     }) {
         Ok(()) => {
             // to update membership on post canister
@@ -95,7 +95,7 @@ pub async fn api_update_membership(args: dexfans_types::types::Membership) -> Re
                 Err(err) => {
                     // roll back
                     super::controllers::rb_membership_update(msp)
-                        .expect(dexfans_types::constants::ERROR_FAILED_CALL);
+                        .expect(core::constants::ERROR_FAILED_CALL);
                     return Err(err);
                 }
             }
@@ -149,7 +149,7 @@ pub fn api_update_user_likes(
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
-    super::apis_ic::ic_subscribe_account(dexfans_types::types::SubscribeAccountIC {
+    super::apis_ic::ic_subscribe_account(core::types::SubscribeAccountIC {
         subscribed_by: ic_cdk::api::caller(),
         subscribed_to: id,
     })
@@ -157,7 +157,7 @@ pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
-    super::apis_ic::ic_unsubscribe_account(dexfans_types::types::UnsubscribeAccountIC {
+    super::apis_ic::ic_unsubscribe_account(core::types::UnsubscribeAccountIC {
         unsubscribed_by: ic_cdk::api::caller(),
         unsubscribed_to: id,
     })
@@ -172,13 +172,13 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
                 match state.notifications.get(&x) {
                     Some(mut usr) => {
                         usr.notifications
-                            .push(dexfans_types::types::NotificationBody {
+                            .push(core::types::NotificationBody {
                                 by: None,
 
-                                category: dexfans_types::types::NotificationType::NewPost,
+                                category: core::types::NotificationType::NewPost,
                                 created_on: ic_cdk::api::time(),
                                 expiring_on: ic_cdk::api::time()
-                                    + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                                    + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
                                 description: None,
                                 title: format!("{} has recently posted", ic_cdk::api::caller()),
                             });
@@ -193,7 +193,7 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
         }
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+                core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
             ))
         }
     })
@@ -202,16 +202,16 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
 // likes notification
 // TODO add guard
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_likes(args: dexfans_types::types::LikeNotificationArgs) -> Result<(), String> {
+pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), String> {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications
-                .push(dexfans_types::types::NotificationBody {
+                .push(core::types::NotificationBody {
                     by: Some(ic_cdk::api::caller()),
-                    category: dexfans_types::types::NotificationType::NewLike,
+                    category: core::types::NotificationType::NewLike,
                     created_on: ic_cdk::api::time(),
                     expiring_on: ic_cdk::api::time()
-                        + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                        + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
                     description: None,
                     title: format!(
                         "{} liked your post {}",
@@ -224,22 +224,22 @@ pub fn notify_likes(args: dexfans_types::types::LikeNotificationArgs) -> Result<
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
 // notify comments
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> Result<(), String> {
+pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(), String> {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications
-                .push(dexfans_types::types::NotificationBody {
+                .push(core::types::NotificationBody {
                     by: Some(ic_cdk::api::caller()),
-                    category: dexfans_types::types::NotificationType::NewComment,
+                    category: core::types::NotificationType::NewComment,
                     created_on: ic_cdk::api::time(),
                     expiring_on: ic_cdk::api::time()
-                        + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                        + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
                     description: None,
                     title: format!(
                         "{} commented on your post, {}{}",
@@ -253,7 +253,7 @@ pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> R
 
             Ok(())
         }
-        None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
@@ -264,12 +264,12 @@ pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> R
 //     crate::with_write_state(|state| match state.notifications.get(&ic_cdk::api::caller()) {
 //         Some(mut val) => {
 //             val.notifications
-//                 .push(dexfans_types::types::NotificationBody {
+//                 .push(core::types::NotificationBody {
 //                     by: Some(ic_cdk::api::caller()),
-//                     category: dexfans_types::types::NotificationType::NewComment,
+//                     category: core::types::NotificationType::NewComment,
 //                     created_on: ic_cdk::api::time(),
 //                     expiring_on: ic_cdk::api::time()
-//                         + dexfans_types::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+//                         + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
 //                     description: None,
 //                     title: format!(
 //                         "{} has subscribed you",
@@ -282,6 +282,6 @@ pub fn notify_comments(args: dexfans_types::types::CommentNotificationArgs) -> R
 
 //             Ok(())
 //         }
-//         None => return Err(String::from(dexfans_types::constants::ERROR_FAILED_CALL)),
+//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
 //     })
 // }

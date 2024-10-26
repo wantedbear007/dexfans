@@ -5,7 +5,7 @@ pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String>
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => Ok(acc),
         None => Err(String::from(
-            dexfans_types::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
         )),
     })
 }

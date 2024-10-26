@@ -49,7 +49,7 @@ pub(crate) struct UserProfile {
     pub likes: Vec<PostId>,                                // Liked posts
     pub collects: Vec<PostId>,                             // Collected posts
     pub is_bot: bool,                                      // Is this user a bot?
-    pub membership: dexfans_types::types::Membership,      // Membership level
+    pub membership: core::types::Membership,      // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
 }
 
@@ -60,7 +60,7 @@ pub(crate) struct UserProfileInterCanister {
     pub posts: Vec<PostId>,
     pub likes: Vec<PostId>,
     pub collects: Vec<PostId>,
-    pub membership: dexfans_types::types::Membership,
+    pub membership: core::types::Membership,
 }
 
 // #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
@@ -75,7 +75,7 @@ pub(crate) struct UserProfileInterCanister {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {
     pub acc: candid::Principal,
-    pub notifications: Vec<dexfans_types::types::NotificationBody>,
+    pub notifications: Vec<core::types::NotificationBody>,
 }
 
 impl Default for Notification {
@@ -109,7 +109,7 @@ impl Default for UserProfileInterCanister {
             posts: Vec::new(),
             likes: Vec::new(),
             collects: Vec::new(),
-            membership: dexfans_types::types::Membership::Guest,
+            membership: core::types::Membership::Guest,
         }
     }
 }
@@ -117,12 +117,12 @@ impl Default for UserProfileInterCanister {
 impl ic_stable_structures::Storable for Notification {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
-        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
         Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =
@@ -132,12 +132,12 @@ impl ic_stable_structures::Storable for Notification {
 impl ic_stable_structures::Storable for UserProfileInterCanister {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
-        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
         Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =
@@ -147,12 +147,12 @@ impl ic_stable_structures::Storable for UserProfileInterCanister {
 impl ic_stable_structures::Storable for UserProfile {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
-        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
         Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =
@@ -162,12 +162,12 @@ impl ic_stable_structures::Storable for UserProfile {
 impl ic_stable_structures::Storable for CanisterMetaData {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
-        ciborium::into_writer(self, &mut buf).expect(dexfans_types::constants::ERROR_ENCODE_FAILED);
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
         Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        ciborium::from_reader(&bytes[..]).expect(dexfans_types::constants::ERROR_DECODE_FAILED)
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
     }
 
     const BOUND: ic_stable_structures::storable::Bound =

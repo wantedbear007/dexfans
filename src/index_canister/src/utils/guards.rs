@@ -2,7 +2,7 @@
 pub fn guard_prevent_anonymous() -> Result<(), String> {
     if ic_cdk::api::caller() == candid::Principal::anonymous() {
         return Err(String::from(
-            dexfans_types::constants::WARNING_ANONYMOUS_CALL,
+            core::constants::WARNING_ANONYMOUS_CALL,
         ));
     }
 
@@ -15,7 +15,7 @@ pub fn guard_only_admin() -> Result<(), String> {
 
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(_val) => Ok(()),
-        None => return Err(String::from(dexfans_types::constants::WARNING_ADMIN_ONLY)),
+        None => return Err(String::from(core::constants::WARNING_ADMIN_ONLY)),
     })
 }
 
@@ -30,11 +30,11 @@ pub fn guard_post_canister_exclusive() -> Result<(), String> {
                     return Ok(());
                 }
             }
-            return Err(String::from(dexfans_types::constants::ERROR_UNAUTHORIZED));
+            return Err(String::from(core::constants::ERROR_UNAUTHORIZED));
         }
         None => {
             return Err(String::from(
-                dexfans_types::constants::ERROR_FAILED_CANISTER_DATA,
+                core::constants::ERROR_FAILED_CANISTER_DATA,
             ))
         }
     })
