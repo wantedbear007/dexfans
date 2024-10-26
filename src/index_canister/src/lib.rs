@@ -6,8 +6,8 @@ mod api;
 mod models;
 mod store;
 mod utils;
-use core::types::*;
 use candid::Nat;
+use core::types::*;
 
 #[ic_cdk::query]
 fn greet(name: String) -> String {
@@ -39,6 +39,7 @@ async fn init(args: crate::models::types::DexFansCanisterInitArgs) {
         state.canister_meta_data.insert(
             0,
             CanisterMetaData {
+                membership_plans: args.membership_plans,
                 canister_ids: {
                     let mut canister_ids: std::collections::HashMap<u8, candid::Principal> =
                         std::collections::HashMap::with_capacity(args.canister_ids.len());

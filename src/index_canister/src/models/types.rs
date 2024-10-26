@@ -9,19 +9,21 @@ use serde::{Deserialize, Serialize};
 pub type PostId = u128;
 pub type TimestampMillis = u64;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
 pub struct DexFansCanisterInitArgs {
     pub canister_ids: std::collections::HashMap<String, candid::Principal>,
     pub controllers: std::collections::HashSet<Principal>,
-    pub payment_recipient: candid::Principal, // more to be added later
+    pub payment_recipient: candid::Principal,
+    pub membership_plans: std::collections::HashMap<core::types::Membership, u64>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
     pub controllers: std::collections::HashSet<Principal>,
     pub canister_ids: std::collections::HashMap<u8, candid::Principal>,
     pub all_post_canisters: std::collections::HashSet<Principal>,
-    pub payment_recipient: candid::Principal, // more to be added later
+    pub payment_recipient: candid::Principal,
+    pub membership_plans: std::collections::HashMap<core::types::Membership, u64>,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
@@ -49,8 +51,9 @@ pub(crate) struct UserProfile {
     pub likes: Vec<PostId>,                                // Liked posts
     pub collects: Vec<PostId>,                             // Collected posts
     pub is_bot: bool,                                      // Is this user a bot?
-    pub membership: core::types::Membership,      // Membership level
+    pub membership: core::types::Membership,               // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
+    pub membership_till: u64,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]

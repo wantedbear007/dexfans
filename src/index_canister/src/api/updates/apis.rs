@@ -245,8 +245,8 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
 }
 
 #[ic_cdk::update]
-pub async fn api_complete_payment(amt: u64, payer: candid::Principal) -> Result<Nat, String> {
-    super::payment_controller::icp_transfer_handler(amt, payer).await
+pub async fn api_complete_payment(amt: u64) -> Result<Nat, String> {
+    super::payment_controller::icp_transfer_handler(amt).await
 }
 
 // TODO COMPLETE BELOW

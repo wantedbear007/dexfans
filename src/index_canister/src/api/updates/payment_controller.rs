@@ -4,7 +4,7 @@ use icrc_ledger_types::{
 };
 
 // for handling icp payment
-pub(super) async fn icp_transfer_handler(tokens: u64, payer: candid::Principal) -> Result<BlockIndex, String> {
+pub(super) async fn icp_transfer_handler(tokens: u64) -> Result<BlockIndex, String> {
     let mut recipient: candid::Principal = candid::Principal::anonymous();
     let mut ledger_canister: candid::Principal = candid::Principal::anonymous();
 
@@ -30,7 +30,7 @@ pub(super) async fn icp_transfer_handler(tokens: u64, payer: candid::Principal) 
         created_at_time: Some(ic_cdk::api::time()),
         spender_subaccount: None,
         from: Account {
-            owner: payer,
+            owner: ic_cdk::api::caller(),
             subaccount: None,
         },
     };

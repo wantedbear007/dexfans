@@ -6,9 +6,7 @@ pub async fn controller_create_account(
     match crate::with_write_state(|state| {
         // checking if user already exists
         if state.account.contains_key(&ic_cdk::api::caller()) {
-            return Err(String::from(
-                core::constants::WARNING_ACCOUNT_EXISTS,
-            ));
+            return Err(String::from(core::constants::WARNING_ACCOUNT_EXISTS));
         } else {
             // to retrieve canister meta data
             let canister_meta_data = state
@@ -23,8 +21,9 @@ pub async fn controller_create_account(
                 crate::models::types::UserProfile {
                     avatar: args.avatar,
                     bio: args.bio,
-                    all_post_canisters: std::collections::HashSet::from([canister_meta_data
-                        [&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE]]),
+                    all_post_canisters: std::collections::HashSet::from([
+                        canister_meta_data[&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE]
+                    ]),
                     cover_image: args.cover_image,
                     collects: Vec::new(),
                     likes: Vec::new(),
@@ -40,6 +39,7 @@ pub async fn controller_create_account(
                         [&core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE],
                     active_post_canister: canister_meta_data
                         [&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE],
+                    membership_till: 0,
                 },
             );
 
@@ -88,9 +88,7 @@ pub async fn ic_create_profile(
 }
 
 // intercanister update profile
-pub async fn ic_update_profile(
-    args: core::types::UpdateUserProfileArgsIC,
-) -> Result<(), String> {
+pub async fn ic_update_profile(args: core::types::UpdateUserProfileArgsIC) -> Result<(), String> {
     match kaires::call_inter_canister::<core::types::UpdateUserProfileArgsIC, ()>(
         "admin_update_user_profile",
         args,
@@ -136,4 +134,62 @@ pub fn rb_membership_update(args: core::types::Membership) -> Result<(), String>
     })
 }
 
-// payment
+// purchase subscription
+pub fn controller_membership(args: core::types::Membership) -> Result<(), String> {
+    let _x = crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(mut acc) => {
+            // let _x = match (&acc.membership, &args) {
+            //     (current, new) if current == new => Err(String::from(core::constants::WARNING_SAME_MEMBERSHIP)),
+            //     (current, new) if &current > &new => Err(String::from(core::constants::WARNING_HIGHER_MEMBERSHIP)),
+
+            //     _ => Ok(())
+            // };
+
+            // check if user is trying to purchase same membership
+            if &acc.membership == &args {
+                return Err(String::from(core::constants::WARNING_SAME_MEMBERSHIP));
+            }
+
+            // check if user still have higher class membership
+            if &acc.membership > &args {
+                return Err(String::from(core::constants::WARNING_HIGHER_MEMBERSHIP));
+            }
+
+            if &acc.membership < &args {
+                // TODO ask about higher membership
+                // upgrade membership
+                // calculate difference
+            }
+
+            if &acc.membership_till == &0 {
+                // membership amount
+                let y = match state.canister_meta_data.get(&0) {
+                    Some(val) => val.membership_plans[&args],
+                    None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
+                };
+
+                // payment process
+                ic_cdk::spawn(async move {
+                    let _ = super::payment_controller::icp_transfer_handler(y)
+                        .await
+                        .map_err(|err| format!("{}", err));
+
+                    // upgrading membership
+                    acc.membership = args;
+                    acc.membership_till =
+                        ic_cdk::api::time() + core::constants::ESSENTIAL_MEMBERSHIP_VALIDITY;
+                });
+            }
+
+            // if &acc.membership
+
+            // if acc.membership_till <= 0 {
+            //     return Err(())
+            // }
+            Ok(())
+        }
+        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    });
+
+    Ok(())
+}

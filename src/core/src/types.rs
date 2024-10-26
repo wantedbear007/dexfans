@@ -18,12 +18,12 @@ pub enum PostType {
     Paid,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash, CandidType, PartialOrd)]
 pub enum Membership {
-    Guest,
-    Silver,
-    Gold,
-    Platinum,
+    Guest = 0,
+    Silver = 1,
+    Gold = 2,
+    Platinum = 3,
 }
 
 #[derive(Serialize, Deserialize)]

@@ -3,6 +3,7 @@ type CanisterMetaData = record {
   canister_ids : vec record { nat8; principal };
   all_post_canisters : vec principal;
   payment_recipient : principal;
+  membership_plans : vec record { Membership; nat32 };
 };
 type CommentNotificationArgs = record {
   post_url : text;
@@ -13,6 +14,7 @@ type DexFansCanisterInitArgs = record {
   controllers : vec principal;
   canister_ids : vec record { text; principal };
   payment_recipient : principal;
+  membership_plans : vec record { Membership; nat32 };
 };
 type LikeNotificationArgs = record { post_url : text; post_owner : principal };
 type Membership = variant { Guest; Gold; Platinum; Silver };
@@ -56,6 +58,7 @@ type UserProfile = record {
   username : text;
   asset_canister_id : principal;
   cover_image : opt text;
+  membership_till : nat64;
   created_at : nat64;
   user_id : principal;
   is_bot : bool;
