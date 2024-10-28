@@ -250,10 +250,10 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
 // }
 
 // #[ic_cdk::update(guard = guard_prevent_anonymous)]
-#[ic_cdk::update]
-pub fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
-    super::controllers::controller_membership(args)
-}
+// #[ic_cdk::update]
+// pub fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
+//     super::controllers::controller_membership(args)
+// }
 
 // TODO COMPLETE BELOW
 // // notify new subscriber
@@ -285,7 +285,7 @@ pub fn api_purchase_membership(args: core::types::Membership) -> Result<(), Stri
 // }
 
 #[ic_cdk::update]
-pub async fn api_membership(args: core::types::Membership) -> Result<(), String> {
+pub async fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
     // canister meta data (ledger and plan prices)
     let meta_data = with_read_state(|state| state.canister_meta_data.get(&0))
         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
