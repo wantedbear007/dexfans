@@ -35,10 +35,9 @@ type NotificationType = variant {
 };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
-type Result_2 = variant { Ok : nat; Err : text };
-type Result_3 = variant { Ok : text; Err : text };
-type Result_4 = variant { Ok : UserProfile; Err : text };
-type Result_5 = variant { Ok : CanisterMetaData; Err : text };
+type Result_2 = variant { Ok : text; Err : text };
+type Result_3 = variant { Ok : UserProfile; Err : text };
+type Result_4 = variant { Ok : CanisterMetaData; Err : text };
 type SubscribeAccountIC = record {
   subscribed_by : principal;
   subscribed_to : principal;
@@ -58,6 +57,7 @@ type UserProfile = record {
   username : text;
   asset_canister_id : principal;
   cover_image : opt text;
+  membership_ledger_block : opt nat;
   membership_till : nat64;
   created_at : nat64;
   user_id : principal;
@@ -77,19 +77,21 @@ service : (DexFansCanisterInitArgs) -> {
   admin_remove_controller : (principal) -> (Result);
   admin_set_post_canister : (principal) -> (Result_1);
   api_add_post_id_to_user : (principal, nat) -> (Result);
-  api_complete_payment : (nat64) -> (Result_2);
-  api_create_account : (UserInputArgs) -> (Result_3);
-  api_get_my_profile : () -> (Result_4) query;
+  api_create_account : (UserInputArgs) -> (Result_2);
+  api_get_my_profile : () -> (Result_3) query;
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec principal) query;
   api_get_subscribers : () -> (vec principal) query;
+  api_membership : (Membership) -> (Result);
+  api_purchase_membership : (Membership) -> (Result);
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
   api_update_membership : (Membership) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
   get_asset_canister : () -> (Result_1) query;
-  get_canister_meta_data : () -> (Result_5) query;
+  get_canister_meta_data : () -> (Result_4) query;
+  get_ledger_canister : () -> (Result_1) query;
   get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);

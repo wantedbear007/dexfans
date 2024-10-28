@@ -11,7 +11,7 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
     Ok(())
 }
 
-// to allow parnet canister only (for intercanister calls)
+// to allow parent canister only (for intercanister calls)
 pub fn guard_parent_canister_only() -> Result<(), String> {
     guard_prevent_anonymous()?;
     with_read_state(|state| match state.canister_meta_data.get(&0) {

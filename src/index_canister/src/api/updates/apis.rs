@@ -1,7 +1,7 @@
 use candid::{Nat, Principal};
 use core::types::Membership;
 
-use crate::{utils::guards::*, STATE};
+use crate::{utils::guards::*, with_read_state, STATE};
 
 use super::controllers::ic_update_membership;
 
@@ -244,9 +244,15 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
     })
 }
 
+// #[ic_cdk::update]
+// pub async fn debug_complete_payment(amt: u64) -> Result<Nat, String> {
+//     super::payment_controller::icp_transfer_handler(amt).await
+// }
+
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
 #[ic_cdk::update]
-pub async fn api_complete_payment(amt: u64) -> Result<Nat, String> {
-    super::payment_controller::icp_transfer_handler(amt).await
+pub fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
+    super::controllers::controller_membership(args)
 }
 
 // TODO COMPLETE BELOW
@@ -277,3 +283,43 @@ pub async fn api_complete_payment(amt: u64) -> Result<Nat, String> {
 //         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
 //     })
 // }
+
+#[ic_cdk::update]
+pub async fn api_membership(args: core::types::Membership) -> Result<(), String> {
+    // canister meta data (ledger and plan prices)
+    let meta_data = with_read_state(|state| state.canister_meta_data.get(&0))
+        .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
+
+    // to retrieve user profile
+    let mut account = with_read_state(|state| state.account.get(&ic_cdk::api::caller()))
+        .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+
+    // checks
+    if &account.membership == &args {
+        return Err(String::from(core::constants::WARNING_SAME_MEMBERSHIP));
+    }
+
+    if &account.membership > &args {
+        return Err(String::from(core::constants::WARNING_HIGHER_MEMBERSHIP));
+    }
+
+    // payment
+    match super::payment_controller::icp_transfer_handler(
+        meta_data.membership_plans[&args],
+        meta_data.payment_recipient,
+        meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
+    )
+    .await
+    {
+        Ok(val) => {
+            account.membership_ledger_block = Some(val);
+            account.membership = args;
+            account.membership_till =
+                ic_cdk::api::time() + core::constants::ESSENTIAL_MEMBERSHIP_VALIDITY;
+            crate::with_write_state(|state| state.account.insert(ic_cdk::api::caller(), account));
+        }
+        Err(err) => return Err(err),
+    };
+
+    Ok(())
+}
