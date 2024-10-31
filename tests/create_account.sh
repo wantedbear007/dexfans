@@ -3,11 +3,11 @@
 set -e
 
 # Number of users you want to register
-NUM_USERS=20
-START_NUM=11
+NUM_USERS=2
+START_NUM=0
 echo "Creating User Identities..."
 
-CANISTER=$(dfx canister id dexfans_backend)
+CANISTER=$(dfx canister id index_canister)
 echo "Canister ID: $CANISTER"
 
 declare -a interests=("Gaming" "Art" "Technology" "Finance" "Sports")
