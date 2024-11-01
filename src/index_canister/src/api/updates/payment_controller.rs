@@ -51,14 +51,14 @@ pub(super) async fn icp_transfer_handler(
 }
 
 // purchase membership
-pub async fn upgrade_membership(
-    args: core::types::Membership,
-    amt: u64,
-    recipient: candid::Principal,
-    ledger: candid::Principal,
-) -> Result<BlockIndex, String> {
+// pub async fn upgrade_membership(
+//     args: core::types::Membership,
+//     amt: u64,
+//     recipient: candid::Principal,
+//     ledger: candid::Principal,
+// ) -> Result<BlockIndex, String> {
 
     
 
-    icp_transfer_handler(amt, recipient, ledger).await
-}
+//     icp_transfer_handler(amt, recipient, ledger).await
+// }

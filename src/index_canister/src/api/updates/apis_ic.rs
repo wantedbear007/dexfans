@@ -66,7 +66,7 @@ pub fn ic_unsubscribe_account(args: core::types::UnsubscribeAccountIC) -> Result
 }
 
 // to update current post canister in user profile
-#[ic_cdk::update]
+#[ic_cdk::update(guard = guard_post_canister_exclusive)]
 pub fn admin_profile_post_canister(
     args: core::types::ICAddPostCanisterProfile,
 ) -> Result<(), String> {

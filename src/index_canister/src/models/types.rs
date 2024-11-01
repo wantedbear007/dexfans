@@ -79,6 +79,13 @@ pub(crate) struct UserProfileInterCanister {
 // }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
+pub(crate) struct UserDetailsMinified {
+    pub user_id: candid::Principal,
+    pub username: String,
+    pub avatar: Option<String>
+}
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {
     pub acc: candid::Principal,
     pub notifications: Vec<core::types::NotificationBody>,

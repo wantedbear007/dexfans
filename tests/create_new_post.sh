@@ -4,7 +4,7 @@ video="1"
 image="2"
 price=11
 
-RES=$(dfx canister call by6od-j4aaa-aaaaa-qaadq-cai api_create_new_post "(
+RES=$(dfx canister call bd3sg-teaaa-aaaaa-qaaba-cai api_create_new_post "(
   record {
     content = \"$content\";
     post_type = variant { $post_type };

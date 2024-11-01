@@ -14,3 +14,9 @@ fn get_all_controllers() -> std::collections::HashSet<candid::Principal> {
         None => std::collections::HashSet::new(),
     })
 }
+
+// debug
+#[ic_cdk::query]
+fn debug_total_posts() -> u128 {
+    crate::with_read_state(|state| state.post_counter)
+}

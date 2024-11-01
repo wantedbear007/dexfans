@@ -70,6 +70,7 @@ service : (PostCanisterInitArgs) -> {
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_2) query;
+  debug_total_posts : () -> (nat) query;
   get_all_controllers : () -> (vec principal) query;
   get_canister_meta_data : () -> (Result_3) query;
   get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_4);

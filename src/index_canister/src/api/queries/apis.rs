@@ -40,3 +40,17 @@ fn api_get_notifications() -> Vec<crate::NotificationBody> {
         },
     )
 }
+
+#[ic_cdk::query]
+fn api_get_user_minified(
+    id: candid::Principal,
+) -> Result<crate::models::types::UserDetailsMinified, String> {
+    crate::with_read_state(|state| match state.account.get(&id) {
+        Some(acc) => Ok(crate::models::types::UserDetailsMinified {
+            avatar: acc.avatar,
+            user_id: acc.user_id,
+            username: acc.username,
+        }),
+        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    })
+}

@@ -63,3 +63,4 @@ pub async fn api_subscribe_account(to: candid::Principal) -> Result<(), String> 
 pub async fn api_unsubscribe_account(to: candid::Principal) -> Result<(), String> {
     super::subscription_controllers::controller_unsubscribe(to).await
 }
+

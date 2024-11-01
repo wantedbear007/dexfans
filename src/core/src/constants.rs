@@ -11,11 +11,11 @@ pub const ESSENTIAL_MEMBERSHIP_VALIDITY: u64 = 30 * 24 * 60 * 60 * 1_000_000_000
 pub const ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD: u128 = 150_000_000_000; // Total cycles that is to be allocated to dynamic post canister
 
 // WARNINGS
-pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous principal not allowed !";
-pub const WARNING_ACCOUNT_EXISTS: &str = "Principal ID is already registered with the platform";
-pub const WARNING_ADMIN_ONLY: &str = "Admin access required";
-pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already present";
-pub const WARNING_SAME_VALUE: &str = "User already have this membership";
+pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous calls are not permitted!";
+pub const WARNING_ACCOUNT_EXISTS: &str = "This Principal ID is already registered on the platform";
+pub const WARNING_ADMIN_ONLY: &str = "Admin privileges are required";
+pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already assigned as a controller";
+pub const WARNING_SAME_VALUE: &str = "User already possesses this membership level";
 pub const WARNING_ALERADY_EXIST: &str = "Already exist";
 pub const WARNING_SAME_MEMBERSHIP: &str = "You are already a member of this category";
 pub const WARNING_HIGHER_MEMBERSHIP: &str =
