@@ -284,7 +284,7 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
 //     })
 // }
 
-#[ic_cdk::update]
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
     // canister meta data (ledger and plan prices)
     let meta_data = with_read_state(|state| state.canister_meta_data.get(&0))
@@ -323,3 +323,4 @@ pub async fn api_purchase_membership(args: core::types::Membership) -> Result<()
 
     Ok(())
 }
+

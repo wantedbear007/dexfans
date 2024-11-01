@@ -14,9 +14,7 @@ pub fn ic_subscribe_account(args: core::types::SubscribeAccountIC) -> Result<(),
             .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
         if subscribed_by.subscribing.contains(&args.subscribed_to) {
-            return Err(String::from(
-                core::constants::WARNING_ALERADY_EXIST,
-            ));
+            return Err(String::from(core::constants::WARNING_ALERADY_EXIST));
         }
 
         subscribed_by.subscribing.insert(subscribed_to.user_id);
@@ -33,9 +31,7 @@ pub fn ic_subscribe_account(args: core::types::SubscribeAccountIC) -> Result<(),
 // add bost to and accounts
 
 #[ic_cdk::update(guard = guard_post_canister_exclusive)]
-pub fn ic_unsubscribe_account(
-    args: core::types::UnsubscribeAccountIC,
-) -> Result<(), String> {
+pub fn ic_unsubscribe_account(args: core::types::UnsubscribeAccountIC) -> Result<(), String> {
     crate::with_write_state(|state| {
         let mut unsubscribed_by = state
             .account
@@ -69,4 +65,17 @@ pub fn ic_unsubscribe_account(
     Ok(())
 }
 
-
+// to update current post canister in user profile
+#[ic_cdk::update]
+pub fn admin_profile_post_canister(
+    args: core::types::ICAddPostCanisterProfile,
+) -> Result<(), String> {
+    crate::with_write_state(|state| match state.account.get(&args.caller) {
+        Some(mut acc) => {
+            acc.all_post_canisters.insert(args.post_canister);
+            state.account.insert(acc.user_id, acc);
+            Ok(())
+        }
+        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    })
+}

@@ -10,9 +10,9 @@
 
 canisters=("post_canister" "index_canister")
 
-./generate_did.sh
 # Define the path to the script
 script_path="./scripts/main.sh"
+# ./generate_did.sh
 
 # Check if the script exists
 if [ ! -f "$script_path" ]; then

@@ -1,5 +1,3 @@
-
-
 #[ic_cdk::update]
 pub async fn create_post_canister() -> Result<candid::Principal, String> {
     let mut all_accounts: Vec<core::types::UserProfile> = Vec::new();
@@ -62,9 +60,12 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
     };
 
     // deposit cycles to newly created canister
-    kaires::canister_management::deposit_cycles_in_canister(canister_id, 150_000_000_000)
-        .await
-        .unwrap();
+    kaires::canister_management::deposit_cycles_in_canister(
+        canister_id,
+        core::constants::ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD,
+    )
+    .await
+    .unwrap();
 
     // locating wasm module to insert in canister
     let wasm_module: Vec<u8> =
@@ -83,6 +84,17 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
     kaires::canister_management::install_code_in_canister(code_args, wasm_module)
         .await
         .unwrap();
+
+    // changing active post canister
+    let _ = crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
+        Some(mut data) => {
+            data.active_post_canister = canister_id.canister_id;
+            data.all_post_canisters.insert(canister_id.canister_id);
+            state.canister_meta_data.insert(0, data);
+            Ok(())
+        }
+        None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
+    });
 
     Ok(canister_id.canister_id)
 

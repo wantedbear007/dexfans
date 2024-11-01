@@ -105,3 +105,9 @@ pub struct PostCanisterInitArgs {
     pub canister_ids: std::collections::HashMap<String, candid::Principal>,
     pub controllers: std::collections::HashSet<Principal>,
 }
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct ICAddPostCanisterProfile {
+    pub post_canister: candid::Principal,
+    pub caller: candid::Principal
+}
