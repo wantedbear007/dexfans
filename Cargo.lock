@@ -780,7 +780,7 @@ dependencies = [
 [[package]]
 name = "kaires"
 version = "0.1.0"
-source = "git+https://github.com/wantedbear007/kaires?rev=9d57f926418efcbbb47d2c2e34f1f3465d4f7cc8#9d57f926418efcbbb47d2c2e34f1f3465d4f7cc8"
+source = "git+https://github.com/wantedbear007/kaires?rev=772f3b13bec4df2862fdf1aaba95cf7d629ca9cd#772f3b13bec4df2862fdf1aaba95cf7d629ca9cd"
 dependencies = [
  "candid",
  "ic-cdk 0.13.5",

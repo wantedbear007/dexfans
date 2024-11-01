@@ -58,6 +58,7 @@ async fn init(args: crate::models::types::DexFansCanisterInitArgs) {
                     );
                     canister_ids
                 },
+                active_post_canister: args.active_post_canister,
                 controllers: args.controllers,
                 payment_recipient: args.payment_recipient,
                 all_post_canisters: {

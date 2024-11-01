@@ -63,6 +63,7 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 # Update code in /src/index_canister/src/lib.rs if below keys are changed 
 
 dfx deploy index_canister --argument "( record {
+    active_post_canister = principal \"${POST_CANISTER}\";
     payment_recipient = principal \"${BHANU}\";
     membership_plans = vec {
       record { variant { Gold }; 10000 : nat64 };

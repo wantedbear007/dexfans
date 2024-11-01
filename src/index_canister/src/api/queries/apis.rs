@@ -3,13 +3,17 @@ use crate::utils::guards::*;
 #[ic_cdk::query(guard=guard_prevent_anonymous)]
 pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(acc) => Ok(acc),
-        None => Err(String::from(
-            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-        )),
+        Some(acc) => Ok(crate::models::types::UserProfile {
+            active_post_canister: state
+                .canister_meta_data
+                .get(&0)
+                .unwrap()
+                .active_post_canister,
+            ..acc
+        }),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
-
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_subscribed() -> std::collections::HashSet<candid::Principal> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {

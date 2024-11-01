@@ -82,13 +82,13 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec principal) query;
   api_get_subscribers : () -> (vec principal) query;
-  api_membership : (Membership) -> (Result);
   api_purchase_membership : (Membership) -> (Result);
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
   api_update_membership : (Membership) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
+  create_post_canister : () -> (Result_1);
   get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_4) query;
   get_ledger_canister : () -> (Result_1) query;

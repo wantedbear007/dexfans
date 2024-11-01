@@ -29,6 +29,8 @@ pub fn get_ledger_canister() -> Result<candid::Principal, String> {
 }
 
 
+
+
 // // to add controller of canister
 // #[ic_cdk::update(guard=guard_only_admin)]
 // pub fn add_controller(id: candid::Principal) -> Result<(), String> {
