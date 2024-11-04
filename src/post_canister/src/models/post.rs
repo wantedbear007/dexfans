@@ -19,7 +19,7 @@ pub struct CyclesTopup {
 //     pub price: Option<u8>,
 // }
 
-#[derive(Serialize, Deserialize, Clone, CandidType)]
+#[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Post {
     pub post_id: PostId,
     pub content: String,

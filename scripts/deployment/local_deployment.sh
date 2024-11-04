@@ -66,7 +66,7 @@ dfx deploy index_canister --argument "( record {
     active_post_canister = principal \"${POST_CANISTER}\";
     payment_recipient = principal \"${BHANU}\";
     membership_plans = vec {
-      record { variant { Gold }; 10000 : nat64 };
+      record { variant { Silver }; 10000 : nat64 };
       record { variant { Gold }; 20000 : nat64 };
       record { variant { Platinum }; 40000 : nat64 };
     };

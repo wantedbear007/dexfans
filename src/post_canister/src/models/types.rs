@@ -28,6 +28,12 @@ pub(crate) struct UserProfileIC {
     pub membership: core::types::Membership,
 }
 
+#[derive(CandidType, Serialize, Deserialize)]
+pub(crate) struct Pagination {
+    pub start: u32,
+    pub end: u32
+}
+
 impl Default for UserProfileIC {
     fn default() -> Self {
         Self {
@@ -40,6 +46,8 @@ impl Default for UserProfileIC {
         }
     }
 }
+
+
 
 impl ic_stable_structures::Storable for UserProfileIC {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -82,7 +90,7 @@ pub enum CanisterMeta {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub struct CanisterMetaData {
     pub canister_ids: std::collections::HashMap<String, candid::Principal>,
-    pub controllers: std::collections::HashSet<Principal>,
+    pub controllers: std::collections::HashSet<candid::Principal>,
 }
 
 impl ic_stable_structures::Storable for CanisterMetaData {

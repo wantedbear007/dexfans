@@ -31,7 +31,7 @@ pub fn api_get_subscribers() -> std::collections::HashSet<candid::Principal> {
 }
 
 // TODO add guard
-#[ic_cdk::query]
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_notifications() -> Vec<crate::NotificationBody> {
     crate::with_read_state(
         |state| match state.notifications.get(&ic_cdk::api::caller()) {
