@@ -28,11 +28,7 @@ pub(crate) struct UserProfileIC {
     pub membership: core::types::Membership,
 }
 
-#[derive(CandidType, Serialize, Deserialize)]
-pub(crate) struct Pagination {
-    pub start: u32,
-    pub end: u32
-}
+
 
 impl Default for UserProfileIC {
     fn default() -> Self {

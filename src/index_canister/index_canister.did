@@ -39,6 +39,7 @@ type NotificationType = variant {
   NewSubscribingPost;
   NewSubscriber;
 };
+type Pagination = record { end : nat32; start : nat32 };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
 type Result_2 = variant { Ok : text; Err : text };
@@ -96,6 +97,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec principal) query;
   api_get_subscribers : () -> (vec principal) query;
+  api_get_user_ids : (Pagination) -> (vec principal) query;
   api_get_user_minified : (principal) -> (Result_4) query;
   api_purchase_membership : (Membership) -> (Result);
   api_subscribe_account : (principal) -> (Result);

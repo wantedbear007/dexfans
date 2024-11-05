@@ -23,6 +23,33 @@ pub fn api_get_subscribed() -> std::collections::HashSet<candid::Principal> {
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_user_ids(page: core::types::Pagination) -> Vec<candid::Principal> {
+    crate::with_read_state(|state| {
+        let mut ids: Vec<candid::Principal> = Vec::new();
+
+        for (id, _) in state.account.iter() {
+            ids.push(id);
+        }
+
+        let ending = ids.len();
+
+        if ending == 0 {
+            return ids;
+        }
+
+        let start = page.start as usize;
+        let end = page.end as usize;
+        if start < ending {
+            let end = end.min(ending);
+
+            return ids[start..end].to_vec();
+        }
+
+        Vec::new()
+    })
+}
+
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_subscribers() -> std::collections::HashSet<candid::Principal> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => acc.subscribers,

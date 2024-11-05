@@ -4,7 +4,6 @@ mod api;
 mod models;
 mod store;
 mod utils;
-use candid::Principal;
 
 thread_local! {
     static STATE: std::cell::RefCell<ApplicationState> = std::cell::RefCell::new(ApplicationState::new());

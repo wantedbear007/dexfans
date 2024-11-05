@@ -1,3 +1,6 @@
+use crate::utils::guards::*;
+use crate::{models::post::Post, STATE};
+
 #[ic_cdk::query]
 fn greet(name: String) -> String {
     format!(
@@ -20,10 +23,33 @@ fn get_all_controllers() -> std::collections::HashSet<candid::Principal> {
 fn debug_total_posts() -> u128 {
     crate::with_read_state(|state| state.post_counter)
 }
-use crate::utils::guards::*;
 
-use crate::with_read_state;
-use crate::{models::post::Post, STATE};
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_post_ids(page: core::types::Pagination) -> Vec<u128> {
+    crate::with_read_state(|state| {
+        let mut ids: Vec<u128> = Vec::new();
+
+        for (id, _) in state.posts.iter() {
+            ids.push(id);
+        }
+
+        let ending = ids.len();
+
+        if ending == 0 {
+            return ids;
+        }
+
+        let start = page.start as usize;
+        let end = page.end as usize;
+        if start < ending {
+            let end = end.min(ending);
+
+            return ids[start..end].to_vec();
+        }
+
+        Vec::new()
+    })
+}
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_post_by_id(post_id: u128) -> Option<Post> {
@@ -42,11 +68,8 @@ pub fn api_list_all_posts() -> Vec<Post> {
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_post_by_user_id(
-    user_id: candid::Principal,
-    page: crate::models::types::Pagination,
-) -> Vec<Post> {
-    with_read_state(|state| {
+pub fn api_post_by_user_id(user_id: candid::Principal, page: core::types::Pagination) -> Vec<Post> {
+    crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
         for (_, pos) in state.posts.iter() {
             if &pos.creator_id == &user_id {
@@ -75,8 +98,8 @@ pub fn api_post_by_user_id(
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_latest_posts(page: crate::models::types::Pagination) -> Vec<Post> {
-    with_read_state(|state| {
+pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<Post> {
+    crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
         for (_, pos) in state.posts.iter() {
@@ -104,9 +127,7 @@ pub fn api_get_latest_posts(page: crate::models::types::Pagination) -> Vec<Post>
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub async fn api_get_my_posts(
-    args: crate::models::types::Pagination,
-) -> Vec<crate::models::post::Post> {
+pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -135,7 +156,7 @@ pub async fn api_get_my_posts(
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub async fn api_get_subscribed_posts(page: crate::models::types::Pagination) -> Vec<crate::Post> {
+pub async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::Post> {
     match kaires::call_inter_canister::<
         candid::Principal,
         std::collections::HashSet<candid::Principal>,

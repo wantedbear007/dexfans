@@ -67,7 +67,8 @@ service : (PostCanisterInitArgs) -> {
   api_get_latest_posts : (Pagination) -> (vec Post) query;
   api_get_my_posts : (Pagination) -> (vec Post) query;
   api_get_post_by_id : (nat) -> (opt Post) query;
-  api_get_subscribed_posts : () -> (vec Post);
+  api_get_post_ids : (Pagination) -> (vec nat) query;
+  api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_list_all_posts : () -> (vec Post) query;
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;

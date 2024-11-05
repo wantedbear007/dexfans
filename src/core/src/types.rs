@@ -26,12 +26,6 @@ pub enum Membership {
     Platinum = 3,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Pagination {
-    pub page: usize,
-    pub page_size: usize,
-}
-
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct UpdateMembershipIC {
     pub user: Principal,
@@ -109,5 +103,11 @@ pub struct PostCanisterInitArgs {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct ICAddPostCanisterProfile {
     pub post_canister: candid::Principal,
-    pub caller: candid::Principal
+    pub caller: candid::Principal,
+}
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct Pagination {
+    pub start: u32,
+    pub end: u32,
 }
