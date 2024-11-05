@@ -71,3 +71,11 @@ async function uploadFiles(files) {
 
 main().catch(console.error)
 
+function generateIdentity() {
+  const id = Ed25519KeyIdentity.generate()
+  const principal = id.getPrincipal().toText()
+  console.log('Principal', id.getPrincipal().toText())
+
+  const json = id.toJSON()
+  console.log(JSON.stringify(json, null, 0))
+}

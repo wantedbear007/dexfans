@@ -28,8 +28,6 @@ pub(crate) struct UserProfileIC {
     pub membership: core::types::Membership,
 }
 
-
-
 impl Default for UserProfileIC {
     fn default() -> Self {
         Self {
@@ -42,8 +40,6 @@ impl Default for UserProfileIC {
         }
     }
 }
-
-
 
 impl ic_stable_structures::Storable for UserProfileIC {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -59,23 +55,6 @@ impl ic_stable_structures::Storable for UserProfileIC {
     const BOUND: ic_stable_structures::storable::Bound =
         ic_stable_structures::storable::Bound::Unbounded;
 }
-
-// #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-// pub enum PostType {
-//     Free,
-//     Silver,
-//     Gold,
-//     Platinum,
-//     Paid,
-// }
-
-// #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
-// pub enum Membership {
-//     Guest,
-//     Silver,
-//     Gold,
-//     Platinum,
-// }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, CandidType)]
 pub enum CanisterMeta {

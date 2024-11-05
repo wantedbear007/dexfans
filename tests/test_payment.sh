@@ -17,8 +17,6 @@ function debug_print() {
     echo "Balance of sender: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$SENDER\"})")"
 
     echo "Balance of reciever: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$RECIEVER\"})")"
-    
-
 
 }
 
