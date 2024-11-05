@@ -79,3 +79,14 @@ pub fn admin_profile_post_canister(
         None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
+
+// // to get subscribing ic
+#[ic_cdk::query(guard = guard_post_canister_exclusive)]
+pub fn ic_get_subscribed_list(
+    id: candid::Principal,
+) -> Result<std::collections::HashSet<candid::Principal>, String> {
+    crate::with_read_state(|state| match state.account.get(&id) {
+        Some(acc) => Ok(acc.subscribing),
+        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+    })
+}

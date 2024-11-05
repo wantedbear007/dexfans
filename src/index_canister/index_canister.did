@@ -45,6 +45,7 @@ type Result_2 = variant { Ok : text; Err : text };
 type Result_3 = variant { Ok : UserProfile; Err : text };
 type Result_4 = variant { Ok : UserDetailsMinified; Err : text };
 type Result_5 = variant { Ok : CanisterMetaData; Err : text };
+type Result_6 = variant { Ok : vec principal; Err : text };
 type SubscribeAccountIC = record {
   subscribed_by : principal;
   subscribed_to : principal;
@@ -108,6 +109,7 @@ service : (DexFansCanisterInitArgs) -> {
   get_ledger_canister : () -> (Result_1) query;
   get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
+  ic_get_subscribed_list : (principal) -> (Result_6) query;
   ic_subscribe_account : (SubscribeAccountIC) -> (Result);
   ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
   ic_update_membership : (Membership) -> (Result);

@@ -10,6 +10,7 @@ type CreatePostArgs = record {
   price : opt nat8;
 };
 type Membership = variant { Guest; Gold; Platinum; Silver };
+type Pagination = record { end : nat32; start : nat32 };
 type Post = record {
   post_id : nat;
   content : text;
@@ -33,7 +34,6 @@ type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
 type Result_2 = variant { Ok : UserProfileIC; Err : text };
 type Result_3 = variant { Ok : CanisterMetaData; Err : text };
-type Result_4 = variant { Ok : vec Post; Err : text };
 type UpdateMembershipIC = record { user : principal; membership : Membership };
 type UpdatePostArgs = record {
   id : nat;
@@ -64,7 +64,13 @@ service : (PostCanisterInitArgs) -> {
   api_comment_on_post : (nat, text, opt text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_1);
   api_delete_post : (nat) -> (Result_1);
+  api_get_latest_posts : (Pagination) -> (vec Post) query;
+  api_get_my_posts : (Pagination) -> (vec Post) query;
+  api_get_post_by_id : (nat) -> (opt Post) query;
+  api_get_subscribed_posts : () -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
+  api_list_all_posts : () -> (vec Post) query;
+  api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
   api_update_post : (UpdatePostArgs) -> (Result_1);
@@ -73,10 +79,5 @@ service : (PostCanisterInitArgs) -> {
   debug_total_posts : () -> (nat) query;
   get_all_controllers : () -> (vec principal) query;
   get_canister_meta_data : () -> (Result_3) query;
-  get_latest_subscribed_posts : (principal, principal, nat32) -> (Result_4);
-  get_post_by_id : (nat) -> (opt Post) query;
-  get_user_posts_paginated : (principal, principal, nat32) -> (Result_4);
   greet : (text) -> (text) query;
-  latest_posts : (nat64) -> (vec Post) query;
-  list_all_posts : () -> (vec Post) query;
 }
