@@ -95,8 +95,8 @@ service : (DexFansCanisterInitArgs) -> {
   api_create_account : (UserInputArgs) -> (Result_2);
   api_get_my_profile : () -> (Result_3) query;
   api_get_notifications : () -> (vec NotificationBody) query;
-  api_get_subscribed : () -> (vec principal) query;
-  api_get_subscribers : () -> (vec principal) query;
+  api_get_subscribed : () -> (vec UserDetailsMinified) query;
+  api_get_subscribers : () -> (vec UserDetailsMinified) query;
   api_get_user_ids : (Pagination) -> (vec principal) query;
   api_get_user_minified : (principal) -> (Result_4) query;
   api_purchase_membership : (Membership) -> (Result);
