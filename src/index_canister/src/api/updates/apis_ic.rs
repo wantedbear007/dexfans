@@ -1,6 +1,6 @@
 use crate::utils::guards::*;
 
-#[ic_cdk::update(guard = guard_post_canister_exclusive)]
+// #[ic_cdk::update(guard = guard_post_canister_exclusive)]
 pub fn ic_subscribe_account(args: core::types::SubscribeAccountIC) -> Result<(), String> {
     // TODO add validation if user has already subscribed
     crate::with_write_state(|state| {
@@ -30,7 +30,7 @@ pub fn ic_subscribe_account(args: core::types::SubscribeAccountIC) -> Result<(),
 // check for user existance
 // add bost to and accounts
 
-#[ic_cdk::update(guard = guard_post_canister_exclusive)]
+// #[ic_cdk::update(guard = guard_post_canister_exclusive)]
 pub fn ic_unsubscribe_account(args: core::types::UnsubscribeAccountIC) -> Result<(), String> {
     crate::with_write_state(|state| {
         let mut unsubscribed_by = state

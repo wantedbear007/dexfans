@@ -39,42 +39,40 @@ pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
     })
 }
 
-#[ic_cdk::query(guard = guard_prevent_anonymous)]
-fn api_get_user_ids(page: core::types::Pagination) -> Vec<candid::Principal> {
-    crate::with_read_state(|state| {
-        let mut ids: Vec<candid::Principal> = Vec::new();
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// fn api_get_user_ids(page: core::types::Pagination) -> Vec<candid::Principal> {
+//     crate::with_read_state(|state| {
+//         let mut ids: Vec<candid::Principal> = Vec::new();
 
-        for (id, _) in state.account.iter() {
-            ids.push(id);
-        }
+//         for (id, _) in state.account.iter() {
+//             ids.push(id);
+//         }
 
-        let ending = ids.len();
+//         let ending = ids.len();
 
-        if ending == 0 {
-            return ids;
-        }
+//         if ending == 0 {
+//             return ids;
+//         }
 
-        let start = page.start as usize;
-        let end = page.end as usize;
-        if start < ending {
-            let end = end.min(ending);
+//         let start = page.start as usize;
+//         let end = page.end as usize;
+//         if start < ending {
+//             let end = end.min(ending);
 
-            return ids[start..end].to_vec();
-        }
+//             return ids[start..end].to_vec();
+//         }
 
-        Vec::new()
-    })
-}
+//         Vec::new()
+//     })
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
-
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
             let mut subscribers: Vec<crate::models::types::UserDetailsMinified> = Vec::new();
 
-            for sub in acc.subscribers
-            .iter() {
+            for sub in acc.subscribers.iter() {
                 let user_prof = state
                     .account
                     .get(sub)
@@ -108,7 +106,7 @@ fn api_get_notifications() -> Vec<crate::NotificationBody> {
     )
 }
 
-#[ic_cdk::query]
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_user_minified(
     id: candid::Principal,
 ) -> Result<crate::models::types::UserDetailsMinified, String> {
@@ -119,5 +117,38 @@ fn api_get_user_minified(
             username: acc.username,
         }),
         None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    })
+}
+
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_user_details(
+    id: candid::Principal,
+) -> Result<crate::models::types::UserProfileLittleMinified, String> {
+    crate::with_read_state(|state| match state.account.get(&id) {
+        Some(acc) => Ok(crate::models::types::UserProfileLittleMinified {
+            active_post_canister: acc.active_post_canister,
+            asset_canister_id: acc.asset_canister_id,
+            user_id: acc.user_id,
+            all_post_canisters: acc.all_post_canisters,
+            subscribers: acc.subscribers,
+            subscribing: acc.subscribing,
+            avatar: acc.avatar,
+            bio: acc.bio,
+            cover_image: acc.cover_image,
+            created_at: acc.created_at,
+            membership: acc.membership,
+            username: acc.username,
+        }),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    })
+}
+
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_my_collection(
+    // args: core::types::Pagination,
+) -> Result<Vec<core::types::Collection>, String> {
+    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(acc) => Ok(acc.collects),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }

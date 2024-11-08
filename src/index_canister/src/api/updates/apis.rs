@@ -100,20 +100,20 @@ pub async fn api_update_membership(args: core::types::Membership) -> Result<(), 
     }
 }
 
-#[ic_cdk::update]
-pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), String> {
-    STATE.with(|state| {
-        let mut app_state = state.borrow_mut();
+// #[ic_cdk::update]
+// pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), String> {
+//     STATE.with(|state| {
+//         let mut app_state = state.borrow_mut();
 
-        if let Some(mut user_profile) = app_state.account.remove(&user_id) {
-            user_profile.posts.push(post_id); // Modify the profile
-            app_state.account.insert(user_id, user_profile); // Reinsert the modified profile
-            Ok(())
-        } else {
-            Err("User not found.".to_string())
-        }
-    })
-}
+//         if let Some(mut user_profile) = app_state.account.remove(&user_id) {
+//             user_profile.posts.push(post_id); // Modify the profile
+//             app_state.account.insert(user_id, user_profile); // Reinsert the modified profile
+//             Ok(())
+//         } else {
+//             Err("User not found.".to_string())
+//         }
+//     })
+// }
 
 #[ic_cdk::update]
 pub fn api_update_user_likes(
@@ -324,3 +324,14 @@ pub async fn api_purchase_membership(args: core::types::Membership) -> Result<()
     Ok(())
 }
 
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn api_add_to_collection(args: core::types::Collection) -> Result<(), String> {
+    crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+        Some(mut acc) => {
+            acc.collects.push(args);
+
+            Ok(())
+        }
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+    })
+}

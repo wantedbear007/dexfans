@@ -54,13 +54,13 @@ pub fn api_comment_on_post(
     Ok(String::from("Comment added successfully"))
 }
 
-#[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub async fn api_subscribe_account(to: candid::Principal) -> Result<(), String> {
-    super::subscription_controllers::controller_subscribe(to).await
-}
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
+// pub async fn api_subscribe_account(to: candid::Principal) -> Result<(), String> {
+//     super::subscription_controllers::controller_subscribe(to).await
+// }
 
-#[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub async fn api_unsubscribe_account(to: candid::Principal) -> Result<(), String> {
-    super::subscription_controllers::controller_unsubscribe(to).await
-}
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
+// pub async fn api_unsubscribe_account(to: candid::Principal) -> Result<(), String> {
+//     super::subscription_controllers::controller_unsubscribe(to).await
+// }
 

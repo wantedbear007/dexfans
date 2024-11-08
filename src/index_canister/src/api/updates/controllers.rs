@@ -29,7 +29,7 @@ pub async fn controller_create_account(
                     cover_image: args.cover_image,
                     collects: Vec::new(),
                     likes: Vec::new(),
-                    posts: Vec::new(),
+                    // posts: Vec::new(),
                     created_at: ic_cdk::api::time(),
                     is_bot: false,
                     membership: core::types::Membership::Guest,

@@ -1,63 +1,63 @@
 // to subscribe
-pub(super) async fn controller_subscribe(to: candid::Principal) -> Result<(), String> {
-    let parent_canister_id = crate::utils::functions::get_parent_canister()
-        .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
+// pub(super) async fn controller_subscribe(to: candid::Principal) -> Result<(), String> {
+//     let parent_canister_id = crate::utils::functions::get_parent_canister()
+//         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
 
-    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(_val) => {
-            ic_cdk::spawn(async move {
-                let _ =
-                    kaires::call_inter_canister::<core::types::SubscribeAccountIC, ()>(
-                        "ic_subscribe_account",
-                        core::types::SubscribeAccountIC {
-                            subscribed_by: ic_cdk::api::caller(),
-                            subscribed_to: to,
-                        },
-                        parent_canister_id,
-                    )
-                    .await
-                    .map_err(|err| {
-                        return format!("{}", err);
-                    });
-            });
+//     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+//         Some(_val) => {
+//             ic_cdk::spawn(async move {
+//                 let _ =
+//                     kaires::call_inter_canister::<core::types::SubscribeAccountIC, ()>(
+//                         "ic_subscribe_account",
+//                         core::types::SubscribeAccountIC {
+//                             subscribed_by: ic_cdk::api::caller(),
+//                             subscribed_to: to,
+//                         },
+//                         parent_canister_id,
+//                     )
+//                     .await
+//                     .map_err(|err| {
+//                         return format!("{}", err);
+//                     });
+//             });
 
-            Ok(())
-        }
-        None => {
-            return Err(String::from(
-                core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-            ))
-        }
-    })
-}
+//             Ok(())
+//         }
+//         None => {
+//             return Err(String::from(
+//                 core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+//             ))
+//         }
+//     })
+// }
 
-pub(super) async fn controller_unsubscribe(to: candid::Principal) -> Result<(), String> {
-    let parent_canister_id = crate::utils::functions::get_parent_canister()
-        .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
+// pub(super) async fn controller_unsubscribe(to: candid::Principal) -> Result<(), String> {
+//     let parent_canister_id = crate::utils::functions::get_parent_canister()
+//         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
 
-    crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(_val) => {
-            ic_cdk::spawn(async move {
-                let _ =
-                    kaires::call_inter_canister::<core::types::UnsubscribeAccountIC, ()>(
-                        "ic_unsubscribe_account",
-                        core::types::UnsubscribeAccountIC {
-                            unsubscribed_by: ic_cdk::api::caller(),
-                            unsubscribed_to: to,
-                        },
-                        parent_canister_id,
-                    )
-                    .await
-                    .map_err(|err| format!("{}", err));
-            });
+//     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+//         Some(_val) => {
+//             ic_cdk::spawn(async move {
+//                 let _ =
+//                     kaires::call_inter_canister::<core::types::UnsubscribeAccountIC, ()>(
+//                         "ic_unsubscribe_account",
+//                         core::types::UnsubscribeAccountIC {
+//                             unsubscribed_by: ic_cdk::api::caller(),
+//                             unsubscribed_to: to,
+//                         },
+//                         parent_canister_id,
+//                     )
+//                     .await
+//                     .map_err(|err| format!("{}", err));
+//             });
 
-            Ok(())
-        }
-        None => Err(String::from(
-            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-        )),
-    })
-}
+//             Ok(())
+//         }
+//         None => Err(String::from(
+//             core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
+//         )),
+//     })
+// }
 
 // use candid::Principal;
 // use ic_cdk::call;

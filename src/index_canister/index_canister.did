@@ -6,6 +6,7 @@ type CanisterMetaData = record {
   payment_recipient : principal;
   membership_plans : vec record { Membership; nat64 };
 };
+type Collection = record { post_id : nat; asset_canister : principal };
 type CommentNotificationArgs = record {
   post_url : text;
   post_owner : principal;
@@ -39,22 +40,15 @@ type NotificationType = variant {
   NewSubscribingPost;
   NewSubscriber;
 };
-type Pagination = record { end : nat32; start : nat32 };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
 type Result_2 = variant { Ok : text; Err : text };
-type Result_3 = variant { Ok : UserProfile; Err : text };
-type Result_4 = variant { Ok : UserDetailsMinified; Err : text };
-type Result_5 = variant { Ok : CanisterMetaData; Err : text };
-type Result_6 = variant { Ok : vec principal; Err : text };
-type SubscribeAccountIC = record {
-  subscribed_by : principal;
-  subscribed_to : principal;
-};
-type UnsubscribeAccountIC = record {
-  unsubscribed_by : principal;
-  unsubscribed_to : principal;
-};
+type Result_3 = variant { Ok : vec Collection; Err : text };
+type Result_4 = variant { Ok : UserProfile; Err : text };
+type Result_5 = variant { Ok : UserProfileLittleMinified; Err : text };
+type Result_6 = variant { Ok : UserDetailsMinified; Err : text };
+type Result_7 = variant { Ok : CanisterMetaData; Err : text };
+type Result_8 = variant { Ok : vec principal; Err : text };
 type UserDetailsMinified = record {
   username : text;
   user_id : principal;
@@ -81,8 +75,21 @@ type UserProfile = record {
   subscribers : vec principal;
   subscribing : vec principal;
   membership : Membership;
-  posts : vec nat;
-  collects : vec nat;
+  collects : vec Collection;
+  all_post_canisters : vec principal;
+  avatar : opt text;
+};
+type UserProfileLittleMinified = record {
+  bio : opt text;
+  username : text;
+  asset_canister_id : principal;
+  cover_image : opt text;
+  created_at : nat64;
+  user_id : principal;
+  active_post_canister : principal;
+  subscribers : vec principal;
+  subscribing : vec principal;
+  membership : Membership;
   all_post_canisters : vec principal;
   avatar : opt text;
 };
@@ -91,14 +98,15 @@ service : (DexFansCanisterInitArgs) -> {
   admin_profile_post_canister : (ICAddPostCanisterProfile) -> (Result);
   admin_remove_controller : (principal) -> (Result);
   admin_set_post_canister : (principal) -> (Result_1);
-  api_add_post_id_to_user : (principal, nat) -> (Result);
+  api_add_to_collection : (Collection) -> (Result);
   api_create_account : (UserInputArgs) -> (Result_2);
-  api_get_my_profile : () -> (Result_3) query;
+  api_get_my_collection : () -> (Result_3) query;
+  api_get_my_profile : () -> (Result_4) query;
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec UserDetailsMinified) query;
   api_get_subscribers : () -> (vec UserDetailsMinified) query;
-  api_get_user_ids : (Pagination) -> (vec principal) query;
-  api_get_user_minified : (principal) -> (Result_4) query;
+  api_get_user_details : (principal) -> (Result_5) query;
+  api_get_user_minified : (principal) -> (Result_6) query;
   api_purchase_membership : (Membership) -> (Result);
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
@@ -107,13 +115,11 @@ service : (DexFansCanisterInitArgs) -> {
   api_update_user_likes : (principal, nat, bool) -> (Result);
   create_post_canister : () -> (Result_1);
   get_asset_canister : () -> (Result_1) query;
-  get_canister_meta_data : () -> (Result_5) query;
+  get_canister_meta_data : () -> (Result_7) query;
   get_ledger_canister : () -> (Result_1) query;
   get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
-  ic_get_subscribed_list : (principal) -> (Result_6) query;
-  ic_subscribe_account : (SubscribeAccountIC) -> (Result);
-  ic_unsubscribe_account : (UnsubscribeAccountIC) -> (Result);
+  ic_get_subscribed_list : (principal) -> (Result_8) query;
   ic_update_membership : (Membership) -> (Result);
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);

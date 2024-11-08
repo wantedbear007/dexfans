@@ -37,7 +37,9 @@ pub(crate) struct UserInputArgs {
     // pub asset_canister_id:
 }
 
-#[derive(Clone, CandidType, Serialize, Deserialize)]
+
+
+#[derive(Clone, CandidType, Serialize, Deserialize,)]
 pub(crate) struct UserProfile {
     pub user_id: Principal,
     pub active_post_canister: Principal,
@@ -49,14 +51,37 @@ pub(crate) struct UserProfile {
     pub cover_image: Option<String>,
     pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
     pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
-    pub posts: Vec<PostId>,                                // Created posts
+    // pub posts: Vec<PostId>,                                // Created posts
     pub likes: Vec<PostId>,                                // Liked posts
-    pub collects: Vec<PostId>,                             // Collected posts
+    pub collects: Vec<core::types::Collection>,                             // Collected posts
     pub is_bot: bool,                                      // Is this user a bot?
     pub membership: core::types::Membership,               // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
     pub membership_till: u64,
     pub membership_ledger_block: Option<icrc_ledger_types::icrc1::transfer::BlockIndex>,
+}
+
+
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub(crate) struct UserProfileLittleMinified {
+    pub user_id: Principal,
+    pub active_post_canister: Principal,
+    pub all_post_canisters: std::collections::HashSet<Principal>,
+    pub username: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+    pub asset_canister_id: Principal,
+    pub cover_image: Option<String>,
+    pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
+    pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
+    // pub posts: Vec<PostId>,                                // Created posts
+    // pub likes: Vec<PostId>,                                // Liked posts
+    // pub collects: Vec<PostId>,                             // Collected posts
+    // pub is_bot: bool,                                      // Is this user a bot?
+    pub membership: core::types::Membership,               // Membership level
+    pub created_at: TimestampMillis,                       // Timestamp when the user was created
+    // pub membership_till: u64,
+    // pub membership_ledger_block: Option<icrc_ledger_types::icrc1::transfer::BlockIndex>,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]

@@ -10,13 +10,13 @@ fn greet(name: String) -> String {
     )
 }
 
-#[ic_cdk::query]
-fn get_all_controllers() -> std::collections::HashSet<candid::Principal> {
-    crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(data) => data.controllers,
-        None => std::collections::HashSet::new(),
-    })
-}
+// #[ic_cdk::query]
+// fn get_all_controllers() -> std::collections::HashSet<candid::Principal> {
+//     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
+//         Some(data) => data.controllers,
+//         None => std::collections::HashSet::new(),
+//     })
+// }
 
 // debug
 #[ic_cdk::query]
@@ -24,32 +24,32 @@ fn debug_total_posts() -> u128 {
     crate::with_read_state(|state| state.post_counter)
 }
 
-#[ic_cdk::query(guard = guard_prevent_anonymous)]
-fn api_get_post_ids(page: core::types::Pagination) -> Vec<u128> {
-    crate::with_read_state(|state| {
-        let mut ids: Vec<u128> = Vec::new();
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// fn api_get_post_ids(page: core::types::Pagination) -> Vec<u128> {
+//     crate::with_read_state(|state| {
+//         let mut ids: Vec<u128> = Vec::new();
 
-        for (id, _) in state.posts.iter() {
-            ids.push(id);
-        }
+//         for (id, _) in state.posts.iter() {
+//             ids.push(id);
+//         }
 
-        let ending = ids.len();
+//         let ending = ids.len();
 
-        if ending == 0 {
-            return ids;
-        }
+//         if ending == 0 {
+//             return ids;
+//         }
 
-        let start = page.start as usize;
-        let end = page.end as usize;
-        if start < ending {
-            let end = end.min(ending);
+//         let start = page.start as usize;
+//         let end = page.end as usize;
+//         if start < ending {
+//             let end = end.min(ending);
 
-            return ids[start..end].to_vec();
-        }
+//             return ids[start..end].to_vec();
+//         }
 
-        Vec::new()
-    })
-}
+//         Vec::new()
+//     })
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_post_by_id(post_id: u128) -> Option<Post> {
@@ -59,13 +59,13 @@ pub fn api_get_post_by_id(post_id: u128) -> Option<Post> {
     })
 }
 
-#[ic_cdk::query(guard=guard_prevent_anonymous)]
-pub fn api_list_all_posts() -> Vec<Post> {
-    STATE.with(|state| {
-        let app_state = state.borrow();
-        app_state.get_all_posts()
-    })
-}
+// #[ic_cdk::query(guard=guard_prevent_anonymous)]
+// pub fn api_list_all_posts() -> Vec<Post> {
+//     STATE.with(|state| {
+//         let app_state = state.borrow();
+//         app_state.get_all_posts()
+//     })
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_post_by_user_id(user_id: candid::Principal, page: core::types::Pagination) -> Vec<Post> {

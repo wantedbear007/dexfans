@@ -111,3 +111,9 @@ pub struct Pagination {
     pub start: u32,
     pub end: u32,
 }
+
+#[derive(CandidType, Serialize, Deserialize, Clone)]
+pub struct Collection {
+    pub post_id: u128,
+    pub asset_canister: candid::Principal,
+}
