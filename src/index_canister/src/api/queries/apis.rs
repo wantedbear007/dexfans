@@ -15,10 +15,27 @@ pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String>
     })
 }
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_subscribed() -> std::collections::HashSet<candid::Principal> {
+pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(acc) => acc.subscribing,
-        None => std::collections::HashSet::new(),
+        Some(acc) => {
+            let mut subscribing: Vec<crate::models::types::UserDetailsMinified> = Vec::new();
+
+            for sub in acc.subscribing.iter() {
+                let user_prof = state
+                    .account
+                    .get(sub)
+                    .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+
+                subscribing.push(crate::models::types::UserDetailsMinified {
+                    avatar: user_prof.avatar,
+                    user_id: user_prof.user_id,
+                    username: user_prof.username,
+                });
+            }
+
+            subscribing
+        }
+        None => Vec::new(),
     })
 }
 
@@ -50,11 +67,34 @@ fn api_get_user_ids(page: core::types::Pagination) -> Vec<candid::Principal> {
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_subscribers() -> std::collections::HashSet<candid::Principal> {
+pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
+
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(acc) => acc.subscribers,
-        None => std::collections::HashSet::new(),
+        Some(acc) => {
+            let mut subscribers: Vec<crate::models::types::UserDetailsMinified> = Vec::new();
+
+            for sub in acc.subscribers
+            .iter() {
+                let user_prof = state
+                    .account
+                    .get(sub)
+                    .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+
+                subscribers.push(crate::models::types::UserDetailsMinified {
+                    avatar: user_prof.avatar,
+                    user_id: user_prof.user_id,
+                    username: user_prof.username,
+                });
+            }
+
+            subscribers
+        }
+        None => Vec::new(),
     })
+    // crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+    //     Some(acc) => acc.subscribers,
+    //     None => std::collections::HashSet::new(),
+    // })
 }
 
 // TODO add guard
