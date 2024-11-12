@@ -2,9 +2,7 @@
 name = "core"
 version.workspace = true
 edition.workspace = true
-keywords.workspace = true
 categories.workspace = true
-license.workspace = true
 
 [dependencies]
 serde = { workspace = true }

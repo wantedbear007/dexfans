@@ -3,11 +3,6 @@ name = "ic_oss_bucket"
 publish = false
 version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-categories.workspace = true
-license.workspace = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib"]
@@ -24,6 +19,6 @@ once_cell = { workspace = true }
 ic-stable-structures = { workspace = true }
 ic-http-certification = { workspace = true }
 getrandom = { workspace = true }
-lazy_static = "1.4"
+lazy_static = {workspace = true}
 hyperx = { git = "https://github.com/ldclabs/hyperx", rev = "4b9bd373b8c4d29a32e59912bf598ba69273c032" }
 ic-oss-types = { path = "../ic_oss_types", version = "0.9" }

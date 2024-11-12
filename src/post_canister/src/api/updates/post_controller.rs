@@ -1,5 +1,5 @@
 // to create post
-pub(super) async fn controller_create_post(args: crate::CreatePostArgs) -> Result<(), String> {
+pub(super) async fn controller_create_post(args: crate::models::post::CreatePostArgs) -> Result<(), String> {
     match kaires::call_inter_canister::<core::types::ICAddPostCanisterProfile, ()>(
         "admin_profile_post_canister",
         core::types::ICAddPostCanisterProfile {
@@ -19,7 +19,7 @@ pub(super) async fn controller_create_post(args: crate::CreatePostArgs) -> Resul
 
                     state.posts.insert(
                         post_id.clone(),
-                        crate::Post {
+                        crate::models::post::Post {
                             content: args.content,
                             image: args.image,
                             post_type: args.post_type,

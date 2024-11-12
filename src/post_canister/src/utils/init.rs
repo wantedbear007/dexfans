@@ -1,16 +1,16 @@
 
 
 thread_local! {
-  static STATE: std::cell::RefCell<crate::ApplicationState> = std::cell::RefCell::new(crate::ApplicationState::new());
+  static STATE: std::cell::RefCell<crate::store::storage_state::ApplicationState> = std::cell::RefCell::new(crate::store::storage_state::ApplicationState::new());
 }
 
 // to get mutable reference
-pub(crate) fn with_write_state<R>(f: impl FnOnce(&mut crate::ApplicationState) -> R) -> R {
+pub(crate) fn with_write_state<R>(f: impl FnOnce(&mut crate::store::storage_state::ApplicationState) -> R) -> R {
   STATE.with(|cell| f(&mut cell.borrow_mut()))
 }
 
 // to get inmutable reference
-pub(crate) fn with_read_state<R>(f: impl FnOnce(&crate::ApplicationState) -> R) -> R {
+pub(crate) fn with_read_state<R>(f: impl FnOnce(&crate::store::storage_state::ApplicationState) -> R) -> R {
   STATE.with(|cell| f(&cell.borrow()))
 }
 

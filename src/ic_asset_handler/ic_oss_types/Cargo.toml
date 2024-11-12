@@ -3,9 +3,6 @@ name = "ic-oss-types"
 publish = true
 version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-categories.workspace = true
-license.workspace = true
 
 [dependencies]
 base64 = { workspace = true }

@@ -10,6 +10,6 @@ use utils::init::{with_read_state, with_write_state};
 // author: Vinayak Kalra
 // Repo: https://github.com/icP-hub/dexfans/
 
-// init.rs contain the entry point of project.
+// init.rs contain the entry point of crate.
 
 ic_cdk::export_candid!();
