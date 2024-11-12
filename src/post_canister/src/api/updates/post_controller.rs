@@ -118,7 +118,7 @@ pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String>
 
 pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Result<(), String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
-        Some(_) => {
+        Some(mut post) => {
             let comment_id = state.comment_counter + 1;
             state.comment_counter = comment_id;
 
@@ -127,6 +127,8 @@ pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Resu
                 .get(&post_id)
                 .expect(core::constants::ERROR_POST_NOT_EXIST);
 
+            post.comments_count += 1;
+            state.posts.insert(post.post_id, post);
             comments.comments.push(crate::models::comment::CommentBody {
                 comment_id,
                 content,

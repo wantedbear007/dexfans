@@ -26,6 +26,7 @@ type Post = record {
   created_at : nat64;
   likes : vec principal;
   image : opt text;
+  comments_count : nat32;
   price : opt nat8;
 };
 type PostCanisterInitArgs = record {

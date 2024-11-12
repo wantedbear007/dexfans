@@ -31,6 +31,7 @@ pub struct Post {
     pub views: Vec<Principal>,
     // pub comments: Vec<crate::models::comment::Comment>,
     pub creator_id: Principal,
+    pub comments_count: u32,
     pub created_at: TimestampMillis,
 }
 
@@ -69,6 +70,7 @@ impl Default for Post {
             post_type: core::types::PostType::Free,
             price: None,
             // comments: Vec::new(),
+            comments_count: 0,
             created_at: ic_cdk::api::time(),
             creator_id: Principal::anonymous(),
             likes: Vec::new(),
