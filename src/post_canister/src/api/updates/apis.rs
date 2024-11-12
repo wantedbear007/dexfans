@@ -5,7 +5,6 @@ use super::post_controller::{
     controller_update_post,
 };
 
-
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_create_new_post(
     args: crate::models::post::CreatePostArgs,
@@ -45,12 +44,8 @@ pub async fn api_like_unlike_post(post_id: u128) -> Result<String, String> {
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn api_comment_on_post(
-    post_id: u128,
-    content: String,
-    image: Option<String>,
-) -> Result<String, String> {
-    controller_comment_on_post(post_id, content, image).map_err(|err| format!("{}", err))?;
+pub fn api_comment_on_post(post_id: u128, content: String) -> Result<String, String> {
+    controller_comment_on_post(post_id, content).map_err(|err| format!("{}", err))?;
     Ok(String::from("Comment added successfully"))
 }
 
@@ -63,4 +58,3 @@ pub fn api_comment_on_post(
 // pub async fn api_unsubscribe_account(to: candid::Principal) -> Result<(), String> {
 //     super::subscription_controllers::controller_unsubscribe(to).await
 // }
-

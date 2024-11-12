@@ -29,9 +29,16 @@ pub struct Post {
     pub price: Option<u8>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
-    pub comments: Vec<CommentId>,
+    // pub comments: Vec<crate::models::comment::Comment>,
     pub creator_id: Principal,
     pub created_at: TimestampMillis,
+}
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct PostPagination {
+    pub start: u32,
+    pub end: u32,
+    pub post_id: PostId
 }
 
 #[derive(Serialize, Deserialize, CandidType, Clone)]
@@ -61,7 +68,7 @@ impl Default for Post {
             video: None,
             post_type: core::types::PostType::Free,
             price: None,
-            comments: Vec::new(),
+            // comments: Vec::new(),
             created_at: ic_cdk::api::time(),
             creator_id: Principal::anonymous(),
             likes: Vec::new(),

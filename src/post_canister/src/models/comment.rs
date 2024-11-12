@@ -2,7 +2,6 @@
 // use serde::{Deserialize, Serialize};
 // use crate::models::types::{CommentId, TimestampMillis};
 
-
 // #[derive(Serialize, Deserialize, Debug, Clone)]
 // pub struct Comment {
 //     pub comment_id: CommentId,
@@ -12,21 +11,22 @@
 //     pub created_at: TimestampMillis,
 // }
 
-
 use std::borrow::Cow;
 
-use candid::{CandidType, Decode, Encode, Principal};
+use crate::models::types::{CommentId, TimestampMillis};
+use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::Storable;
 use serde::{Deserialize, Serialize};
-use crate::models::types::{CommentId, TimestampMillis};
 
-
-#[derive(Serialize, Deserialize, Debug, Clone,CandidType)]
+#[derive(PartialEq, Eq, Serialize, PartialOrd, Deserialize, Debug, Clone, CandidType, Ord)]
 pub struct Comment {
+    pub comments: Vec<CommentBody>
+}
+
+#[derive(PartialEq, Eq, Serialize, PartialOrd, Deserialize, Debug, Clone, CandidType, Ord)]
+pub struct CommentBody {
     pub comment_id: CommentId,
     pub content: String,
-    pub image: Option<String>,
-    pub creator_id: Principal,
     pub created_at: TimestampMillis,
 }
 
@@ -40,5 +40,6 @@ impl Storable for Comment {
         Decode!(bytes.as_ref(), Comment).unwrap()
     }
 
-    const BOUND: ic_stable_structures::storable::Bound = ic_stable_structures::storable::Bound::Unbounded;
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
 }

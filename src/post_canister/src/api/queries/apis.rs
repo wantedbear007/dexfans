@@ -205,3 +205,36 @@ pub async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crat
         }
     }
 }
+
+// get comments
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_post_comments(
+    args: crate::models::post::PostPagination,
+) -> Vec<crate::models::comment::CommentBody> {
+    crate::with_read_state(|state| match state.comments.get(&args.post_id) {
+        Some(com) => {
+            let mut all_comments: Vec<crate::models::comment::CommentBody> = Vec::new();
+
+            for comment_body in com.comments.iter() {
+                all_comments.push(comment_body.to_owned());
+            }
+
+            let ending = all_comments.len();
+
+            if ending == 0 {
+                return all_comments;
+            }
+
+            let start = args.start as usize;
+            let end = args.end as usize;
+            if start < ending {
+                let end = end.min(ending);
+
+                return all_comments[start..end].to_vec();
+            }
+
+            Vec::new()
+        }
+        None => Vec::new(),
+    })
+}

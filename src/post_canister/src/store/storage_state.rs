@@ -7,7 +7,7 @@ use super::memory::StoreMemory;
 pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, UserProfileIC, StoreMemory>,
     pub posts: StableBTreeMap<u128, Post, StoreMemory>,
-    pub comments: StableBTreeMap<CommentId, Comment, StoreMemory>,
+    pub comments: StableBTreeMap<crate::models::types::PostId, Comment, StoreMemory>,
     pub post_counter: u128,
     pub comment_counter: u128,
     // pub notifications: HashMap<Principal, Vec<Notification>>,
@@ -28,9 +28,9 @@ impl ApplicationState {
     }
 
     // Function to retrieve all posts as a Vec<Post> for serialization
-    pub fn get_all_posts(&self) -> Vec<Post> {
-        self.posts.iter().map(|(_, post)| post.clone()).collect()
-    }
+    // pub fn get_all_posts(&self) -> Vec<Post> {
+    //     self.posts.iter().map(|(_, post)| post.clone()).collect()
+    // }
 
     // Function to retrieve all accounts as a Vec<UserProfile> for serialization
     // pub fn get_all_accounts(&self) -> Vec<UserProfileIC> {

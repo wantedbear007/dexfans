@@ -2,6 +2,11 @@ type CanisterMetaData = record {
   controllers : vec principal;
   canister_ids : vec record { text; principal };
 };
+type CommentBody = record {
+  content : text;
+  created_at : nat64;
+  comment_id : nat;
+};
 type CreatePostArgs = record {
   content : text;
   post_type : PostType;
@@ -21,7 +26,6 @@ type Post = record {
   created_at : nat64;
   likes : vec principal;
   image : opt text;
-  comments : vec nat;
   price : opt nat8;
 };
 type PostCanisterInitArgs = record {
@@ -29,6 +33,7 @@ type PostCanisterInitArgs = record {
   canister_ids : vec record { text; principal };
   accounts : vec UserProfile;
 };
+type PostPagination = record { end : nat32; post_id : nat; start : nat32 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
@@ -61,12 +66,13 @@ service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
-  api_comment_on_post : (nat, text, opt text) -> (Result_1);
+  api_comment_on_post : (nat, text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_1);
   api_delete_post : (nat) -> (Result_1);
   api_get_latest_posts : (Pagination) -> (vec Post) query;
   api_get_my_posts : (Pagination) -> (vec Post) query;
   api_get_post_by_id : (nat) -> (opt Post) query;
+  api_get_post_comments : (PostPagination) -> (vec CommentBody) query;
   api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
