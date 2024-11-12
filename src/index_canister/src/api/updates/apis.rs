@@ -1,7 +1,6 @@
-use candid::{Nat, Principal};
 use core::types::Membership;
 
-use crate::{utils::guards::*, with_read_state, STATE};
+use crate::{utils::guards::*, with_read_state};
 
 use super::controllers::ic_update_membership;
 
@@ -117,11 +116,11 @@ pub async fn api_update_membership(args: core::types::Membership) -> Result<(), 
 
 #[ic_cdk::update]
 pub fn api_update_user_likes(
-    user_id: Principal,
+    user_id: candid::Principal,
     post_id: u128,
     is_liked: bool,
 ) -> Result<(), String> {
-    STATE.with(|state| {
+    crate::utils::init::STATE.with(|state| {
         let mut app_state = state.borrow_mut();
 
         // Remove the user profile from the map, if it exists

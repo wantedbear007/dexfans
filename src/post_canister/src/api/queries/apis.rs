@@ -1,5 +1,4 @@
 use crate::utils::guards::*;
-use crate::{models::post::Post, STATE};
 
 #[ic_cdk::query]
 fn greet(name: String) -> String {
@@ -52,28 +51,36 @@ fn debug_total_posts() -> u128 {
 // }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_post_by_id(post_id: u128) -> Option<Post> {
-    STATE.with(|state| {
-        let app_state = state.borrow();
-        app_state.posts.get(&post_id).map(|post| post.clone())
+pub fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, String> {
+    crate::with_write_state(|state| match state.posts.get(&post_id) {
+        Some(mut post) => {
+            post.views.push(ic_cdk::api::caller());
+            state.posts.insert(post.post_id, post.clone());
+            Ok(crate::models::post::Post {
+                like_count: post.likes.len(),
+                views_count: post.views.len(),
+                ..post
+            })
+        }
+        None => return Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
     })
+
+
 }
 
-// #[ic_cdk::query(guard=guard_prevent_anonymous)]
-// pub fn api_list_all_posts() -> Vec<Post> {
-//     STATE.with(|state| {
-//         let app_state = state.borrow();
-//         app_state.get_all_posts()
-//     })
-// }
+
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_post_by_user_id(user_id: candid::Principal, page: core::types::Pagination) -> Vec<Post> {
+pub fn api_post_by_user_id(user_id: candid::Principal, page: core::types::Pagination) -> Vec<crate::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
         for (_, pos) in state.posts.iter() {
             if &pos.creator_id == &user_id {
-                all_posts.push(pos);
+                all_posts.push(crate::models::post::Post {
+                    like_count: pos.likes.len(),
+                    views_count: pos.views.len(),
+                    ..pos
+                });
             }
         }
 
@@ -98,12 +105,16 @@ pub fn api_post_by_user_id(user_id: candid::Principal, page: core::types::Pagina
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<Post> {
+pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
         for (_, pos) in state.posts.iter() {
-            all_posts.push(pos);
+            all_posts.push(crate::models::post::Post {
+                like_count: pos.likes.len(),
+                views_count: pos.views.len(),
+                ..pos
+            });
         }
 
         // all_posts.sort_by(|a,b| b.created_at.cmp(&a.created_at));
@@ -133,7 +144,11 @@ pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::model
 
         for (_, pos) in state.posts.iter() {
             if &pos.creator_id == &ic_cdk::api::caller() {
-                all_posts.push(pos);
+                all_posts.push(crate::models::post::Post {
+                    like_count: pos.likes.len(),
+                    views_count: pos.views.len(),
+                    ..pos
+                });
             }
         }
 
@@ -175,7 +190,11 @@ pub async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crat
 
                 for (_, post) in state.posts.iter() {
                     if acc_set.contains(&post.creator_id) {
-                        all_posts.push(post.clone());
+                        all_posts.push(crate::models::post::Post {
+                            like_count: post.likes.len(),
+                            views_count: post.views.len(),
+                            ..post
+                        });
                     }
                 }
             });

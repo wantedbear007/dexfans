@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::models::types::{CommentId, Cycles, PostId, TimestampMillis};
+use crate::models::types::{Cycles, PostId, TimestampMillis};
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
@@ -29,6 +29,8 @@ pub struct Post {
     pub price: Option<u8>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
+    pub like_count: usize,
+    pub views_count: usize,
     // pub comments: Vec<crate::models::comment::Comment>,
     pub creator_id: Principal,
     pub comments_count: u32,
@@ -39,7 +41,7 @@ pub struct Post {
 pub struct PostPagination {
     pub start: u32,
     pub end: u32,
-    pub post_id: PostId
+    pub post_id: PostId,
 }
 
 #[derive(Serialize, Deserialize, CandidType, Clone)]
@@ -76,6 +78,8 @@ impl Default for Post {
             likes: Vec::new(),
             post_id: 0,
             views: Vec::new(),
+            like_count: 0,
+            views_count: 0,
         }
     }
 }
