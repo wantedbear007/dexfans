@@ -144,11 +144,95 @@ fn api_get_user_details(
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-fn api_get_my_collection(
-    // args: core::types::Pagination,
+fn api_get_my_collection(// args: core::types::Pagination,
 ) -> Result<Vec<core::types::Collection>, String> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => Ok(acc.collects),
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
+
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
+    crate::with_read_state(|state| {
+        let mut accounts: Vec<crate::models::types::UserProfile> = state
+            .account
+            .iter()
+            .map(|(_, acc)| acc)
+            .filter(|acc| acc.user_id != ic_cdk::api::caller())
+            .collect();
+
+        if accounts.is_empty() {
+            return Vec::new();
+        }
+
+        accounts.sort_by_key(|val| -(val.subscribers.len() as i32));
+
+        let suggested_users: Vec<crate::UserDetailsMinified> = accounts
+            .iter()
+            .take(3)
+            .map(|val| crate::UserDetailsMinified {
+                avatar: val.avatar.clone(),
+                user_id: val.user_id,
+                username: val.username.clone(),
+            })
+            .collect();
+
+        if suggested_users.is_empty() {
+            return Vec::new();
+        }
+
+        let mut users: Vec<crate::UserDetailsMinified> = Vec::new();
+        for _ in 0..core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD {
+            if let Some(random_user) = suggested_users.get(
+                kaires::get_random_number(0, suggested_users.len() as u64) as usize,
+            ) {
+                users.push(random_user.clone());
+            }
+        }
+
+        users
+    })
+}
+
+
+    // #[ic_cdk::query(guard = guard_prevent_anonymous)]
+    // fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
+    //     crate::with_read_state(|state| {
+    //         let mut accounts: Vec<crate::models::types::UserProfile> = state
+    //             .account
+    //             .iter()
+    //             .map(|(_, acc)| acc)
+    //             .filter(|acc| acc.user_id != ic_cdk::api::caller())
+    //             .collect();
+
+    //         if accounts.len() <= 0 {
+    //             return Vec::new();
+    //         }
+
+    //         accounts.sort_by_key(|val| -(val.subscribers.len() as i32));
+
+    //         let suggested_users: Vec<crate::UserDetailsMinified> = accounts
+    //             .iter()
+    //             .take(3)
+    //             .map(|val| crate::UserDetailsMinified {
+    //                 avatar: val.avatar.clone(),
+    //                 user_id: val.user_id,
+    //                 username: val.username.clone(),
+    //             })
+    //             .collect();
+
+    //         let mut users: Vec<crate::UserDetailsMinified> = Vec::new();
+
+    //         for _ in 1..core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD {
+    //             users.push(
+    //                 suggested_users
+    //                     .get(kaires::get_random_number(0, suggested_users.len() as u64) as usize)
+    //                     .unwrap()
+    //                     .clone(),
+    //             );
+    //         }
+
+    //         users
+    //     })
+    // }

@@ -105,6 +105,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_notifications : () -> (vec NotificationBody) query;
   api_get_subscribed : () -> (vec UserDetailsMinified) query;
   api_get_subscribers : () -> (vec UserDetailsMinified) query;
+  api_get_suggested_user : () -> (vec UserDetailsMinified) query;
   api_get_user_details : (principal) -> (Result_5) query;
   api_get_user_minified : (principal) -> (Result_6) query;
   api_purchase_membership : (Membership) -> (Result);
