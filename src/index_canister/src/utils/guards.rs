@@ -1,9 +1,7 @@
 // to prevent anonymous calls
 pub fn guard_prevent_anonymous() -> Result<(), String> {
     if ic_cdk::api::caller() == candid::Principal::anonymous() {
-        return Err(String::from(
-            core::constants::WARNING_ANONYMOUS_CALL,
-        ));
+        return Err(String::from(core::constants::WARNING_ANONYMOUS_CALL));
     }
 
     Ok(())
@@ -13,9 +11,14 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
 pub fn guard_only_admin() -> Result<(), String> {
     guard_prevent_anonymous()?;
 
-    
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(_val) => Ok(()),
+        Some(_val) => {
+            let x = _val.controllers.contains(&ic_cdk::api::caller());
+            if x {
+                return Ok(());
+            }
+            return Err(String::from(core::constants::WARNING_ADMIN_ONLY));
+        }
         None => return Err(String::from(core::constants::WARNING_ADMIN_ONLY)),
     })
 }
@@ -33,10 +36,6 @@ pub fn guard_post_canister_exclusive() -> Result<(), String> {
             }
             return Err(String::from(core::constants::ERROR_UNAUTHORIZED));
         }
-        None => {
-            return Err(String::from(
-                core::constants::ERROR_FAILED_CANISTER_DATA,
-            ))
-        }
+        None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     })
 }

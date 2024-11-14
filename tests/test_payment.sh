@@ -31,8 +31,8 @@ APPROVE=$(dfx --identity minter canister call icp_ledger_canister icrc2_approve 
 echo $APPROVE
 
 # # # TRANSFER TO USER
-# USER_TRANSFER=$(dfx --identity minter canister call index_canister api_complete_payment "(10000, principal \"$SENDER\")")
-# echo $USER_TRANSFER
+USER_TRANSFER=$(dfx --identity minter canister call index_canister api_complete_payment "(10000, principal \"$SENDER\")")
+echo $USER_TRANSFER
 
 debug_print 
 
