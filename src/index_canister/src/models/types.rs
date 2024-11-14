@@ -74,10 +74,6 @@ pub(crate) struct UserProfileLittleMinified {
     pub cover_image: Option<String>,
     pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
     pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
-    // pub posts: Vec<PostId>,                                // Created posts
-    // pub likes: Vec<PostId>,                                // Liked posts
-    // pub collects: Vec<PostId>,                             // Collected posts
-    // pub is_bot: bool,                                      // Is this user a bot?
     pub membership: core::types::Membership,               // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
     // pub membership_till: u64,
@@ -107,7 +103,8 @@ pub(crate) struct UserProfileInterCanister {
 pub(crate) struct UserDetailsMinified {
     pub user_id: candid::Principal,
     pub username: String,
-    pub avatar: Option<String>
+    pub avatar: Option<String>,
+    pub cover: Option<String>
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]

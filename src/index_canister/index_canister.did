@@ -51,6 +51,7 @@ type Result_7 = variant { Ok : CanisterMetaData; Err : text };
 type Result_8 = variant { Ok : vec principal; Err : text };
 type UserDetailsMinified = record {
   username : text;
+  cover : opt text;
   user_id : principal;
   avatar : opt text;
 };

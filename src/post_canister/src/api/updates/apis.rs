@@ -8,11 +8,10 @@ use super::post_controller::{
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_create_new_post(
     args: crate::models::post::CreatePostArgs,
-) -> Result<String, String> {
-    let _x = super::post_controller::controller_create_post(args)
+) -> Result<crate::models::types::PostId, String> {
+    super::post_controller::controller_create_post(args)
         .await
-        .map_err(|err| return format!("{}", err));
-    Ok(String::from(core::constants::SUCCESS_POST_CREATED))
+        .map_err(|err| return format!("{}", err))
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]

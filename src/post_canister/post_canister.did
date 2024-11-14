@@ -40,9 +40,10 @@ type PostPagination = record { end : nat32; post_id : nat; start : nat32 };
 type PostType = variant { Free; Gold; Paid; Platinum; Silver };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
-type Result_2 = variant { Ok : Post; Err : text };
-type Result_3 = variant { Ok : UserProfileIC; Err : text };
-type Result_4 = variant { Ok : CanisterMetaData; Err : text };
+type Result_2 = variant { Ok : nat; Err : text };
+type Result_3 = variant { Ok : Post; Err : text };
+type Result_4 = variant { Ok : UserProfileIC; Err : text };
+type Result_5 = variant { Ok : CanisterMetaData; Err : text };
 type UpdateMembershipIC = record { user : principal; membership : Membership };
 type UpdatePostArgs = record {
   id : nat;
@@ -71,19 +72,19 @@ service : (PostCanisterInitArgs) -> {
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
   api_comment_on_post : (nat, text) -> (Result_1);
-  api_create_new_post : (CreatePostArgs) -> (Result_1);
+  api_create_new_post : (CreatePostArgs) -> (Result_2);
   api_delete_post : (nat) -> (Result_1);
   api_get_latest_posts : (Pagination) -> (vec Post) query;
   api_get_my_posts : (Pagination) -> (vec Post) query;
-  api_get_post_by_id : (nat) -> (Result_2) query;
+  api_get_post_by_id : (nat) -> (Result_3) query;
   api_get_post_comments : (PostPagination) -> (vec CommentBody) query;
   api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
-  debug_get_user_profile : () -> (Result_3) query;
+  debug_get_user_profile : () -> (Result_4) query;
   debug_total_posts : () -> (nat) query;
-  get_canister_meta_data : () -> (Result_4) query;
+  get_canister_meta_data : () -> (Result_5) query;
   greet : (text) -> (text) query;
 }

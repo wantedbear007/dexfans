@@ -30,6 +30,7 @@ pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
+                    cover: user_prof.cover_image
                 });
             }
 
@@ -82,6 +83,7 @@ pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
+                    cover: user_prof.cover_image
                 });
             }
 
@@ -115,6 +117,7 @@ fn api_get_user_minified(
             avatar: acc.avatar,
             user_id: acc.user_id,
             username: acc.username,
+            cover: acc.cover_image
         }),
         None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
@@ -170,11 +173,12 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
 
         let suggested_users: Vec<crate::UserDetailsMinified> = accounts
             .iter()
-            .take(3)
+            .take(core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD as usize)
             .map(|val| crate::UserDetailsMinified {
                 avatar: val.avatar.clone(),
                 user_id: val.user_id,
                 username: val.username.clone(),
+                cover: val.cover_image.clone(),
             })
             .collect();
 
@@ -184,9 +188,9 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
 
         let mut users: Vec<crate::UserDetailsMinified> = Vec::new();
         for _ in 0..core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD {
-            if let Some(random_user) = suggested_users.get(
-                kaires::get_random_number(0, suggested_users.len() as u64) as usize,
-            ) {
+            if let Some(random_user) = suggested_users
+                .get(kaires::get_random_number(0, suggested_users.len() as u64) as usize)
+            {
                 users.push(random_user.clone());
             }
         }
@@ -194,45 +198,3 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
         users
     })
 }
-
-
-    // #[ic_cdk::query(guard = guard_prevent_anonymous)]
-    // fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
-    //     crate::with_read_state(|state| {
-    //         let mut accounts: Vec<crate::models::types::UserProfile> = state
-    //             .account
-    //             .iter()
-    //             .map(|(_, acc)| acc)
-    //             .filter(|acc| acc.user_id != ic_cdk::api::caller())
-    //             .collect();
-
-    //         if accounts.len() <= 0 {
-    //             return Vec::new();
-    //         }
-
-    //         accounts.sort_by_key(|val| -(val.subscribers.len() as i32));
-
-    //         let suggested_users: Vec<crate::UserDetailsMinified> = accounts
-    //             .iter()
-    //             .take(3)
-    //             .map(|val| crate::UserDetailsMinified {
-    //                 avatar: val.avatar.clone(),
-    //                 user_id: val.user_id,
-    //                 username: val.username.clone(),
-    //             })
-    //             .collect();
-
-    //         let mut users: Vec<crate::UserDetailsMinified> = Vec::new();
-
-    //         for _ in 1..core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD {
-    //             users.push(
-    //                 suggested_users
-    //                     .get(kaires::get_random_number(0, suggested_users.len() as u64) as usize)
-    //                     .unwrap()
-    //                     .clone(),
-    //             );
-    //         }
-
-    //         users
-    //     })
-    // }

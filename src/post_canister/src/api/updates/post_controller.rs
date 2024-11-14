@@ -1,7 +1,7 @@
 // to create post
 pub(super) async fn controller_create_post(
     args: crate::models::post::CreatePostArgs,
-) -> Result<(), String> {
+) -> Result<crate::models::types::PostId, String> {
     match kaires::call_inter_canister::<core::types::ICAddPostCanisterProfile, ()>(
         "admin_profile_post_canister",
         core::types::ICAddPostCanisterProfile {
@@ -34,7 +34,7 @@ pub(super) async fn controller_create_post(
                         },
                     );
 
-                    Ok(())
+                    Ok(post_id)
                 }
                 None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
             })
