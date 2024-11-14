@@ -30,7 +30,7 @@ pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
-                    cover: user_prof.cover_image
+                    cover: user_prof.cover_image,
                 });
             }
 
@@ -83,7 +83,7 @@ pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
-                    cover: user_prof.cover_image
+                    cover: user_prof.cover_image,
                 });
             }
 
@@ -117,7 +117,7 @@ fn api_get_user_minified(
             avatar: acc.avatar,
             user_id: acc.user_id,
             username: acc.username,
-            cover: acc.cover_image
+            cover: acc.cover_image,
         }),
         None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
@@ -196,5 +196,37 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
         }
 
         users
+    })
+}
+
+// search user
+#[ic_cdk::query]
+fn api_search_user(args: String) -> Vec<crate::UserDetailsMinified> {
+    crate::with_read_state(|state| {
+        state
+            .account
+            .iter()
+            .filter_map(|(_, mut acc)| {
+                if acc.username.to_lowercase().contains(&args.to_lowercase())
+                    || acc
+                        .bio
+                        .get_or_insert(String::from(""))
+                        .contains(&args.to_lowercase())
+                // if (strsim::levenshtein(&acc.username, &args)
+                //     <= core::constants::ESSENTIAL_FUZZY_SEARCH_THRESHOLD)
+                //     || (strsim::levenshtein(&acc.bio.get_or_insert("".to_string()), &args)
+                //         <= core::constants::ESSENTIAL_FUZZY_SEARCH_THRESHOLD)
+                {
+                    Some(crate::UserDetailsMinified {
+                        avatar: acc.avatar,
+                        cover: acc.cover_image,
+                        user_id: acc.user_id,
+                        username: acc.username,
+                    })
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>()
     })
 }

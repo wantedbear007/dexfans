@@ -110,6 +110,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_user_details : (principal) -> (Result_5) query;
   api_get_user_minified : (principal) -> (Result_6) query;
   api_purchase_membership : (Membership) -> (Result);
+  api_search_user : (text) -> (vec UserDetailsMinified) query;
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
   api_update_membership : (Membership) -> (Result);

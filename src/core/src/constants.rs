@@ -10,6 +10,7 @@ pub const ESSENTIAL_POST_PARENT_CANISTER: &str = "index_canister";
 pub const ESSENTIAL_MEMBERSHIP_VALIDITY: u64 = 30 * 24 * 60 * 60 * 1_000_000_000; // 30 days
 pub const ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD: u128 = 150_000_000_000; // Total cycles that is to be allocated to dynamic post canister
 pub const ESSENTIAL_SUGGESTED_USER_THRESHOLD: u32 = 15;
+pub const ESSENTIAL_FUZZY_SEARCH_THRESHOLD: usize = 3;
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous calls are not permitted!";

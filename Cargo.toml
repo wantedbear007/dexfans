@@ -45,3 +45,4 @@ kaires = { git = "https://github.com/wantedbear007/kaires", rev = "772f3b13bec4d
 core = {path = "src/core", version = "*"}
 icrc-ledger-types = "0.1.5"
 lazy_static = "1.4"
+strsim = "0.10.0" # for fuzzy search
