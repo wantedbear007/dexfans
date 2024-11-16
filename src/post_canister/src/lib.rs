@@ -1,4 +1,4 @@
-mod api;
+mod apis;
 mod models;
 mod store;
 mod utils;
