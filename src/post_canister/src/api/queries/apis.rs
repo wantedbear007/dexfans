@@ -23,6 +23,24 @@ fn debug_total_posts() -> u128 {
     crate::with_read_state(|state| state.post_counter)
 }
 
+// add anonymous guard
+#[ic_cdk::query]
+fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
+    crate::with_read_state(|state| {
+        state
+            .posts
+            .iter()
+            .filter_map(|(_, post)| {
+                if post.content.to_lowercase().contains(&args.to_lowercase()) {
+                    Some(post)
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
 // #[ic_cdk::query(guard = guard_prevent_anonymous)]
 // fn api_get_post_ids(page: core::types::Pagination) -> Vec<u128> {
 //     crate::with_read_state(|state| {

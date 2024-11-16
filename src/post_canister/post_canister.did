@@ -81,6 +81,7 @@ service : (PostCanisterInitArgs) -> {
   api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
+  api_search_post : (text) -> (vec Post) query;
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_4) query;

@@ -172,7 +172,7 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
 
         accounts.sort_by_key(|val| -(val.subscribers.len() as i32));
 
-        let mut suggested_users: Vec<crate::UserDetailsMinified> = accounts
+        let suggested_users: Vec<crate::UserDetailsMinified> = accounts
             .iter()
             .take(core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD as usize)
             .map(|val| crate::UserDetailsMinified {
