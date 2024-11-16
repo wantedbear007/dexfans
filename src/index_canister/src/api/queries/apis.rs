@@ -1,3 +1,4 @@
+
 use crate::utils::guards::*;
 
 #[ic_cdk::query(guard=guard_prevent_anonymous)]
@@ -171,7 +172,7 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
 
         accounts.sort_by_key(|val| -(val.subscribers.len() as i32));
 
-        let suggested_users: Vec<crate::UserDetailsMinified> = accounts
+        let mut suggested_users: Vec<crate::UserDetailsMinified> = accounts
             .iter()
             .take(core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD as usize)
             .map(|val| crate::UserDetailsMinified {
@@ -186,16 +187,11 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
             return Vec::new();
         }
 
-        let mut users: Vec<crate::UserDetailsMinified> = Vec::new();
-        for _ in 0..core::constants::ESSENTIAL_SUGGESTED_USER_THRESHOLD {
-            if let Some(random_user) = suggested_users
-                .get(kaires::get_random_number(0, suggested_users.len() as u64) as usize)
-            {
-                users.push(random_user.clone());
-            }
-        }
 
-        users
+        // let mut random = rand::thread_rng();
+        // suggested_users.to_owned().shuffle(&mut random);
+
+        suggested_users
     })
 }
 

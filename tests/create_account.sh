@@ -3,7 +3,7 @@
 set -e
 
 # Number of users you want to register
-NUM_USERS=2
+NUM_USERS=20
 START_NUM=0
 echo "Creating User Identities..."
 
