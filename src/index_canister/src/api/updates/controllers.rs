@@ -1,4 +1,3 @@
-use crate::{utils::functions::get_post_canister, with_write_state};
 
 pub async fn controller_create_account(
     args: crate::models::types::UserInputArgs,
@@ -93,7 +92,7 @@ pub async fn ic_update_profile(args: core::types::UpdateUserProfileArgsIC) -> Re
     match kaires::call_inter_canister::<core::types::UpdateUserProfileArgsIC, ()>(
         "admin_update_user_profile",
         args,
-        get_post_canister().expect(core::constants::ERROR_FAILED_CANISTER_DATA),
+        crate::utils::functions::get_post_canister().expect(core::constants::ERROR_FAILED_CANISTER_DATA),
     )
     .await
     {
@@ -103,37 +102,37 @@ pub async fn ic_update_profile(args: core::types::UpdateUserProfileArgsIC) -> Re
 }
 
 // intercanister update membership
-#[ic_cdk::update]
-pub async fn ic_update_membership(
-    // args: core::types::UpdateMembershipIC,
-    args: core::types::Membership,
-) -> Result<(), String> {
-    match kaires::call_inter_canister::<core::types::UpdateMembershipIC, ()>(
-        "admin_update_membership",
-        core::types::UpdateMembershipIC {
-            user: ic_cdk::api::caller(),
-            membership: args,
-        },
-        get_post_canister().expect(core::constants::ERROR_FAILED_CANISTER_DATA),
-    )
-    .await
-    {
-        Ok(()) => Ok(()),
-        Err(err) => return Err(err),
-    }
-}
+// #[ic_cdk::update]
+// pub async fn ic_update_membership(
+//     // args: core::types::UpdateMembershipIC,
+//     args: core::types::Membership,
+// ) -> Result<(), String> {
+//     match kaires::call_inter_canister::<core::types::UpdateMembershipIC, ()>(
+//         "admin_update_membership",
+//         core::types::UpdateMembershipIC {
+//             user: ic_cdk::api::caller(),
+//             membership: args,
+//         },
+//         crate::utils::functions::get_post_canister().expect(core::constants::ERROR_FAILED_CANISTER_DATA),
+//     )
+//     .await
+//     {
+//         Ok(()) => Ok(()),
+//         Err(err) => return Err(err),
+//     }
+// }
 
 // rollbacks
-pub fn rb_membership_update(args: core::types::Membership) -> Result<(), String> {
-    with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(mut val) => {
-            val.membership = args;
-            state.account.insert(ic_cdk::api::caller(), val);
-            Ok(())
-        }
-        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
-    })
-}
+// pub fn rb_membership_update(args: core::types::Membership) -> Result<(), String> {
+//     crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+//         Some(mut val) => {
+//             val.membership = args;
+//             state.account.insert(ic_cdk::api::caller(), val);
+//             Ok(())
+//         }
+//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+//     })
+// }
 
 // purchase subscription
 // pub fn controller_membership(args: core::types::Membership) -> Result<(), String> {

@@ -58,7 +58,5 @@ pub(super) async fn icp_transfer_handler(
 //     ledger: candid::Principal,
 // ) -> Result<BlockIndex, String> {
 
-    
-
 //     icp_transfer_handler(amt, recipient, ledger).await
 // }

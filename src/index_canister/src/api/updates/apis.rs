@@ -1,8 +1,6 @@
-use core::types::Membership;
 
-use crate::{utils::guards::*, with_read_state};
+use crate::utils::guards::*;
 
-use super::controllers::ic_update_membership;
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
@@ -66,53 +64,52 @@ pub async fn api_update_profile(
 }
 
 // update membership
-// TODO add frontend canister guard
-#[ic_cdk::update]
-pub async fn api_update_membership(args: core::types::Membership) -> Result<(), String> {
-    // msp to save the current state of membership
-    let mut msp: Membership = Membership::Guest;
-    match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-        Some(mut val) => {
-            if &val.membership == &args {
-                return Err(String::from(core::constants::WARNING_SAME_VALUE));
-            }
-            msp = val.membership;
-            val.membership = args.clone();
-            state.account.insert(ic_cdk::api::caller(), val);
-            Ok(())
-        }
-        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
-    }) {
-        Ok(()) => {
-            // to update membership on post canister
-            match ic_update_membership(args).await {
-                Ok(()) => Ok(()),
-                Err(err) => {
-                    // roll back
-                    super::controllers::rb_membership_update(msp)
-                        .expect(core::constants::ERROR_FAILED_CALL);
-                    return Err(err);
-                }
-            }
-        }
-        Err(err) => return Err(err),
-    }
-}
-
 // #[ic_cdk::update]
-// pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), String> {
-//     STATE.with(|state| {
-//         let mut app_state = state.borrow_mut();
-
-//         if let Some(mut user_profile) = app_state.account.remove(&user_id) {
-//             user_profile.posts.push(post_id); // Modify the profile
-//             app_state.account.insert(user_id, user_profile); // Reinsert the modified profile
+// pub async fn api_update_membership(args: core::types::Membership) -> Result<(), String> {
+//     // msp to save the current state of membership
+//     let mut msp: Membership = Membership::Guest;
+//     match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
+//         Some(mut val) => {
+//             if &val.membership == &args {
+//                 return Err(String::from(core::constants::WARNING_SAME_VALUE));
+//             }
+//             msp = val.membership;
+//             val.membership = args.clone();
+//             state.account.insert(ic_cdk::api::caller(), val);
 //             Ok(())
-//         } else {
-//             Err("User not found.".to_string())
 //         }
-//     })
+//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+//     }) {
+//         Ok(()) => {
+//             // to update membership on post canister
+//             match ic_update_membership(args).await {
+//                 Ok(()) => Ok(()),
+//                 Err(err) => {
+//                     // roll back
+//                     super::controllers::rb_membership_update(msp)
+//                         .expect(core::constants::ERROR_FAILED_CALL);
+//                     return Err(err);
+//                 }
+//             }
+//         }
+//         Err(err) => return Err(err),
+//     }
 // }
+
+// // #[ic_cdk::update]
+// // pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), String> {
+// //     STATE.with(|state| {
+// //         let mut app_state = state.borrow_mut();
+
+// //         if let Some(mut user_profile) = app_state.account.remove(&user_id) {
+// //             user_profile.posts.push(post_id); // Modify the profile
+// //             app_state.account.insert(user_id, user_profile); // Reinsert the modified profile
+// //             Ok(())
+// //         } else {
+// //             Err("User not found.".to_string())
+// //         }
+// //     })
+// // }
 
 #[ic_cdk::update]
 pub fn api_update_user_likes(
@@ -286,11 +283,11 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
     // canister meta data (ledger and plan prices)
-    let meta_data = with_read_state(|state| state.canister_meta_data.get(&0))
+    let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
 
     // to retrieve user profile
-    let mut account = with_read_state(|state| state.account.get(&ic_cdk::api::caller()))
+    let mut account = crate::with_read_state(|state| state.account.get(&ic_cdk::api::caller()))
         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
     // checks

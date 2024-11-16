@@ -49,6 +49,7 @@ type Result_5 = variant { Ok : UserProfileLittleMinified; Err : text };
 type Result_6 = variant { Ok : UserDetailsMinified; Err : text };
 type Result_7 = variant { Ok : CanisterMetaData; Err : text };
 type Result_8 = variant { Ok : vec principal; Err : text };
+type Result_9 = variant { Ok : nat; Err : text };
 type UserDetailsMinified = record {
   username : text;
   cover : opt text;
@@ -113,7 +114,6 @@ service : (DexFansCanisterInitArgs) -> {
   api_search_user : (text) -> (vec UserDetailsMinified) query;
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
-  api_update_membership : (Membership) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
   create_post_canister : () -> (Result_1);
@@ -124,6 +124,7 @@ service : (DexFansCanisterInitArgs) -> {
   greet : (text) -> (text) query;
   ic_get_subscribed_list : (principal) -> (Result_8) query;
   ic_update_membership : (Membership) -> (Result);
+  icp_transfer_handler : (nat64, principal, principal) -> (Result_9);
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);
   notify_subscribers_newpost : () -> (Result);
