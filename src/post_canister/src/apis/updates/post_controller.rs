@@ -100,20 +100,29 @@ pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Resu
             let comment_id = state.comment_counter + 1;
             state.comment_counter = comment_id;
 
-            let mut comments = state
-                .comments
-                .get(&post_id)
-                .expect(core::constants::ERROR_POST_NOT_EXIST);
-
-            post.comments_count += 1;
-            state.posts.insert(post.post_id, post);
-            comments.comments.push(crate::models::comment::CommentBody {
+            let new_comment = crate::models::comment::CommentBody {
                 comment_id,
                 content,
                 created_at: ic_cdk::api::time(),
-            });
+            };
 
-            state.comments.insert(post_id, comments);
+            match state.comments.get(&post_id) {
+                Some(mut comment) => {
+                    comment.comments.push(new_comment);
+                    state.comments.insert(post_id, comment);
+                }
+                None => {
+                    state.comments.insert(
+                        post_id,
+                        crate::models::comment::Comment {
+                            comments: vec![new_comment],
+                        },
+                    );
+                }
+            }
+
+            post.comments_count += 1;
+            state.posts.insert(post.post_id, post);
 
             Ok(())
         }
