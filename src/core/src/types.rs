@@ -84,6 +84,7 @@ pub enum NotificationType {
 pub struct LikeNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal,
+    pub username: String
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -91,6 +92,7 @@ pub struct CommentNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal,
     pub description: String,
+    pub username: String
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]

@@ -200,7 +200,7 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
                 description: None,
                 title: format!(
                     "{} liked your post {}",
-                    ic_cdk::api::caller(),
+                    args.username,
                     args.post_url
                 ),
             });
@@ -226,7 +226,8 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
                 description: None,
                 title: format!(
                     "{} commented on your post, {}{}",
-                    ic_cdk::api::caller(),
+                    // ic_cdk::api::caller(),
+                    args.username,
                     args.description,
                     args.post_url
                 ),
