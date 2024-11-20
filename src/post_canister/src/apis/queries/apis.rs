@@ -84,6 +84,43 @@ pub fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, St
     })
 }
 
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// pub fn api_post_by_user_id(
+//     user_id: candid::Principal,
+//     page: core::types::Pagination,
+// ) -> Vec<crate::models::post::Post> {
+//     crate::with_read_state(|state| {
+//         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
+//         for (_, pos) in state.posts.iter() {
+//             if &pos.creator_id == &user_id {
+//                 all_posts.push(crate::models::post::Post {
+//                     like_count: pos.likes.len(),
+//                     views_count: pos.views.len(),
+//                     ..pos
+//                 });
+//             }
+//         }
+
+//         // all_posts.sort_by(|a,b| b.created_at.cmp(&a.created_at));
+
+//         let ending = all_posts.len();
+
+//         if ending == 0 {
+//             return all_posts;
+//         }
+
+//         let start = page.start as usize;
+//         let end = page.end as usize;
+//         if start < ending {
+//             let end = end.min(ending);
+
+//             return all_posts[start..end].to_vec();
+//         }
+
+//         Vec::new()
+//     })
+// }
+
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_post_by_user_id(
     user_id: candid::Principal,
@@ -91,18 +128,18 @@ pub fn api_post_by_user_id(
 ) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
+        
         for (_, pos) in state.posts.iter() {
-            if &pos.creator_id == &user_id {
+            if &pos.creator_id == &user_id && pos.post_status == core::types::PostStatus::Published {
                 all_posts.push(crate::models::post::Post {
                     like_count: pos.likes.len(),
                     views_count: pos.views.len(),
-                    ..pos
+                    ..pos.clone() 
                 });
             }
         }
 
-        // all_posts.sort_by(|a,b| b.created_at.cmp(&a.created_at));
-
+        // Pagination logic
         let ending = all_posts.len();
 
         if ending == 0 {
@@ -113,13 +150,47 @@ pub fn api_post_by_user_id(
         let end = page.end as usize;
         if start < ending {
             let end = end.min(ending);
-
             return all_posts[start..end].to_vec();
         }
 
         Vec::new()
     })
 }
+
+
+
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
+//     crate::with_read_state(|state| {
+//         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
+
+//         for (_, pos) in state.posts.iter() {
+//             all_posts.push(crate::models::post::Post {
+//                 like_count: pos.likes.len(),
+//                 views_count: pos.views.len(),
+//                 ..pos
+//             });
+//         }
+
+//         // all_posts.sort_by(|a,b| b.created_at.cmp(&a.created_at));
+
+//         let ending = all_posts.len();
+
+//         if ending == 0 {
+//             return all_posts;
+//         }
+
+//         let start = page.start as usize;
+//         let end = page.end as usize;
+//         if start < ending {
+//             let end = end.min(ending);
+
+//             return all_posts[start..end].to_vec();
+//         }
+
+//         Vec::new()
+//     })
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
@@ -127,15 +198,16 @@ pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models:
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
         for (_, pos) in state.posts.iter() {
-            all_posts.push(crate::models::post::Post {
-                like_count: pos.likes.len(),
-                views_count: pos.views.len(),
-                ..pos
-            });
+            if pos.post_status == core::types::PostStatus::Published {
+                all_posts.push(crate::models::post::Post {
+                    like_count: pos.likes.len(),
+                    views_count: pos.views.len(),
+                    ..pos.clone()
+                });
+            }
         }
 
-        // all_posts.sort_by(|a,b| b.created_at.cmp(&a.created_at));
-
+        // Pagination logic
         let ending = all_posts.len();
 
         if ending == 0 {
@@ -146,13 +218,13 @@ pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models:
         let end = page.end as usize;
         if start < ending {
             let end = end.min(ending);
-
             return all_posts[start..end].to_vec();
         }
 
         Vec::new()
     })
 }
+
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
@@ -187,6 +259,64 @@ pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::model
     })
 }
 
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
+// pub async fn api_get_subscribed_posts(
+//     page: core::types::Pagination,
+// ) -> Vec<crate::models::post::Post> {
+//     match kaires::call_inter_canister::<
+//         candid::Principal,
+//         std::collections::HashSet<candid::Principal>,
+//     >(
+//         "ic_get_subscribed_list",
+//         ic_cdk::api::caller(),
+//         crate::utils::functions::get_parent_canister()
+//             .expect(core::constants::ERROR_FAILED_INTER_CANISTER),
+//     )
+//     .await
+//     {
+//         Ok(val) => {
+//             let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
+//             crate::with_read_state(|state| {
+//                 let acc_set: std::collections::HashSet<_> = val.iter().collect();
+
+//                 for (_, post) in state.posts.iter() {
+//                     if acc_set.contains(&post.creator_id) {
+//                         all_posts.push(crate::models::post::Post {
+//                             like_count: post.likes.len(),
+//                             views_count: post.views.len(),
+//                             ..post
+//                         });
+//                     }
+//                 }
+//             });
+
+//             let ending = all_posts.len();
+
+//             if ending == 0 {
+//                 return all_posts;
+//             }
+
+//             let start = page.start as usize;
+//             let end = page.end as usize;
+//             if start < ending {
+//                 let end = end.min(ending);
+
+//                 return all_posts[start..end].to_vec();
+//             }
+
+//             all_posts
+
+//             // val
+//         }
+//         Err(err) => {
+//             ic_cdk::println!("{}", err.to_string()); // for debug only
+
+//             return Vec::new();
+//         }
+//     }
+// }
+
+
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_get_subscribed_posts(
     page: core::types::Pagination,
@@ -208,16 +338,17 @@ pub async fn api_get_subscribed_posts(
                 let acc_set: std::collections::HashSet<_> = val.iter().collect();
 
                 for (_, post) in state.posts.iter() {
-                    if acc_set.contains(&post.creator_id) {
+                    if acc_set.contains(&post.creator_id) && post.post_status == core::types::PostStatus::Published {
                         all_posts.push(crate::models::post::Post {
                             like_count: post.likes.len(),
                             views_count: post.views.len(),
-                            ..post
+                            ..post.clone()
                         });
                     }
                 }
             });
 
+            // Pagination logic
             let ending = all_posts.len();
 
             if ending == 0 {
@@ -228,13 +359,10 @@ pub async fn api_get_subscribed_posts(
             let end = page.end as usize;
             if start < ending {
                 let end = end.min(ending);
-
                 return all_posts[start..end].to_vec();
             }
 
             all_posts
-
-            // val
         }
         Err(err) => {
             ic_cdk::println!("{}", err.to_string()); // for debug only
@@ -243,6 +371,7 @@ pub async fn api_get_subscribed_posts(
         }
     }
 }
+
 
 // get comments
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
@@ -276,3 +405,4 @@ fn api_get_post_comments(
         None => Vec::new(),
     })
 }
+    
