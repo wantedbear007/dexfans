@@ -1,6 +1,4 @@
-
 use crate::utils::guards::*;
-
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
@@ -198,11 +196,7 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
                 created_on: ic_cdk::api::time(),
                 expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
                 description: None,
-                title: format!(
-                    "{} liked your post {}",
-                    args.username,
-                    args.post_url
-                ),
+                title: format!("{} liked your post {}", args.username, args.post_url),
             });
 
             state.notifications.insert(val.acc, val);
@@ -309,7 +303,10 @@ pub async fn api_purchase_membership(args: core::types::Membership) -> Result<()
     .await
     {
         Ok(val) => {
-            account.membership_ledger_block = Some(val);
+            account.membership_ledger_block = {
+                account.membership_ledger_block.insert(val);
+                account.membership_ledger_block
+            };
             account.membership = args;
             account.membership_till =
                 ic_cdk::api::time() + core::constants::ESSENTIAL_MEMBERSHIP_VALIDITY;

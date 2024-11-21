@@ -58,7 +58,7 @@ pub(crate) struct UserProfile {
     pub membership: core::types::Membership,               // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
     pub membership_till: u64,
-    pub membership_ledger_block: Option<icrc_ledger_types::icrc1::transfer::BlockIndex>,
+    pub membership_ledger_block: std::collections::HashSet<icrc_ledger_types::icrc1::transfer::BlockIndex>,
 }
 
 

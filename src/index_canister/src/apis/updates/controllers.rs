@@ -39,7 +39,7 @@ pub async fn controller_create_account(
                     active_post_canister: canister_meta_data
                         [&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE],
                     membership_till: 0,
-                    membership_ledger_block: None,
+                    membership_ledger_block: std::collections::HashSet::new(),
                 },
             );
 

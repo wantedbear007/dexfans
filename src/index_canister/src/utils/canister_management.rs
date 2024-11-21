@@ -43,6 +43,17 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
     //   }
     // ;
 
+    // const WASM: &[u8] =
+    //     include_bytes!("../../../../target/wasm32-unknown-unknown/release/post_canister.wasm.gz");
+
+    // let princi: candid::Principal = kaires::canister_mgmt::create_users_canister(
+    //     WASM,
+    //     args_bytes.clone(),
+    //     controllers.clone(),
+    //     core::constants::ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD,
+    // )
+    // .await;
+
     let canister_args = kaires::canister_mgmt_types::CreateCanisterArgument {
         settings: Some(kaires::canister_mgmt_types::CanisterSettings {
             controllers: Some(controllers),
@@ -69,7 +80,7 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
 
     // locating wasm module to insert in canister
     let wasm_module: Vec<u8> =
-        include_bytes!("../../../../.dfx/local/canisters/post_canister/post_canister.wasm")
+        include_bytes!("../../../../.dfx/local/canisters/post_canister/post_canister.wasm.gz")
             .to_vec();
 
     // install post canister logic in new canister
@@ -96,7 +107,8 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
         None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     });
 
-    Ok(canister_id.canister_id)
+    // Ok(canister_id.canister_id);
 
+    Ok(canister_id.canister_id)
     // Ok(())
 }

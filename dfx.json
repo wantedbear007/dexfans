@@ -20,7 +20,9 @@
     "post_canister": {
       "candid": "src/post_canister/post_canister.did",
       "package": "post_canister",
-      "type": "rust"
+      "type": "rust",
+      "gzip": true,
+      "optimize": "size"
     },
     "icp_ledger_canister": {
       "type": "custom",

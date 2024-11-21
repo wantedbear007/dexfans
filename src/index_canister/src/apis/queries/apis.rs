@@ -1,7 +1,9 @@
 
 use crate::utils::guards::*;
 
-#[ic_cdk::query(guard=guard_prevent_anonymous)]
+// #[ic_cdk::query(guard="guard_prevent_anonymous", msgpack = true)]
+#[ic_cdk::query(guard = "guard_prevent_anonymous")]
+
 pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => Ok(crate::models::types::UserProfile {
@@ -15,7 +17,9 @@ pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String>
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
-#[ic_cdk::query(guard = guard_prevent_anonymous)]
+// #[ic_cdk::query(guard = "guard_prevent_anonymous", msgpack = true)]
+#[ic_cdk::query(guard = "guard_prevent_anonymous")]
+
 pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
