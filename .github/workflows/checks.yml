@@ -92,6 +92,6 @@ jobs:
         dfx build post_canister
         dfx build index_canister
     - name: Test deployment
-      run: ./scripts/deployment/local_deployment.sh
+      run: ./scripts/deployment/playground_deployment.sh
 
 
