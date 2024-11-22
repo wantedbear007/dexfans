@@ -64,7 +64,6 @@ pub struct UserDetailsMinified {
     pub cover: Option<String>,
 }
 
-
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
 pub struct UpdateUserProfileArgsIC {
     pub user_id: Principal,
@@ -87,14 +86,10 @@ pub struct UnsubscribeAccountIC {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct NotificationBody {
     pub category: NotificationType,
-    // pub description: Option<String>,
-    // pub title: String,
     pub created_on: TimestampMillis,
     pub expiring_on: TimestampMillis,
-    // pub by: Option<Principal>,
     pub by: Option<UserDetailsMinified>,
-    pub post_brief: Option<String>
-    // pub subscriber_id: Option<candid::Principal>
+    pub post_brief: Option<String>,
 }
 
 #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
