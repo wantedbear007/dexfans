@@ -315,9 +315,7 @@ async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::p
 // }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_get_subscribed_posts(
-    page: core::types::Pagination,
-) -> Vec<crate::models::post::Post> {
+async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
     match kaires::call_inter_canister::<
         candid::Principal,
         std::collections::HashSet<candid::Principal>,
