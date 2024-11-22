@@ -15,15 +15,27 @@ pub enum PostType {
     Silver,
     Gold,
     Platinum,
-    Paid,
+    PaidPost,
+    PaidImgs,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash, CandidType, PartialOrd)]
 pub enum Membership {
     Guest = 0,
-    Silver = 1,
-    Gold = 2,
-    Platinum = 3,
+    Diamond = 1,
+}
+
+#[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
+pub enum PostVisibility{
+    Everyone,
+    DiamondUser,
+}
+
+#[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
+pub enum PostStatus{
+    Published,
+    Archived,
+    Draft,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]

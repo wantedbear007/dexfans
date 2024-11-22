@@ -1,3 +1,4 @@
+use core::types::{PostStatus, PostVisibility};
 use std::borrow::Cow;
 
 use crate::models::types::{Cycles, PostId, TimestampMillis};
@@ -20,12 +21,30 @@ pub struct CyclesTopup {
 // }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Image{
+    pub source: String,
+    pub need_pay: bool,
+    pub price: Option<u8>,
+}
+
+#[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Video{
+    pub source: String,
+    pub need_pay: bool,
+    pub price: Option<u8>,
+}
+
+#[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Post {
     pub post_id: PostId,
     pub content: String,
-    pub image: Option<String>,
-    pub video: Option<String>,
-    pub post_type: core::types::PostType,
+    //pub image: Option<String>,
+    pub image: Option<Vec<Image>>,
+    //pub video: Option<String>,
+    pub video: Option<Video>,
+    //pub post_type: core::types::PostType,
+    pub post_visibility: PostVisibility,
+    pub post_status: PostStatus,
     pub price: Option<u8>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
@@ -47,9 +66,13 @@ pub struct PostPagination {
 #[derive(Serialize, Deserialize, CandidType, Clone)]
 pub struct CreatePostArgs {
     pub content: String,
-    pub image: Option<String>,
-    pub video: Option<String>,
-    pub post_type: core::types::PostType,
+    //pub image: Option<String>,
+    pub image: Option<Vec<Image>>,
+    //pub video: Option<String>,
+    pub video: Option<Video>,
+    //pub post_type: core::types::PostType,
+    pub post_visibility: core::types::PostVisibility,
+    pub post_status: core::types::PostStatus,
     pub price: Option<u8>,
 }
 
@@ -57,9 +80,13 @@ pub struct CreatePostArgs {
 pub struct UpdatePostArgs {
     pub id: u128,
     pub content: String,
-    pub image: Option<String>,
-    pub video: Option<String>,
-    pub post_type: core::types::PostType,
+    //pub image: Option<String>,
+    pub image: Option<Vec<Image>>,
+    //pub video: Option<String>,
+    pub video: Option<Video>,
+    //pub post_type: core::types::PostType,
+    pub post_visibility: core::types::PostVisibility,
+    pub post_status: core::types::PostStatus,
     pub price: Option<u8>,
 }
 
@@ -69,7 +96,9 @@ impl Default for Post {
             content: String::from(""),
             image: None,
             video: None,
-            post_type: core::types::PostType::Free,
+            //post_type: core::types::PostType::Free,
+            post_visibility: core::types::PostVisibility::Everyone,
+            post_status: core::types::PostStatus::Published,
             price: None,
             // comments: Vec::new(),
             comments_count: 0,

@@ -16,6 +16,15 @@ pub(super) async fn controller_create_post(
         Ok(()) => {
             crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
                 Some(val) => {
+
+                    if let Some(image) = &args.image {
+                        if image.len() < 1 || image.len() > 4 {
+                            return Err("Number of images must be between 1 and 4.".to_string());
+                        }
+                    } else {
+                        return Err("Images are required.".to_string());
+                    }
+
                     let post_id = state.post_counter;
                     state.post_counter += 1;
 
@@ -24,7 +33,9 @@ pub(super) async fn controller_create_post(
                         crate::models::post::Post {
                             content: args.content,
                             image: args.image,
-                            post_type: args.post_type,
+                            //post_type: args.post_type,
+                            post_visibility: args.post_visibility,
+                            post_status: args.post_status,
                             price: args.price,
                             video: args.video,
                             created_at: ic_cdk::api::time(),
@@ -54,12 +65,39 @@ pub(super) fn controller_update_post(
             if &val.content != &args.content {
                 val.content = args.content;
             }
+
+            if &val.post_visibility != &args.post_visibility {
+                val.post_visibility = args.post_visibility;
+            }
+
+            if &val.post_status != &args.post_status {
+                val.post_status = args.post_status;
+            }
+
             state.posts.insert(val.post_id, val);
 
             Ok(())
         }
         None => return Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
     })
+}
+
+
+pub(super) fn controller_save_post(
+    mut args: crate::models::post::UpdatePostArgs,
+) -> Result<(), String> {
+
+    args.post_status = core::types::PostStatus::Draft;
+    controller_update_post(args)
+}
+
+
+pub(super) fn controller_archive_post(
+    mut args: crate::models::post::UpdatePostArgs,
+) -> Result<(), String> {
+
+    args.post_status = core::types::PostStatus::Archived;
+    controller_update_post(args)
 }
 
 //to delete post
