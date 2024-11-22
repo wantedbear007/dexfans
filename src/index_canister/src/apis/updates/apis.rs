@@ -1,5 +1,14 @@
 use crate::utils::guards::*;
 
+#[ic_cdk::query]
+fn greet(name: String) -> String {
+    format!(
+        "Hello, {}! from {}",
+        name,
+        core::constants::ESSENTIALS_APP_NAME
+    )
+}
+
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
     args: crate::models::types::UserInputArgs,
@@ -22,7 +31,7 @@ pub async fn api_create_account(
 pub async fn api_update_profile(
     // user_id: Principal,
     args: crate::models::types::UserInputArgs,
-) -> Result<(), String> {
+) -> core::types::Response {
     match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(val) => {
             state.account.insert(
@@ -60,11 +69,11 @@ pub async fn api_update_profile(
 }
 
 #[ic_cdk::update]
-pub fn api_update_user_likes(
+fn api_update_user_likes(
     user_id: candid::Principal,
     post_id: u128,
     is_liked: bool,
-) -> Result<(), String> {
+) -> core::types::Response {
     crate::utils::init::STATE.with(|state| {
         let mut app_state = state.borrow_mut();
 
@@ -88,7 +97,7 @@ pub fn api_update_user_likes(
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
+fn api_subscribe_account(id: candid::Principal) -> core::types::Response {
     super::apis_ic::ic_subscribe_account(core::types::SubscribeAccountIC {
         subscribed_by: ic_cdk::api::caller(),
         subscribed_to: id,
@@ -96,7 +105,7 @@ pub fn api_subscribe_account(id: candid::Principal) -> Result<(), String> {
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
+fn api_unsubscribe_account(id: candid::Principal) -> core::types::Response {
     super::apis_ic::ic_unsubscribe_account(core::types::UnsubscribeAccountIC {
         unsubscribed_by: ic_cdk::api::caller(),
         unsubscribed_to: id,
@@ -105,7 +114,7 @@ pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
 
 // to create notification for new post
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_subscribers_newpost(post_brief: Option<String>) -> Result<(), String> {
+fn notify_subscribers_newpost(post_brief: Option<String>) -> core::types::Response {
     crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
             for x in acc.subscribers.iter() {
@@ -135,7 +144,7 @@ pub fn notify_subscribers_newpost(post_brief: Option<String>) -> Result<(), Stri
 // likes notification
 // TODO add guard
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), String> {
+fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Response {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
@@ -168,7 +177,7 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
 
 // notify comments
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(), String> {
+fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::Response {
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
@@ -200,7 +209,7 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
 
 // // notify new subscriber
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_new_subscriber(subscribed_to: candid::Principal) -> Result<(), String> {
+fn notify_new_subscriber(subscribed_to: candid::Principal) -> core::types::Response {
     crate::with_write_state(|state| match state.notifications.get(&subscribed_to) {
         Some(mut noti) => {
             noti.notifications.push(core::types::NotificationBody {
@@ -232,7 +241,7 @@ pub fn notify_new_subscriber(subscribed_to: candid::Principal) -> Result<(), Str
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub async fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
+pub async fn api_purchase_membership(args: core::types::Membership) -> core::types::Response {
     // canister meta data (ledger and plan prices)
     let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
@@ -275,7 +284,7 @@ pub async fn api_purchase_membership(args: core::types::Membership) -> Result<()
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn api_add_to_collection(args: core::types::Collection) -> Result<(), String> {
+fn api_add_to_collection(args: core::types::Collection) -> core::types::Response {
     crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(mut acc) => {
             acc.collects.push(args);
@@ -284,4 +293,75 @@ pub fn api_add_to_collection(args: core::types::Collection) -> Result<(), String
         }
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
+}
+
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+async fn api_purchase_post(
+    post_id: u128,
+    post_canister_id: candid::Principal,
+) -> core::types::Response {
+    // checking if user already owns the post
+    crate::with_read_state(
+        |state| match state.purchased_post.get(&ic_cdk::api::caller()) {
+            Some(acc) => {
+                let posts: Vec<u128> = acc.posts.iter().map(|e| e.post_id).collect();
+
+                if posts.contains(&post_id) {
+                    return Err(String::from(core::constants::WARNING_ALREADY_PURCHASED));
+                } else {
+                    Ok(())
+                }
+            }
+            None => Ok(()),
+        },
+    )
+    .map_err(|err| return format!("{}", err))?;
+
+    // get price of post
+    let price = kaires::call_inter_canister::<u128, u8>(
+        core::constants::FUNCTION_GET_POST_PRICE,
+        post_id,
+        post_canister_id,
+    )
+    .await
+    .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
+
+    let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
+        .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
+
+    // payment
+    match crate::apis::updates::payment_controller::icp_transfer_handler(
+        price as u64,
+        meta_data.payment_recipient,
+        meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
+    )
+    .await
+    {
+        Ok(val) => {
+            let new_noti = crate::models::types::PurchasePostBody {
+                ledger_block: val,
+                post_id: post_id,
+            };
+
+            crate::with_write_state(|state| {
+                match state.purchased_post.get(&ic_cdk::api::caller()) {
+                    Some(mut notis) => {
+                        notis.posts.push(new_noti);
+                        state.purchased_post.insert(ic_cdk::api::caller(), notis);
+                        Ok(())
+                    }
+                    None => {
+                        state.purchased_post.insert(
+                            ic_cdk::api::caller(),
+                            crate::PurchasedPosts {
+                                posts: vec![new_noti],
+                            },
+                        );
+                        Ok(())
+                    }
+                }
+            })
+        }
+        Err(err) => return Err(err),
+    }
 }

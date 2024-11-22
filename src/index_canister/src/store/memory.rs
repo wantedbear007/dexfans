@@ -7,13 +7,11 @@ use ic_stable_structures::{
 
 const ACCOUNT_DATA: MemoryId = MemoryId::new(0);
 
-// const POST_DATA: MemoryId = MemoryId::new(1);
-//
-// const COMMENT_DATA_MEMORY_ID: MemoryId = MemoryId::new(2);
-
 const CANISTER_DATA: MemoryId = MemoryId::new(1);
 
 const NOTIFICATIONS_DATA: MemoryId = MemoryId::new(2);
+
+const PURCHASED_POST: MemoryId = MemoryId::new(3);
 
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
@@ -36,6 +34,10 @@ pub fn get_account_data_memory() -> StoreMemory {
 
 pub fn get_notification_data_memory() -> StoreMemory {
     MEMORY_MANAGER.with(|m| m.borrow().get(NOTIFICATIONS_DATA))
+}
+
+pub fn get_purchased_post_memory() -> StoreMemory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PURCHASED_POST)) // New function for post storage
 }
 
 pub fn get_canister_metadata_memory() -> StoreMemory {

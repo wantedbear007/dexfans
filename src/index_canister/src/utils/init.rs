@@ -1,15 +1,21 @@
-#[ic_cdk::query]
-fn greet(name: String) -> String {
-    format!(
-        "Hello, {}! from {}",
-        name,
-        core::constants::ESSENTIALS_APP_NAME
-    )
-}
-
 thread_local! {
   pub static STATE: std::cell::RefCell<crate::store::storage_state::ApplicationState> = std::cell::RefCell::new(crate::store::storage_state::ApplicationState::new());
+
+//   pub static SERVICE_STATE: std::cell::RefCell<crate::store::storage_state::ServicesState> = std::cell::RefCell::new(crate::store::storage_state::ServicesState::new()) ;
 }
+
+// // to get mutable reference
+// pub(crate) fn write_servies_state<R>(
+//     f: impl FnOnce(&mut crate::store::storage_state::ServicesState) -> R,
+// ) -> R {
+//     SERVICE_STATE.with(|cell| f(&mut cell.borrow_mut()))
+// }
+
+// pub(crate) fn read_services_state<R>(
+//     f: impl FnOnce(&crate::store::storage_state::ServicesState) -> R,
+// ) -> R {
+//     SERVICE_STATE.with(|cell| f(&cell.borrow()))
+// }
 
 // to get mutable reference
 pub(crate) fn with_write_state<R>(

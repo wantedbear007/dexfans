@@ -11,9 +11,14 @@ pub const ESSENTIAL_MEMBERSHIP_VALIDITY: u64 = 30 * 24 * 60 * 60 * 1_000_000_000
 pub const ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD: u128 = 1_000_000_000_000; // 1T Cycles
 pub const ESSENTIAL_SUGGESTED_USER_THRESHOLD: u32 = 15;
 pub const ESSENTIAL_FUZZY_SEARCH_THRESHOLD: usize = 3;
+pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
+
+// function names
+pub const FUNCTION_GET_POST_PRICE: &str = "ic_get_price";
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous calls are not permitted!";
+pub const WARNING_IMAGES_LIMIT: &str = "Excess images found";
 pub const WARNING_ACCOUNT_EXISTS: &str = "This Principal ID is already registered on the platform";
 pub const WARNING_ADMIN_ONLY: &str = "Admin privileges are required";
 pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already assigned as a controller";
@@ -22,6 +27,7 @@ pub const WARNING_ALERADY_EXIST: &str = "Already exist";
 pub const WARNING_SAME_MEMBERSHIP: &str = "You are already a member of this category";
 pub const WARNING_HIGHER_MEMBERSHIP: &str =
     "Higher category of membership found, try after current membership expires";
+pub const WARNING_ALREADY_PURCHASED: &str = "Post is already purchased";
 
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";

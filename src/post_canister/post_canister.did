@@ -95,4 +95,5 @@ service : (PostCanisterInitArgs) -> {
   debug_total_posts : () -> (nat) query;
   get_canister_meta_data : () -> (Result_5) query;
   greet : (text) -> (text) query;
+  ic_get_price : (nat) -> (nat8) query;
 }

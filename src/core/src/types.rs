@@ -9,6 +9,8 @@ pub type Cycles = u128;
 pub type PostId = u128;
 pub type TimestampMillis = u64;
 
+pub type Response = Result<(), String>;
+
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType, Eq, PartialOrd, Ord)]
 pub enum PostType {
     Free,

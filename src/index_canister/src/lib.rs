@@ -4,7 +4,7 @@ mod models;
 mod store;
 mod utils;
 use core::types::*;
-use utils::init::{with_read_state, with_write_state};
+use utils::init::*;
 
 // dexfans v1.0: Index Canister
 // author: Vinayak Kalra

@@ -3,6 +3,7 @@ mod models;
 mod store;
 mod utils;
 use utils::init::{with_read_state, with_write_state};
+use crate::models::types::*;
 
 // dexfans v1.0: Post Canister
 // author: Vinayak Kalra

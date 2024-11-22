@@ -49,14 +49,3 @@ pub(super) async fn icp_transfer_handler(
     .0
     .map_err(|e| format!("{} {:?}", core::constants::ERROR_PAYMENT_FAILED, e))
 }
-
-// purchase membership
-// pub async fn upgrade_membership(
-//     args: core::types::Membership,
-//     amt: u64,
-//     recipient: candid::Principal,
-//     ledger: candid::Principal,
-// ) -> Result<BlockIndex, String> {
-
-//     icp_transfer_handler(amt, recipient, ledger).await
-// }

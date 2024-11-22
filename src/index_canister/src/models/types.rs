@@ -3,9 +3,6 @@ use std::borrow::Cow;
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
-// pub type CanisterId = Principal;
-// pub type CommentId = u128;
-// pub type Cycles = u128;
 pub type PostId = u128;
 pub type TimestampMillis = u64;
 
@@ -88,22 +85,16 @@ pub(crate) struct UserProfileInterCanister {
     pub membership: core::types::Membership,
 }
 
-// #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
-// pub(crate) enum NotificationType {
-//     NewPost,
-//     NewComment,
-//     NewSubscriber,
-//     NewLike,
-//     NewSubscribingPost,
-// }
+#[derive(CandidType, Serialize, Deserialize, PartialEq, Eq)]
+pub(crate) struct PurchasedPosts {
+    pub posts: Vec<PurchasePostBody>,
+}
 
-// #[derive(Clone, CandidType, Serialize, Deserialize)]
-// pub(crate) struct UserDetailsMinified {
-//     pub user_id: candid::Principal,
-//     pub username: String,
-//     pub avatar: Option<String>,
-//     pub cover: Option<String>,
-// }
+#[derive(CandidType, Serialize, Deserialize, PartialEq, Eq)]
+pub(crate) struct PurchasePostBody {
+    pub post_id: u128,
+    pub ledger_block: icrc_ledger_types::icrc1::transfer::BlockIndex,
+}
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {
@@ -119,15 +110,6 @@ impl Default for Notification {
         }
     }
 }
-
-// #[derive(Clone, CandidType, Serialize, Deserialize)]
-// pub(crate) struct NotificationBody {
-//     pub category: NotificationType,
-//     pub description: Option<String>,
-//     pub title: String,
-//     pub created_on: TimestampMillis,
-//     pub expiring_on: TimestampMillis,
-// }
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub(crate) struct NotifySubscribersArgs {
@@ -193,6 +175,21 @@ impl ic_stable_structures::Storable for UserProfile {
 }
 
 impl ic_stable_structures::Storable for CanisterMetaData {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
+}
+
+impl ic_stable_structures::Storable for PurchasedPosts {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
         ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);

@@ -2,6 +2,9 @@
 pub(super) async fn controller_create_post(
     args: crate::models::post::CreatePostArgs,
 ) -> Result<crate::models::types::PostId, String> {
+    // image length validator
+    super::validators::checks_image_validation(args.clone())?;
+
     match kaires::call_inter_canister::<core::types::ICAddPostCanisterProfile, ()>(
         "admin_profile_post_canister",
         core::types::ICAddPostCanisterProfile {
@@ -16,14 +19,6 @@ pub(super) async fn controller_create_post(
         Ok(()) => {
             crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
                 Some(val) => {
-                    if let Some(image) = &args.image {
-                        if image.len() < 1 || image.len() > 4 {
-                            return Err("Number of images must be between 1 and 4.".to_string());
-                        }
-                    } else {
-                        return Err("Images are required.".to_string());
-                    }
-
                     let post_id = state.post_counter;
                     state.post_counter += 1;
 
@@ -32,7 +27,6 @@ pub(super) async fn controller_create_post(
                         crate::models::post::Post {
                             content: args.content,
                             image: args.image,
-                            //post_type: args.post_type,
                             post_visibility: args.post_visibility,
                             post_status: args.post_status,
                             price: args.price,

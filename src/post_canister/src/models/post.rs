@@ -1,24 +1,9 @@
 use core::types::{PostStatus, PostVisibility};
 use std::borrow::Cow;
 
-use crate::models::types::{Cycles, PostId, TimestampMillis};
+use crate::models::types::{PostId, TimestampMillis};
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Debug, Clone, CandidType, PartialEq)]
-pub struct CyclesTopup {
-    pub date: TimestampMillis,
-    pub amount: Cycles,
-}
-
-// #[derive(Serialize, Deserialize, Clone, CandidType)]
-// pub struct CreatePostArgs {
-//     pub content: String,
-//     pub image: Option<String>,
-//     pub video: Option<String>,
-//     pub post_type: core::types::PostType,
-//     pub price: Option<u8>,
-// }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Image {
@@ -45,7 +30,7 @@ pub struct Post {
     //pub post_type: core::types::PostType,
     pub post_visibility: PostVisibility,
     pub post_status: PostStatus,
-    pub price: Option<u8>, // Has a value only if post_type is Paid
+    pub price: Option<super::types::PostPrice>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
     pub like_count: usize,
@@ -73,7 +58,7 @@ pub struct CreatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<u8>,
+    pub price: Option<super::types::PostPrice>,
 }
 
 #[derive(Serialize, Deserialize, CandidType, Clone)]
@@ -87,13 +72,13 @@ pub struct UpdatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<u8>,
+    pub price: Option<super::types::PostPrice>,
 }
 
 impl Default for Post {
     fn default() -> Self {
         Self {
-            content: String::from(""),
+            content: String::new(),
             image: None,
             video: None,
             //post_type: core::types::PostType::Free,

@@ -69,7 +69,7 @@ fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
 // }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, String> {
+fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
         Some(mut post) => {
             post.views.push(ic_cdk::api::caller());
@@ -85,7 +85,7 @@ pub fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, St
 }
 
 // #[ic_cdk::query(guard = guard_prevent_anonymous)]
-// pub fn api_post_by_user_id(
+// fn api_post_by_user_id(
 //     user_id: candid::Principal,
 //     page: core::types::Pagination,
 // ) -> Vec<crate::models::post::Post> {
@@ -122,7 +122,7 @@ pub fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, St
 // }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_post_by_user_id(
+fn api_post_by_user_id(
     user_id: candid::Principal,
     page: core::types::Pagination,
 ) -> Vec<crate::models::post::Post> {
@@ -159,7 +159,7 @@ pub fn api_post_by_user_id(
 }
 
 // #[ic_cdk::query(guard = guard_prevent_anonymous)]
-// pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
+// fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
 //     crate::with_read_state(|state| {
 //         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -192,7 +192,7 @@ pub fn api_post_by_user_id(
 // }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
+fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -225,7 +225,7 @@ pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models:
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
+async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -258,7 +258,7 @@ pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::model
 }
 
 // #[ic_cdk::update(guard = guard_prevent_anonymous)]
-// pub async fn api_get_subscribed_posts(
+// async fn api_get_subscribed_posts(
 //     page: core::types::Pagination,
 // ) -> Vec<crate::models::post::Post> {
 //     match kaires::call_inter_canister::<
@@ -315,7 +315,7 @@ pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::model
 // }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub async fn api_get_subscribed_posts(
+async fn api_get_subscribed_posts(
     page: core::types::Pagination,
 ) -> Vec<crate::models::post::Post> {
     match kaires::call_inter_canister::<
