@@ -318,7 +318,7 @@ async fn api_purchase_post(
     .map_err(|err| return format!("{}", err))?;
 
     // get price of post
-    let price = kaires::call_inter_canister::<u128, u8>(
+    let price = kaires::call_inter_canister::<u128, core::types::PostPrice>(
         core::constants::FUNCTION_GET_POST_PRICE,
         post_id,
         post_canister_id,

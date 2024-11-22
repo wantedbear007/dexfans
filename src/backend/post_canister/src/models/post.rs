@@ -30,7 +30,7 @@ pub struct Post {
     //pub post_type: core::types::PostType,
     pub post_visibility: PostVisibility,
     pub post_status: PostStatus,
-    pub price: Option<super::types::PostPrice>, // Has a value only if post_type is Paid
+    pub price: Option<core::types::PostPrice>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
     pub like_count: usize,
@@ -58,7 +58,7 @@ pub struct CreatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<super::types::PostPrice>,
+    pub price: Option<core::types::PostPrice>,
 }
 
 #[derive(Serialize, Deserialize, CandidType, Clone)]
@@ -72,7 +72,7 @@ pub struct UpdatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<super::types::PostPrice>,
+    pub price: Option<core::types::PostPrice>,
 }
 
 impl Default for Post {
