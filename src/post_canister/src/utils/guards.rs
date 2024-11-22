@@ -3,9 +3,7 @@ use crate::with_read_state;
 // to prevent anonymous calls
 pub fn guard_prevent_anonymous() -> Result<(), String> {
     if ic_cdk::api::caller() == candid::Principal::anonymous() {
-        return Err(String::from(
-            core::constants::WARNING_ANONYMOUS_CALL,
-        ));
+        return Err(String::from(core::constants::WARNING_ANONYMOUS_CALL));
     }
 
     Ok(())
@@ -24,10 +22,6 @@ pub fn guard_parent_canister_only() -> Result<(), String> {
                 return Err(String::from(core::constants::WARNING_ADMIN_ONLY));
             };
         }
-        None => {
-            return Err(String::from(
-                core::constants::ERROR_FAILED_CANISTER_DATA,
-            ))
-        }
+        None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     })
 }

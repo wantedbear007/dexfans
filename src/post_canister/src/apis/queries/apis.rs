@@ -128,13 +128,14 @@ pub fn api_post_by_user_id(
 ) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
-        
+
         for (_, pos) in state.posts.iter() {
-            if &pos.creator_id == &user_id && pos.post_status == core::types::PostStatus::Published {
+            if &pos.creator_id == &user_id && pos.post_status == core::types::PostStatus::Published
+            {
                 all_posts.push(crate::models::post::Post {
                     like_count: pos.likes.len(),
                     views_count: pos.views.len(),
-                    ..pos.clone() 
+                    ..pos.clone()
                 });
             }
         }
@@ -156,8 +157,6 @@ pub fn api_post_by_user_id(
         Vec::new()
     })
 }
-
-
 
 // #[ic_cdk::query(guard = guard_prevent_anonymous)]
 // pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
@@ -224,7 +223,6 @@ pub fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models:
         Vec::new()
     })
 }
-
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
@@ -316,7 +314,6 @@ pub async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::model
 //     }
 // }
 
-
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_get_subscribed_posts(
     page: core::types::Pagination,
@@ -338,7 +335,9 @@ pub async fn api_get_subscribed_posts(
                 let acc_set: std::collections::HashSet<_> = val.iter().collect();
 
                 for (_, post) in state.posts.iter() {
-                    if acc_set.contains(&post.creator_id) && post.post_status == core::types::PostStatus::Published {
+                    if acc_set.contains(&post.creator_id)
+                        && post.post_status == core::types::PostStatus::Published
+                    {
                         all_posts.push(crate::models::post::Post {
                             like_count: post.likes.len(),
                             views_count: post.views.len(),
@@ -372,7 +371,6 @@ pub async fn api_get_subscribed_posts(
     }
 }
 
-
 // get comments
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_post_comments(
@@ -405,4 +403,3 @@ fn api_get_post_comments(
         None => Vec::new(),
     })
 }
-    

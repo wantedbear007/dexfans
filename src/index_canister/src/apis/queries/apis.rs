@@ -1,4 +1,3 @@
-
 use crate::utils::guards::*;
 
 // #[ic_cdk::query(guard="guard_prevent_anonymous", msgpack = true)]
@@ -190,7 +189,6 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
         if suggested_users.is_empty() {
             return Vec::new();
         }
-
 
         // let mut random = rand::thread_rng();
         // suggested_users.to_owned().shuffle(&mut random);

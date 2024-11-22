@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(PartialEq, Eq, Serialize, PartialOrd, Deserialize, Debug, Clone, CandidType, Ord)]
 pub struct Comment {
-    pub comments: Vec<CommentBody>
+    pub comments: Vec<CommentBody>,
 }
 
 #[derive(PartialEq, Eq, Serialize, PartialOrd, Deserialize, Debug, Clone, CandidType, Ord)]
@@ -29,7 +29,6 @@ pub struct CommentBody {
     pub content: String,
     pub created_at: TimestampMillis,
 }
-
 
 impl Storable for Comment {
     fn to_bytes(&self) -> Cow<[u8]> {

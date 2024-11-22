@@ -2,7 +2,6 @@ use crate::utils::guards::*;
 // to add subscribers
 // add post canister guardx
 
-
 // to add controller of canister
 #[ic_cdk::update(guard=guard_only_admin)]
 pub fn admin_add_controller(id: candid::Principal) -> Result<(), String> {
@@ -56,10 +55,9 @@ pub fn admin_set_post_canister(id: candid::Principal) -> Result<candid::Principa
         Some(mut canister_meta_data) => {
             canister_meta_data.all_post_canisters.insert(id);
 
-            canister_meta_data.canister_ids.insert(
-                core::constants::ESSENTIAL_POST_CANISTER_ID_CODE,
-                id,
-            );
+            canister_meta_data
+                .canister_ids
+                .insert(core::constants::ESSENTIAL_POST_CANISTER_ID_CODE, id);
             state.canister_meta_data.insert(0, canister_meta_data);
 
             Ok(id)
@@ -72,12 +70,6 @@ pub fn admin_set_post_canister(id: candid::Principal) -> Result<candid::Principa
 pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => Ok(val),
-        None => {
-            return Err(String::from(
-                core::constants::ERROR_FAILED_CANISTER_DATA,
-            ))
-        }
+        None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     })
 }
-
-

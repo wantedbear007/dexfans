@@ -17,9 +17,9 @@ pub fn guard_only_admin() -> Result<(), String> {
             if x {
                 return Ok(());
             }
-            return Err(String::from(core::constants::WARNING_ADMIN_ONLY));
+            Err(String::from(core::constants::WARNING_ADMIN_ONLY))
         }
-        None => return Err(String::from(core::constants::WARNING_ADMIN_ONLY)),
+        None => Err(String::from(core::constants::WARNING_ADMIN_ONLY)),
     })
 }
 
@@ -34,8 +34,8 @@ pub fn guard_post_canister_exclusive() -> Result<(), String> {
                     return Ok(());
                 }
             }
-            return Err(String::from(core::constants::ERROR_UNAUTHORIZED));
+            Err(String::from(core::constants::ERROR_UNAUTHORIZED))
         }
-        None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
+        None => Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     })
 }

@@ -4,6 +4,11 @@ set -e
 # Controller ids
 # dfx identity new Bhanu
 # dfx identity use Bhanu
+dfx identity new minter --storage-mode=plaintext || true
+dfx identity new reciever --storage-mode=plaintext || true
+dfx identity new Bhanu --storage-mode=plaintext || true
+
+
 BHANU=$(dfx identity get-principal --identity Bhanu)
 
 # dfx deps init

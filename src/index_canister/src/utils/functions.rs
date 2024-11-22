@@ -1,9 +1,7 @@
 #[ic_cdk::query]
 pub fn get_asset_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(val) => {
-            Ok(val.canister_ids[&core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE])
-        }
+        Some(val) => Ok(val.canister_ids[&core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE]),
         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
@@ -11,9 +9,7 @@ pub fn get_asset_canister() -> Result<candid::Principal, String> {
 #[ic_cdk::query]
 pub fn get_post_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(val) => {
-            Ok(val.canister_ids[&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE])
-        }
+        Some(val) => Ok(val.canister_ids[&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE]),
         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
@@ -21,15 +17,10 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
 #[ic_cdk::query]
 pub fn get_ledger_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(val) => {
-            Ok(val.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE])
-        }
+        Some(val) => Ok(val.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE]),
         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }
-
-
-
 
 // // to add controller of canister
 // #[ic_cdk::update(guard=guard_only_admin)]

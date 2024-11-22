@@ -28,13 +28,13 @@ pub enum Membership {
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
-pub enum PostVisibility{
+pub enum PostVisibility {
     Everyone,
     DiamondUser,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
-pub enum PostStatus{
+pub enum PostStatus {
     Published,
     Archived,
     Draft,
@@ -98,7 +98,7 @@ pub enum NotificationType {
 pub struct LikeNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal,
-    pub username: String
+    pub username: String,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -106,7 +106,7 @@ pub struct CommentNotificationArgs {
     pub post_url: String,
     pub post_owner: Principal,
     pub description: String,
-    pub username: String
+    pub username: String,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -127,8 +127,6 @@ pub struct Pagination {
     pub start: u32,
     pub end: u32,
 }
-
-
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct Collection {

@@ -1,7 +1,8 @@
 use crate::utils::guards::*;
 
 use super::post_controller::{
-    controller_archive_post, controller_comment_on_post, controller_delete_post, controller_like_unlike_post, controller_save_post, controller_update_post
+    controller_archive_post, controller_comment_on_post, controller_delete_post,
+    controller_like_unlike_post, controller_save_post, controller_update_post,
 };
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
@@ -21,7 +22,6 @@ pub(self) async fn api_update_post(
     Ok(String::from(core::constants::SUCESSS_POST_UPDATED))
 }
 
-
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_save_post(
     args: crate::models::post::UpdatePostArgs,
@@ -29,7 +29,6 @@ pub(self) async fn api_save_post(
     controller_save_post(args).map_err(|err| format!("{}", err))?;
     Ok(String::from(core::constants::SUCCESS_POST_SAVED))
 }
-
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub(self) async fn api_archive_post(

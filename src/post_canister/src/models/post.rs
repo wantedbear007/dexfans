@@ -21,14 +21,14 @@ pub struct CyclesTopup {
 // }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Image{
+pub struct Image {
     pub source: String,
     pub need_pay: bool,
     pub price: Option<u8>,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Video{
+pub struct Video {
     pub source: String,
     pub need_pay: bool,
     pub price: Option<u8>,

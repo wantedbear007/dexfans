@@ -1,5 +1,5 @@
 // pub mod user;
-pub mod post;
 pub mod comment;
-pub mod types;
 pub mod notification;
+pub mod post;
+pub mod types;

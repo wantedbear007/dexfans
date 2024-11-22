@@ -5,7 +5,8 @@ use super::memory::StoreMemory;
 pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, crate::models::types::UserProfile, StoreMemory>,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
-    pub notifications: StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory>,
+    pub notifications:
+        StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory>,
 }
 
 impl ApplicationState {
@@ -13,7 +14,7 @@ impl ApplicationState {
         Self {
             account: init_account_state(),
             canister_meta_data: init_canister_meta_data_state(),
-            notifications: init_notifications_state()
+            notifications: init_notifications_state(),
         }
     }
 

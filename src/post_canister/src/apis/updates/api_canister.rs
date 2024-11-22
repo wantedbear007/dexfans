@@ -10,9 +10,7 @@ pub fn admin_add_user_profile(args: crate::models::types::UserProfileIC) -> Resu
 
 // to update user details
 #[ic_cdk::update(guard = guard_parent_canister_only)]
-pub fn admin_update_user_profile(
-    args: core::types::UpdateUserProfileArgsIC,
-) -> Result<(), String> {
+pub fn admin_update_user_profile(args: core::types::UpdateUserProfileArgsIC) -> Result<(), String> {
     crate::with_write_state(|state| match state.account.get(&args.user_id) {
         Some(mut val) => {
             if &val.username != &args.username {
@@ -27,18 +25,14 @@ pub fn admin_update_user_profile(
 
             Ok(())
         }
-        None => Err(String::from(
-            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-        )),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
 
 // to update membership
 // add parent canister guard
 #[ic_cdk::update(guard = guard_parent_canister_only)]
-pub fn admin_update_membership(
-    args: core::types::UpdateMembershipIC,
-) -> Result<(), String> {
+pub fn admin_update_membership(args: core::types::UpdateMembershipIC) -> Result<(), String> {
     crate::with_write_state(|state| match state.account.get(&args.user) {
         Some(mut val) => {
             val.membership = args.membership;
@@ -46,9 +40,7 @@ pub fn admin_update_membership(
 
             Ok(())
         }
-        None => Err(String::from(
-            core::constants::ERROR_ACCOUNT_NOT_REGISTERED,
-        )),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
 

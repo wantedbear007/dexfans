@@ -1,4 +1,3 @@
-
 pub async fn controller_create_account(
     args: crate::models::types::UserInputArgs,
 ) -> Result<(), String> {
@@ -92,7 +91,8 @@ pub async fn ic_update_profile(args: core::types::UpdateUserProfileArgsIC) -> Re
     match kaires::call_inter_canister::<core::types::UpdateUserProfileArgsIC, ()>(
         "admin_update_user_profile",
         args,
-        crate::utils::functions::get_post_canister().expect(core::constants::ERROR_FAILED_CANISTER_DATA),
+        crate::utils::functions::get_post_canister()
+            .expect(core::constants::ERROR_FAILED_CANISTER_DATA),
     )
     .await
     {

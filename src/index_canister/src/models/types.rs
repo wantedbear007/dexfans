@@ -37,9 +37,7 @@ pub(crate) struct UserInputArgs {
     // pub asset_canister_id:
 }
 
-
-
-#[derive(Clone, CandidType, Serialize, Deserialize,)]
+#[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct UserProfile {
     pub user_id: Principal,
     pub active_post_canister: Principal,
@@ -52,15 +50,15 @@ pub(crate) struct UserProfile {
     pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user
     pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
     // pub posts: Vec<PostId>,                                // Created posts
-    pub likes: Vec<PostId>,                                // Liked posts
-    pub collects: Vec<core::types::Collection>,                             // Collected posts
-    pub is_bot: bool,                                      // Is this user a bot?
-    pub membership: core::types::Membership,               // Membership level
-    pub created_at: TimestampMillis,                       // Timestamp when the user was created
+    pub likes: Vec<PostId>,                     // Liked posts
+    pub collects: Vec<core::types::Collection>, // Collected posts
+    pub is_bot: bool,                           // Is this user a bot?
+    pub membership: core::types::Membership,    // Membership level
+    pub created_at: TimestampMillis,            // Timestamp when the user was created
     pub membership_till: u64,
-    pub membership_ledger_block: std::collections::HashSet<icrc_ledger_types::icrc1::transfer::BlockIndex>,
+    pub membership_ledger_block:
+        std::collections::HashSet<icrc_ledger_types::icrc1::transfer::BlockIndex>,
 }
-
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct UserProfileLittleMinified {
@@ -76,8 +74,8 @@ pub(crate) struct UserProfileLittleMinified {
     pub subscribing: std::collections::HashSet<Principal>, // Users this user is subscribing to
     pub membership: core::types::Membership,               // Membership level
     pub created_at: TimestampMillis,                       // Timestamp when the user was created
-    // pub membership_till: u64,
-    // pub membership_ledger_block: Option<icrc_ledger_types::icrc1::transfer::BlockIndex>,
+                                                           // pub membership_till: u64,
+                                                           // pub membership_ledger_block: Option<icrc_ledger_types::icrc1::transfer::BlockIndex>,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
@@ -104,7 +102,7 @@ pub(crate) struct UserDetailsMinified {
     pub user_id: candid::Principal,
     pub username: String,
     pub avatar: Option<String>,
-    pub cover: Option<String>
+    pub cover: Option<String>,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
