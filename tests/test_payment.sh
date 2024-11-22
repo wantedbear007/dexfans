@@ -24,20 +24,20 @@ function debug_print() {
 
 # Perform a dummy ICP transfer (for testing purposes only)
 # NOTE: This won't work in production and is only for test environments.
-DUMMY_ICP_TRANSFER=$(
-    dfx --identity default canister call icp_ledger_canister icrc1_transfer "(record { to = record { owner = principal \"$SENDER\" }; amount = 1000000000 })"
-)
-echo "Dummy ICP Transfer Result: $DUMMY_ICP_TRANSFER"
+# DUMMY_ICP_TRANSFER=$(
+#     dfx --identity default canister call icp_ledger_canister icrc1_transfer "(record { to = record { owner = principal \"$SENDER\" }; amount = 1000000000 })"
+# )
+# echo "Dummy ICP Transfer Result: $DUMMY_ICP_TRANSFER"
 
-# Approve the index_canister to spend a specific amount on behalf of the minter identity
-# NOTE: In a production environment, this approval step should be performed by the frontend.
-APPROVE=$(
-    dfx --identity minter canister call icp_ledger_canister icrc2_approve "(record { amount = 20000000; spender = record { owner = principal \"$INDEX_CANISTER\"} })"
-)
-echo "Approval Result: $APPROVE"
+# # Approve the index_canister to spend a specific amount on behalf of the minter identity
+# # NOTE: In a production environment, this approval step should be performed by the frontend.
+# APPROVE=$(
+#     dfx --identity minter canister call icp_ledger_canister icrc2_approve "(record { amount = 20000000; spender = record { owner = principal \"$INDEX_CANISTER\"} })"
+# )
+# echo "Approval Result: $APPROVE"
 
-# Transfer a membership to the receiver
-# Here, a purchase of a "Silver" membership variant is initiated.
+# # Transfer a membership to the receiver
+# # Here, a purchase of a "Silver" membership variant is initiated.
 USER_TRANSFER=$(
     dfx --identity minter canister call index_canister api_purchase_membership "(variant { Silver })"
 )
