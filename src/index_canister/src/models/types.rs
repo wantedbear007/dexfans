@@ -97,13 +97,13 @@ pub(crate) struct UserProfileInterCanister {
 //     NewSubscribingPost,
 // }
 
-#[derive(Clone, CandidType, Serialize, Deserialize)]
-pub(crate) struct UserDetailsMinified {
-    pub user_id: candid::Principal,
-    pub username: String,
-    pub avatar: Option<String>,
-    pub cover: Option<String>,
-}
+// #[derive(Clone, CandidType, Serialize, Deserialize)]
+// pub(crate) struct UserDetailsMinified {
+//     pub user_id: candid::Principal,
+//     pub username: String,
+//     pub avatar: Option<String>,
+//     pub cover: Option<String>,
+// }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {

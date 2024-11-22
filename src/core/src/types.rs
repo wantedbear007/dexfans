@@ -56,6 +56,15 @@ pub struct UserProfile {
     pub membership: Membership,
 }
 
+#[derive(Clone, CandidType, Serialize, Deserialize)]
+pub struct UserDetailsMinified {
+    pub user_id: candid::Principal,
+    pub username: String,
+    pub avatar: Option<String>,
+    pub cover: Option<String>,
+}
+
+
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
 pub struct UpdateUserProfileArgsIC {
     pub user_id: Principal,
@@ -78,11 +87,13 @@ pub struct UnsubscribeAccountIC {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct NotificationBody {
     pub category: NotificationType,
-    pub description: Option<String>,
-    pub title: String,
+    // pub description: Option<String>,
+    // pub title: String,
     pub created_on: TimestampMillis,
     pub expiring_on: TimestampMillis,
-    pub by: Option<Principal>,
+    // pub by: Option<Principal>,
+    pub by: Option<UserDetailsMinified>
+    
 }
 
 #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]

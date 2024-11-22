@@ -1,4 +1,4 @@
-use crate::utils::guards::*;
+use crate::utils::{guards::*, init::with_read_state};
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
@@ -168,8 +168,8 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
                             created_on: ic_cdk::api::time(),
                             expiring_on: ic_cdk::api::time()
                                 + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                            description: None,
-                            title: format!("{} has recently posted", ic_cdk::api::caller()),
+                            // description: None,
+                            // title: format!("{} has recently posted", ic_cdk::api::caller()),
                         });
 
                         state.notifications.insert(usr.acc, usr);
@@ -191,12 +191,23 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
-                by: Some(ic_cdk::api::caller()),
+                by: {
+                    let user_data = state
+                        .account
+                        .get(&ic_cdk::api::caller())
+                        .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+                    Some(core::types::UserDetailsMinified {
+                        avatar: user_data.avatar,
+                        cover: user_data.cover_image,
+                        user_id: user_data.user_id,
+                        username: user_data.username,
+                    })
+                },
                 category: core::types::NotificationType::NewLike,
                 created_on: ic_cdk::api::time(),
                 expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                description: None,
-                title: format!("{} liked your post {}", args.username, args.post_url),
+                // description: None,
+                // title: format!("{} liked your post {}", args.username, args.post_url),
             });
 
             state.notifications.insert(val.acc, val);
@@ -213,18 +224,29 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
-                by: Some(ic_cdk::api::caller()),
+                by: {
+                    let user_data = state
+                        .account
+                        .get(&ic_cdk::api::caller())
+                        .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+                    Some(core::types::UserDetailsMinified {
+                        avatar: user_data.avatar,
+                        cover: user_data.cover_image,
+                        user_id: user_data.user_id,
+                        username: user_data.username,
+                    })
+                },
                 category: core::types::NotificationType::NewComment,
                 created_on: ic_cdk::api::time(),
                 expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                description: None,
-                title: format!(
-                    "{} commented on your post, {}{}",
-                    // ic_cdk::api::caller(),
-                    args.username,
-                    args.description,
-                    args.post_url
-                ),
+                // description: None,
+                // title: format!(
+                //     "{} commented on your post, {}{}",
+                //     // ic_cdk::api::caller(),
+                //     args.username,
+                //     args.description,
+                //     args.post_url
+                // ),
             });
 
             state.notifications.insert(val.acc, val);

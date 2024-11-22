@@ -19,10 +19,10 @@ pub fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String>
 // #[ic_cdk::query(guard = "guard_prevent_anonymous", msgpack = true)]
 #[ic_cdk::query(guard = "guard_prevent_anonymous")]
 
-pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
+pub fn api_get_subscribed() -> Vec<core::types::UserDetailsMinified> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
-            let mut subscribing: Vec<crate::models::types::UserDetailsMinified> = Vec::new();
+            let mut subscribing: Vec<core::types::UserDetailsMinified> = Vec::new();
 
             for sub in acc.subscribing.iter() {
                 let user_prof = state
@@ -30,7 +30,7 @@ pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
                     .get(sub)
                     .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
-                subscribing.push(crate::models::types::UserDetailsMinified {
+                subscribing.push(core::types::UserDetailsMinified {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
@@ -72,10 +72,10 @@ pub fn api_get_subscribed() -> Vec<crate::models::types::UserDetailsMinified> {
 // }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
+pub fn api_get_subscribers() -> Vec<core::types::UserDetailsMinified> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
-            let mut subscribers: Vec<crate::models::types::UserDetailsMinified> = Vec::new();
+            let mut subscribers: Vec<core::types::UserDetailsMinified> = Vec::new();
 
             for sub in acc.subscribers.iter() {
                 let user_prof = state
@@ -83,7 +83,7 @@ pub fn api_get_subscribers() -> Vec<crate::models::types::UserDetailsMinified> {
                     .get(sub)
                     .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
 
-                subscribers.push(crate::models::types::UserDetailsMinified {
+                subscribers.push(core::types::UserDetailsMinified {
                     avatar: user_prof.avatar,
                     user_id: user_prof.user_id,
                     username: user_prof.username,
@@ -115,9 +115,9 @@ fn api_get_notifications() -> Vec<crate::NotificationBody> {
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_user_minified(
     id: candid::Principal,
-) -> Result<crate::models::types::UserDetailsMinified, String> {
+) -> Result<core::types::UserDetailsMinified, String> {
     crate::with_read_state(|state| match state.account.get(&id) {
-        Some(acc) => Ok(crate::models::types::UserDetailsMinified {
+        Some(acc) => Ok(core::types::UserDetailsMinified {
             avatar: acc.avatar,
             user_id: acc.user_id,
             username: acc.username,
@@ -215,7 +215,7 @@ fn api_search_user(args: String) -> Vec<crate::UserDetailsMinified> {
                 //     || (strsim::levenshtein(&acc.bio.get_or_insert("".to_string()), &args)
                 //         <= core::constants::ESSENTIAL_FUZZY_SEARCH_THRESHOLD)
                 {
-                    Some(crate::UserDetailsMinified {
+                    Some(core::types::UserDetailsMinified {
                         avatar: acc.avatar,
                         cover: acc.cover_image,
                         user_id: acc.user_id,
