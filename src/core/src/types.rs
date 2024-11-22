@@ -22,7 +22,9 @@ pub enum PostType {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash, CandidType, PartialOrd)]
 pub enum Membership {
     Guest = 0,
-    Diamond = 1,
+    Silver = 1,
+    Gold = 2,
+    Platinum = 3,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]

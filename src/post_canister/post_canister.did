@@ -9,10 +9,11 @@ type CommentBody = record {
 };
 type CreatePostArgs = record {
   content : text;
-  post_type : PostType;
-  video : opt text;
-  image : opt text;
+  video : opt Video;
+  post_visibility : PostVisibility;
+  image : opt vec Video;
   price : opt nat8;
+  post_status : PostStatus;
 };
 type Membership = variant { Guest; Gold; Platinum; Silver };
 type Pagination = record { end : nat32; start : nat32 };
@@ -20,16 +21,17 @@ type Post = record {
   views_count : nat64;
   post_id : nat;
   content : text;
-  post_type : PostType;
   creator_id : principal;
-  video : opt text;
+  video : opt Video;
   views : vec principal;
   like_count : nat64;
+  post_visibility : PostVisibility;
   created_at : nat64;
   likes : vec principal;
-  image : opt text;
+  image : opt vec Video;
   comments_count : nat32;
   price : opt nat8;
+  post_status : PostStatus;
 };
 type PostCanisterInitArgs = record {
   controllers : vec principal;
@@ -37,7 +39,8 @@ type PostCanisterInitArgs = record {
   accounts : vec UserProfile;
 };
 type PostPagination = record { end : nat32; post_id : nat; start : nat32 };
-type PostType = variant { Free; Gold; Paid; Platinum; Silver };
+type PostStatus = variant { Draft; Archived; Published };
+type PostVisibility = variant { DiamondUser; Everyone };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : text; Err : text };
 type Result_2 = variant { Ok : nat; Err : text };
@@ -48,10 +51,11 @@ type UpdateMembershipIC = record { user : principal; membership : Membership };
 type UpdatePostArgs = record {
   id : nat;
   content : text;
-  post_type : PostType;
-  video : opt text;
-  image : opt text;
+  video : opt Video;
+  post_visibility : PostVisibility;
+  image : opt vec Video;
   price : opt nat8;
+  post_status : PostStatus;
 };
 type UpdateUserProfileArgsIC = record { username : text; user_id : principal };
 type UserProfile = record {
@@ -67,10 +71,12 @@ type UserProfileIC = record {
   posts : vec nat;
   collects : vec nat;
 };
+type Video = record { need_pay : bool; source : text; price : opt nat8 };
 service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
+  api_archive_post : (UpdatePostArgs) -> (Result_1);
   api_comment_on_post : (nat, text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_2);
   api_delete_post : (nat) -> (Result_1);
@@ -81,6 +87,7 @@ service : (PostCanisterInitArgs) -> {
   api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
+  api_save_post : (UpdatePostArgs) -> (Result_1);
   api_search_post : (text) -> (vec Post) query;
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
