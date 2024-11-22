@@ -1,4 +1,4 @@
-use crate::utils::{guards::*, init::with_read_state};
+use crate::utils::guards::*;
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
@@ -55,59 +55,9 @@ pub async fn api_update_profile(
                 }
             }
         }
-        Err(err) => return Err(err),
+        Err(err) => Err(err),
     }
-
-    // Ok(())
 }
-
-// update membership
-// #[ic_cdk::update]
-// pub async fn api_update_membership(args: core::types::Membership) -> Result<(), String> {
-//     // msp to save the current state of membership
-//     let mut msp: Membership = Membership::Guest;
-//     match crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
-//         Some(mut val) => {
-//             if &val.membership == &args {
-//                 return Err(String::from(core::constants::WARNING_SAME_VALUE));
-//             }
-//             msp = val.membership;
-//             val.membership = args.clone();
-//             state.account.insert(ic_cdk::api::caller(), val);
-//             Ok(())
-//         }
-//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
-//     }) {
-//         Ok(()) => {
-//             // to update membership on post canister
-//             match ic_update_membership(args).await {
-//                 Ok(()) => Ok(()),
-//                 Err(err) => {
-//                     // roll back
-//                     super::controllers::rb_membership_update(msp)
-//                         .expect(core::constants::ERROR_FAILED_CALL);
-//                     return Err(err);
-//                 }
-//             }
-//         }
-//         Err(err) => return Err(err),
-//     }
-// }
-
-// // #[ic_cdk::update]
-// // pub fn api_add_post_id_to_user(user_id: Principal, post_id: u128) -> Result<(), String> {
-// //     STATE.with(|state| {
-// //         let mut app_state = state.borrow_mut();
-
-// //         if let Some(mut user_profile) = app_state.account.remove(&user_id) {
-// //             user_profile.posts.push(post_id); // Modify the profile
-// //             app_state.account.insert(user_id, user_profile); // Reinsert the modified profile
-// //             Ok(())
-// //         } else {
-// //             Err("User not found.".to_string())
-// //         }
-// //     })
-// // }
 
 #[ic_cdk::update]
 pub fn api_update_user_likes(
@@ -155,21 +105,19 @@ pub fn api_unsubscribe_account(id: candid::Principal) -> Result<(), String> {
 
 // to create notification for new post
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-pub fn notify_subscribers_newpost() -> Result<(), String> {
+pub fn notify_subscribers_newpost(post_brief: Option<String>) -> Result<(), String> {
     crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
             for x in acc.subscribers.iter() {
                 match state.notifications.get(&x) {
                     Some(mut usr) => {
                         usr.notifications.push(core::types::NotificationBody {
+                            post_brief: post_brief.clone(),
                             by: None,
-
                             category: core::types::NotificationType::NewPost,
                             created_on: ic_cdk::api::time(),
                             expiring_on: ic_cdk::api::time()
                                 + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                            // description: None,
-                            // title: format!("{} has recently posted", ic_cdk::api::caller()),
                         });
 
                         state.notifications.insert(usr.acc, usr);
@@ -180,7 +128,7 @@ pub fn notify_subscribers_newpost() -> Result<(), String> {
 
             Ok(())
         }
-        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
+        None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
 
@@ -191,6 +139,7 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
+                post_brief: None,
                 by: {
                     let user_data = state
                         .account
@@ -203,18 +152,17 @@ pub fn notify_likes(args: core::types::LikeNotificationArgs) -> Result<(), Strin
                         username: user_data.username,
                     })
                 },
+                // subscriber_id: None,
                 category: core::types::NotificationType::NewLike,
                 created_on: ic_cdk::api::time(),
                 expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                // description: None,
-                // title: format!("{} liked your post {}", args.username, args.post_url),
             });
 
             state.notifications.insert(val.acc, val);
 
             Ok(())
         }
-        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+        None => Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
@@ -224,6 +172,7 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
+                post_brief: args.post_brief,
                 by: {
                     let user_data = state
                         .account
@@ -239,63 +188,48 @@ pub fn notify_comments(args: core::types::CommentNotificationArgs) -> Result<(),
                 category: core::types::NotificationType::NewComment,
                 created_on: ic_cdk::api::time(),
                 expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-                // description: None,
-                // title: format!(
-                //     "{} commented on your post, {}{}",
-                //     // ic_cdk::api::caller(),
-                //     args.username,
-                //     args.description,
-                //     args.post_url
-                // ),
             });
 
             state.notifications.insert(val.acc, val);
 
             Ok(())
         }
-        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+        None => Err(String::from(core::constants::ERROR_FAILED_CALL)),
     })
 }
 
-// #[ic_cdk::update]
-// pub async fn debug_complete_payment(amt: u64) -> Result<Nat, String> {
-//     super::payment_controller::icp_transfer_handler(amt).await
-// }
-
-// #[ic_cdk::update(guard = guard_prevent_anonymous)]
-// #[ic_cdk::update]
-// pub fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {
-//     super::controllers::controller_membership(args)
-// }
-
-// TODO COMPLETE BELOW
 // // notify new subscriber
-// #[ic_cdk::update(guard = guard_prevent_anonymous)]
-// pub fn notify_new_subscriber(id: candid::Principal) -> Result<(), String> {
-//     crate::with_write_state(|state| match state.notifications.get(&ic_cdk::api::caller()) {
-//         Some(mut val) => {
-//             val.notifications
-//                 .push(core::types::NotificationBody {
-//                     by: Some(ic_cdk::api::caller()),
-//                     category: core::types::NotificationType::NewComment,
-//                     created_on: ic_cdk::api::time(),
-//                     expiring_on: ic_cdk::api::time()
-//                         + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
-//                     description: None,
-//                     title: format!(
-//                         "{} has subscribed you",
-//                         ic_cdk::api::,
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+pub fn notify_new_subscriber(subscribed_to: candid::Principal) -> Result<(), String> {
+    crate::with_write_state(|state| match state.notifications.get(&subscribed_to) {
+        Some(mut noti) => {
+            noti.notifications.push(core::types::NotificationBody {
+                post_brief: None,
+                by: {
+                    let user_data = state
+                        .account
+                        .get(&ic_cdk::api::caller())
+                        .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+                    Some(core::types::UserDetailsMinified {
+                        avatar: user_data.avatar,
+                        cover: user_data.cover_image,
+                        user_id: user_data.user_id,
+                        username: user_data.username,
+                    })
+                },
+                category: core::types::NotificationType::NewSubscriber,
+                created_on: ic_cdk::api::time(),
+                expiring_on: ic_cdk::api::time() + core::constants::ESSENTIAL_NOTIFICATION_EXPIRING,
+                // subscriber_id:
+            });
 
-//                     ),
-//                 });
+            state.notifications.insert(noti.acc, noti);
 
-//             state.notifications.insert(val.acc, val);
-
-//             Ok(())
-//         }
-//         None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
-//     })
-// }
+            Ok(())
+        }
+        None => Err(String::from(core::constants::ERROR_FAILED_CALL)),
+    })
+}
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 pub async fn api_purchase_membership(args: core::types::Membership) -> Result<(), String> {

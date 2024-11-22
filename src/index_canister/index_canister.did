@@ -8,10 +8,8 @@ type CanisterMetaData = record {
 };
 type Collection = record { post_id : nat; asset_canister : principal };
 type CommentNotificationArgs = record {
-  post_url : text;
-  username : text;
   post_owner : principal;
-  description : text;
+  post_brief : opt text;
 };
 type DexFansCanisterInitArgs = record {
   controllers : vec principal;
@@ -31,12 +29,11 @@ type LikeNotificationArgs = record {
 };
 type Membership = variant { Guest; Gold; Platinum; Silver };
 type NotificationBody = record {
-  by : opt principal;
-  title : text;
-  description : opt text;
+  by : opt UserDetailsMinified;
   created_on : nat64;
   category : NotificationType;
   expiring_on : nat64;
+  post_brief : opt text;
 };
 type NotificationType = variant {
   NewComment;
@@ -71,7 +68,7 @@ type UserProfile = record {
   username : text;
   asset_canister_id : principal;
   cover_image : opt text;
-  membership_ledger_block : opt nat;
+  membership_ledger_block : vec nat;
   membership_till : nat64;
   created_at : nat64;
   user_id : principal;
@@ -120,16 +117,15 @@ service : (DexFansCanisterInitArgs) -> {
   api_unsubscribe_account : (principal) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
-  check_controllers : (principal) -> (bool) query;
   create_post_canister : () -> (Result_1);
   get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_7) query;
-  get_cycles : () -> (nat64) query;
   get_ledger_canister : () -> (Result_1) query;
   get_post_canister : () -> (Result_1) query;
   greet : (text) -> (text) query;
   ic_get_subscribed_list : (principal) -> (Result_8) query;
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);
-  notify_subscribers_newpost : () -> (Result);
+  notify_new_subscriber : (principal) -> (Result);
+  notify_subscribers_newpost : (opt text) -> (Result);
 }

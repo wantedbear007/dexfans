@@ -92,8 +92,9 @@ pub struct NotificationBody {
     pub created_on: TimestampMillis,
     pub expiring_on: TimestampMillis,
     // pub by: Option<Principal>,
-    pub by: Option<UserDetailsMinified>
-    
+    pub by: Option<UserDetailsMinified>,
+    pub post_brief: Option<String>
+    // pub subscriber_id: Option<candid::Principal>
 }
 
 #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
@@ -114,10 +115,10 @@ pub struct LikeNotificationArgs {
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct CommentNotificationArgs {
-    pub post_url: String,
+    // pub post_url: String,
     pub post_owner: Principal,
-    pub description: String,
-    pub username: String,
+    pub post_brief: Option<String>,
+    // pub username: String,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
