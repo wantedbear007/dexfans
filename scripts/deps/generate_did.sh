@@ -22,7 +22,7 @@ cargo build --release --target wasm32-unknown-unknown --package "$canister_name"
 
 # Paths
 wasm_path="./target/wasm32-unknown-unknown/release/${canister_name}.wasm"
-did_output="./src/${canister_name}/${canister_name}.did"
+did_output="./src/backend/${canister_name}/${canister_name}.did"
 
 # Generate DID file
 candid-extractor "$wasm_path" > "$did_output"

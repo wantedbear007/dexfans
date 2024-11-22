@@ -80,7 +80,7 @@ pub async fn create_post_canister() -> Result<candid::Principal, String> {
 
     // locating wasm module to insert in canister
     let wasm_module: Vec<u8> =
-        include_bytes!("../../../../.dfx/local/canisters/post_canister/post_canister.wasm.gz")
+        include_bytes!("../../../../../.dfx/local/canisters/post_canister/post_canister.wasm.gz")
             .to_vec();
 
     // install post canister logic in new canister

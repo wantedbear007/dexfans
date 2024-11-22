@@ -2,7 +2,7 @@
   "dfx": "0.23.0",
   "canisters": {
     "index_canister": {
-      "candid": "src/index_canister/index_canister.did",
+      "candid": "src/backend/index_canister/index_canister.did",
       "package": "index_canister",
       "type": "rust"
     },
@@ -18,7 +18,7 @@
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
     },
     "post_canister": {
-      "candid": "src/post_canister/post_canister.did",
+      "candid": "src/backend/post_canister/post_canister.did",
       "package": "post_canister",
       "type": "rust",
       "gzip": true,
@@ -26,7 +26,7 @@
     },
     "icp_ledger_canister": {
       "type": "custom",
-      "candid": "src/remote_canisters/icp_ledger.did",
+      "candid": "src/backend/remote_canisters/icp_ledger.did",
       "wasm": "https://download.dfinity.systems/ic/3d6a76efba59d6f03026d6b7c1c9a1dfce96ee93/canisters/ledger-canister.wasm.gz",
       "remote": {
         "id": {
@@ -36,7 +36,7 @@
       "specified_id": "ryjl3-tyaaa-aaaaa-aaaba-cai"
     },
     "asset_handler": {
-      "candid": "src/ic_asset_handler/ic_oss_bucket/ic_oss_bucket.did",
+      "candid": "src/backend/ic_asset_handler/ic_oss_bucket/ic_oss_bucket.did",
       "declarations": {
         "node_compatibility": true
       },
