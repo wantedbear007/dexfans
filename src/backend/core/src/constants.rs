@@ -30,6 +30,7 @@ pub const WARNING_HIGHER_MEMBERSHIP: &str =
     "Higher category of membership found, try after current membership expires";
 pub const WARNING_ALREADY_PURCHASED: &str = "Post is already purchased";
 pub const WARNING_POST_IS_FREE: &str = "Post is already free";
+pub const WARNING_POST_OWNER: &str = "You owns the post";
 
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";

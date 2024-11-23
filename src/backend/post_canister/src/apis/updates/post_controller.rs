@@ -3,7 +3,7 @@ pub(super) async fn controller_create_post(
     args: crate::models::post::CreatePostArgs,
 ) -> Result<crate::models::types::PostId, String> {
     // image length validator
-    super::validators::checks_image_validation(args.clone())?;
+    crate::utils::guards::checks_image_validation(args.clone())?;
 
     match kaires::call_inter_canister::<core::types::ICAddPostCanisterProfile, ()>(
         "admin_profile_post_canister",

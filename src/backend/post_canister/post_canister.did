@@ -16,7 +16,7 @@ type CreatePostArgs = record {
   post_status : PostStatus;
 };
 type Membership = variant { Diamond; Guest };
-type Pagination = record { end : nat32; start : nat32 };
+type Pagination = record { end : nat64; start : nat64 };
 type Post = record {
   views_count : nat64;
   post_id : nat;
@@ -39,6 +39,7 @@ type PostCanisterInitArgs = record {
   accounts : vec UserProfile;
 };
 type PostPagination = record { end : nat64; post_id : nat; start : nat64 };
+type PostPurchaseArgs = record { post_id : nat; created_by : principal };
 type PostStatus = variant { Draft; Archived; Published };
 type PostVisibility = variant { DiamondUser; Everyone };
 type Result = variant { Ok; Err : text };
@@ -49,7 +50,7 @@ type Result_4 = variant { Ok : UserProfileIC; Err : text };
 type Result_5 = variant { Ok : CanisterMetaData; Err : text };
 type SinglePurchaseArgs = record {
   post_id : nat;
-  canister_id : principal;
+  created_by : principal;
   media_id : nat;
 };
 type UpdateMembershipIC = record { user : principal; membership : Membership };
@@ -101,5 +102,5 @@ service : (PostCanisterInitArgs) -> {
   get_canister_meta_data : () -> (Result_5) query;
   greet : (text) -> (text) query;
   ic_get_media_price : (SinglePurchaseArgs) -> (Result_2) query;
-  ic_get_price : (nat) -> (Result_2) query;
+  ic_get_price : (PostPurchaseArgs) -> (Result_2) query;
 }

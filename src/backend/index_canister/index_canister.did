@@ -52,11 +52,6 @@ type Result_5 = variant { Ok : UserProfileLittleMinified; Err : text };
 type Result_6 = variant { Ok : UserDetailsMinified; Err : text };
 type Result_7 = variant { Ok : CanisterMetaData; Err : text };
 type Result_8 = variant { Ok : vec principal; Err : text };
-type SinglePurchaseArgs = record {
-  post_id : nat;
-  canister_id : principal;
-  media_id : nat;
-};
 type UserDetailsMinified = record {
   username : text;
   cover : opt text;
@@ -119,7 +114,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_suggested_user : () -> (vec UserDetailsMinified) query;
   api_get_user_details : (principal) -> (Result_5) query;
   api_get_user_minified : (principal) -> (Result_6) query;
-  api_purchase_media : (SinglePurchaseArgs) -> (Result);
+  api_purchase_media : (nat, nat, principal) -> (Result);
   api_purchase_membership : (Membership) -> (Result);
   api_purchase_post : (nat, principal) -> (Result);
   api_search_user : (text) -> (vec UserDetailsMinified) query;

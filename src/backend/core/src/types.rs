@@ -13,13 +13,11 @@ pub type Response = Result<(), String>;
 pub type MediaID = u32;
 pub type Counters = usize;
 pub type ICPAmount = candid::Nat;
+pub type UserID = candid::Principal;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType, Eq, PartialOrd, Ord)]
 pub enum PostType {
     Free,
-    // Silver,
-    // Gold,
-    // Platinum,
     PaidPost,
     PaidImgs,
     Diamond,
@@ -28,9 +26,6 @@ pub enum PostType {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash, CandidType, PartialOrd)]
 pub enum Membership {
     Guest = 0,
-    // Silver = 1,
-    // Gold = 2,
-    // Platinum = 3,
     Diamond = 1,
 }
 
@@ -65,7 +60,7 @@ pub struct UserProfile {
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct UserDetailsMinified {
-    pub user_id: candid::Principal,
+    pub user_id: UserID,
     pub username: String,
     pub avatar: Option<String>,
     pub cover: Option<String>,
@@ -111,14 +106,14 @@ pub enum NotificationType {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct LikeNotificationArgs {
     pub post_url: String,
-    pub post_owner: Principal,
+    pub post_owner: UserID,
     pub username: String,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct CommentNotificationArgs {
     // pub post_url: String,
-    pub post_owner: Principal,
+    pub post_owner: UserID,
     pub post_brief: Option<String>,
     // pub username: String,
 }
@@ -133,18 +128,18 @@ pub struct PostCanisterInitArgs {
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct ICAddPostCanisterProfile {
     pub post_canister: candid::Principal,
-    pub caller: candid::Principal,
+    pub caller: UserID,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct Pagination {
-    pub start: u32,
-    pub end: u32,
+    pub start: Counters,
+    pub end: Counters,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct Collection {
-    pub post_id: u128,
+    pub post_id: PostId,
     pub asset_canister: candid::Principal,
 }
 
@@ -152,5 +147,11 @@ pub struct Collection {
 pub struct SinglePurchaseArgs {
     pub post_id: PostId,
     pub media_id: ImageVideoId,
-    pub canister_id: candid::Principal,
+    pub created_by: UserID
+}
+
+#[derive(CandidType, Serialize, Deserialize, Clone)]
+pub struct PostPurchaseArgs {
+    pub post_id: PostId,
+    pub created_by: UserID,
 }

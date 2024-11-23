@@ -321,13 +321,17 @@ async fn api_purchase_post(
     .map_err(|err| return format!("{}", err))?;
 
     // get price of post
-    let price = kaires::call_inter_canister::<core::types::PostId, core::types::ICPAmount>(
-        core::constants::FUNCTION_GET_POST_PRICE,
-        post_id,
-        post_canister_id,
-    )
-    .await
-    .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
+    let price =
+        kaires::call_inter_canister::<core::types::PostPurchaseArgs, core::types::ICPAmount>(
+            core::constants::FUNCTION_GET_POST_PRICE,
+            core::types::PostPurchaseArgs {
+                created_by: ic_cdk::api::caller(),
+                post_id,
+            },
+            post_canister_id,
+        )
+        .await
+        .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
 
     if price == candid::Nat::default() {
         return Err(String::from(core::constants::WARNING_POST_IS_FREE));
@@ -374,9 +378,13 @@ async fn api_purchase_post(
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_purchase_media(args: core::types::SinglePurchaseArgs) -> core::types::Response {
+async fn api_purchase_media(
+    post_id: core::types::PostId,
+    media_id: core::types::ImageVideoId,
+    canister_id: candid::Principal,
+) -> core::types::Response {
     // to validate canister id
-    crate::utils::guards::validate_post_canister(args.canister_id)?;
+    crate::utils::guards::validate_post_canister(canister_id)?;
 
     // checking if user already owns the media
     crate::with_read_state(
@@ -384,7 +392,7 @@ async fn api_purchase_media(args: core::types::SinglePurchaseArgs) -> core::type
             Some(pos) => {
                 let medias: Vec<u128> = pos.medias.iter().map(|e| e.post_id).collect();
 
-                if medias.contains(&args.media_id) {
+                if medias.contains(&media_id) {
                     return Err(String::from(core::constants::WARNING_ALREADY_PURCHASED));
                 } else {
                     Ok(())
@@ -399,8 +407,12 @@ async fn api_purchase_media(args: core::types::SinglePurchaseArgs) -> core::type
     let price =
         kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::ICPAmount>(
             core::constants::FUNCTION_GET_MEDIA_PRICE,
-            args.clone(),
-            args.canister_id,
+            core::types::SinglePurchaseArgs {
+                created_by: ic_cdk::api::caller(),
+                media_id: media_id.clone(),
+                post_id,
+            },
+            canister_id,
         )
         .await
         .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
@@ -419,7 +431,7 @@ async fn api_purchase_media(args: core::types::SinglePurchaseArgs) -> core::type
         Ok(val) => {
             let new_purchase = crate::models::types::PurchasePostBody {
                 ledger_block: val,
-                post_id: args.media_id,
+                post_id: media_id,
             };
 
             crate::with_write_state(|state| {
