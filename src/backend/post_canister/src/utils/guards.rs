@@ -26,7 +26,6 @@ pub fn guard_parent_canister_only() -> Result<(), String> {
     })
 }
 
-
 // validate length of images
 pub(crate) fn checks_image_validation(
     args: crate::models::post::CreatePostArgs,

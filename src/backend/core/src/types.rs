@@ -147,7 +147,7 @@ pub struct Collection {
 pub struct SinglePurchaseArgs {
     pub post_id: PostId,
     pub media_id: ImageVideoId,
-    pub created_by: UserID
+    pub created_by: UserID,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
