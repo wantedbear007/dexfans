@@ -4,6 +4,7 @@ use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
 pub type PostId = u128;
+
 pub type TimestampMillis = u64;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
@@ -94,6 +95,11 @@ pub(crate) struct PurchasedPosts {
 pub(crate) struct PurchasePostBody {
     pub post_id: u128,
     pub ledger_block: icrc_ledger_types::icrc1::transfer::BlockIndex,
+}
+
+#[derive(CandidType, Serialize, Deserialize, PartialEq, Eq)]
+pub(crate) struct PurchasedMedia {
+    pub medias: Vec<PurchasePostBody>,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -203,3 +209,19 @@ impl ic_stable_structures::Storable for PurchasedPosts {
     const BOUND: ic_stable_structures::storable::Bound =
         ic_stable_structures::storable::Bound::Unbounded;
 }
+
+impl ic_stable_structures::Storable for PurchasedMedia {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
+}
+

@@ -5,9 +5,8 @@ use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
 // pub type CanisterId = Principal;
-pub type CommentId = u128;
 pub type PostId = u128;
-pub type TimestampMillis = u64;
+
 // pub type PostPrice = u8;
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]

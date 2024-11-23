@@ -1,22 +1,22 @@
 use core::types::{PostStatus, PostVisibility};
 use std::borrow::Cow;
 
-use crate::models::types::{PostId, TimestampMillis};
+use crate::models::types::{PostId};
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Image {
-    pub source: String,
+    pub source: core::types::MediaID,
     pub need_pay: bool,
-    pub price: Option<u8>,
+    pub price: Option<core::types::PostPrice>,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Video {
-    pub source: String,
+    pub source: core::types::MediaID,
     pub need_pay: bool,
-    pub price: Option<u8>,
+    pub price: Option<core::types::PostPrice>,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
@@ -38,7 +38,7 @@ pub struct Post {
     // pub comments: Vec<crate::models::comment::Comment>,
     pub creator_id: Principal,
     pub comments_count: u32,
-    pub created_at: TimestampMillis,
+    pub created_at: core::types::TimestampMillis,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]

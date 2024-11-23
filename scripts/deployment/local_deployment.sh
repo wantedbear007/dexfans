@@ -67,13 +67,15 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
 # IMP: Review below warnings
 # Update code in /src/index_canister/src/lib.rs if below keys are changed 
 
+      # record { variant { Silver }; 10000 : nat64 };
+      # record { variant { Gold }; 20000 : nat64 };
+      # record { variant { Platinum }; 40000 : nat64 };
+
 dfx deploy index_canister --argument "( record {
     active_post_canister = principal \"${POST_CANISTER}\";
     payment_recipient = principal \"${BHANU}\";
     membership_plans = vec {
-      record { variant { Silver }; 10000 : nat64 };
-      record { variant { Gold }; 20000 : nat64 };
-      record { variant { Platinum }; 40000 : nat64 };
+      record { variant { Diamond }; 40000 : nat64 };
     };
     controllers = vec {
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";

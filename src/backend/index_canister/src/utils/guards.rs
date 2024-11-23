@@ -39,3 +39,15 @@ pub fn guard_post_canister_exclusive() -> Result<(), String> {
         None => Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
     })
 }
+
+pub fn validate_post_canister(id: candid::Principal) -> core::types::Response {
+    let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
+        .expect(core::constants::ERROR_FAILED_CANISTER_DATA)
+        .all_post_canisters;
+
+    if meta_data.contains(&id) {
+        Ok(())
+    } else {
+        Err(String::from(core::constants::ERROR_INVALID_CANISTER))
+    }
+}

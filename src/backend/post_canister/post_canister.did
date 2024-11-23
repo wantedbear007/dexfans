@@ -12,10 +12,10 @@ type CreatePostArgs = record {
   video : opt Video;
   post_visibility : PostVisibility;
   image : opt vec Video;
-  price : opt nat8;
+  price : opt nat32;
   post_status : PostStatus;
 };
-type Membership = variant { Guest; Gold; Platinum; Silver };
+type Membership = variant { Diamond; Guest };
 type Pagination = record { end : nat32; start : nat32 };
 type Post = record {
   views_count : nat64;
@@ -30,7 +30,7 @@ type Post = record {
   likes : vec principal;
   image : opt vec Video;
   comments_count : nat32;
-  price : opt nat8;
+  price : opt nat32;
   post_status : PostStatus;
 };
 type PostCanisterInitArgs = record {
@@ -47,6 +47,12 @@ type Result_2 = variant { Ok : nat; Err : text };
 type Result_3 = variant { Ok : Post; Err : text };
 type Result_4 = variant { Ok : UserProfileIC; Err : text };
 type Result_5 = variant { Ok : CanisterMetaData; Err : text };
+type Result_6 = variant { Ok : nat32; Err : text };
+type SinglePurchaseArgs = record {
+  post_id : nat;
+  canister_id : principal;
+  media_id : nat;
+};
 type UpdateMembershipIC = record { user : principal; membership : Membership };
 type UpdatePostArgs = record {
   id : nat;
@@ -54,7 +60,7 @@ type UpdatePostArgs = record {
   video : opt Video;
   post_visibility : PostVisibility;
   image : opt vec Video;
-  price : opt nat8;
+  price : opt nat32;
   post_status : PostStatus;
 };
 type UpdateUserProfileArgsIC = record { username : text; user_id : principal };
@@ -71,7 +77,7 @@ type UserProfileIC = record {
   posts : vec nat;
   collects : vec nat;
 };
-type Video = record { need_pay : bool; source : text; price : opt nat8 };
+type Video = record { need_pay : bool; source : nat32; price : opt nat32 };
 service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
@@ -95,5 +101,6 @@ service : (PostCanisterInitArgs) -> {
   debug_total_posts : () -> (nat) query;
   get_canister_meta_data : () -> (Result_5) query;
   greet : (text) -> (text) query;
-  ic_get_price : (nat) -> (nat8) query;
+  ic_get_media_price : (SinglePurchaseArgs) -> (Result_6) query;
+  ic_get_price : (nat) -> (Result_6) query;
 }

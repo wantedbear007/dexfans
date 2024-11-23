@@ -13,6 +13,8 @@ const NOTIFICATIONS_DATA: MemoryId = MemoryId::new(2);
 
 const PURCHASED_POST: MemoryId = MemoryId::new(3);
 
+const PURCHASED_IMAGE_OR_VIDEO: MemoryId = MemoryId::new(4);
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
@@ -38,6 +40,10 @@ pub fn get_notification_data_memory() -> StoreMemory {
 
 pub fn get_purchased_post_memory() -> StoreMemory {
     MEMORY_MANAGER.with(|m| m.borrow().get(PURCHASED_POST)) // New function for post storage
+}
+
+pub fn get_purchased_media_memory() -> StoreMemory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PURCHASED_IMAGE_OR_VIDEO)) // New function for post storage
 }
 
 pub fn get_canister_metadata_memory() -> StoreMemory {

@@ -13,7 +13,6 @@
 
 use std::borrow::Cow;
 
-use crate::models::types::{CommentId, TimestampMillis};
 use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::Storable;
 use serde::{Deserialize, Serialize};
@@ -25,9 +24,9 @@ pub struct Comment {
 
 #[derive(PartialEq, Eq, Serialize, PartialOrd, Deserialize, Debug, Clone, CandidType, Ord)]
 pub struct CommentBody {
-    pub comment_id: CommentId,
+    pub comment_id: core::types::CommentId,
     pub content: String,
-    pub created_at: TimestampMillis,
+    pub created_at: core::types::TimestampMillis,
 }
 
 impl Storable for Comment {

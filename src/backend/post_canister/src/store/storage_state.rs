@@ -1,6 +1,6 @@
 use ic_stable_structures::StableBTreeMap;
 
-use crate::models::{comment::Comment, post::Post, types::CommentId, types::UserProfileIC};
+use crate::models::{comment::Comment, post::Post, types::UserProfileIC};
 
 use super::memory::StoreMemory;
 
@@ -49,7 +49,7 @@ fn init_post_state() -> StableBTreeMap<u128, Post, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_post_data_memory())
 }
 
-fn init_comment_state() -> StableBTreeMap<CommentId, Comment, StoreMemory> {
+fn init_comment_state() -> StableBTreeMap<core::types::CommentId, Comment, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_comment_data_memory())
 }
 

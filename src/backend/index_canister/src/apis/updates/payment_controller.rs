@@ -9,20 +9,6 @@ pub(super) async fn icp_transfer_handler(
     recipient: candid::Principal,
     ledger_id: candid::Principal,
 ) -> Result<BlockIndex, String> {
-    // let mut recipient: candid::Principal = candid::Principal::anonymous();
-    // let mut ledger_canister: candid::Principal = candid::Principal::anonymous();
-
-    // fetching values of payment recipient and ledger canister id
-    // let _x = crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-    //     Some(val) => {
-    //         ledger_canister = val.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE];
-
-    //         recipient = val.payment_recipient;
-    //         Ok(())
-    //     }
-    //     None => return Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA)),
-    // });
-
     let transfer_args = TransferFromArgs {
         amount: tokens.into(),
         to: Account {
@@ -49,3 +35,5 @@ pub(super) async fn icp_transfer_handler(
     .0
     .map_err(|e| format!("{} {:?}", core::constants::ERROR_PAYMENT_FAILED, e))
 }
+
+

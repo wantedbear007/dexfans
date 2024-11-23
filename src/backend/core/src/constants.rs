@@ -15,6 +15,7 @@ pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
 
 // function names
 pub const FUNCTION_GET_POST_PRICE: &str = "ic_get_price";
+pub const FUNCTION_GET_MEDIA_PRICE: &str = "ic_get_media_price";
 
 // WARNINGS
 pub const WARNING_ANONYMOUS_CALL: &str = "Anonymous calls are not permitted!";
@@ -28,6 +29,7 @@ pub const WARNING_SAME_MEMBERSHIP: &str = "You are already a member of this cate
 pub const WARNING_HIGHER_MEMBERSHIP: &str =
     "Higher category of membership found, try after current membership expires";
 pub const WARNING_ALREADY_PURCHASED: &str = "Post is already purchased";
+pub const WARNING_POST_IS_FREE: &str = "Post is already free";
 
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
@@ -42,6 +44,8 @@ pub const ERROR_PROFILE_UPDATE: &str = "Failed to update profile, try again";
 pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 pub const ERROR_PAYMENT_FAILED: &str = "ICP payment failed, try again or contact admin";
+pub const ERROR_INVALID_CANISTER: &str = "Unrecognized canister.";
+
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";

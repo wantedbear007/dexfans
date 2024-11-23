@@ -5,29 +5,32 @@ use serde::{Deserialize, Serialize};
 pub type CanisterId = Principal;
 pub type CommentId = u128;
 pub type Cycles = u128;
-
 pub type PostId = u128;
 pub type TimestampMillis = u64;
 pub type PostPrice = u32;
-
+pub type ImageVideoId = u128;
 pub type Response = Result<(), String>;
+pub type MediaID = u32;
+pub type Counters = usize;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType, Eq, PartialOrd, Ord)]
 pub enum PostType {
     Free,
-    Silver,
-    Gold,
-    Platinum,
+    // Silver,
+    // Gold,
+    // Platinum,
     PaidPost,
     PaidImgs,
+    Diamond,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash, CandidType, PartialOrd)]
 pub enum Membership {
     Guest = 0,
-    Silver = 1,
-    Gold = 2,
-    Platinum = 3,
+    // Silver = 1,
+    // Gold = 2,
+    // Platinum = 3,
+    Diamond = 1,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
@@ -142,4 +145,12 @@ pub struct Pagination {
 pub struct Collection {
     pub post_id: u128,
     pub asset_canister: candid::Principal,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Clone)]
+pub struct SinglePurchaseArgs {
+    pub post_id: PostId,
+    // pub media_price: PostPrice,
+    pub media_id: ImageVideoId,
+    pub canister_id: candid::Principal
 }

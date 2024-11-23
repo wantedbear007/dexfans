@@ -2,7 +2,6 @@ mod apis;
 mod models;
 mod store;
 mod utils;
-use crate::models::types::*;
 use utils::init::{with_read_state, with_write_state};
 
 // dexfans v1.0: Post Canister

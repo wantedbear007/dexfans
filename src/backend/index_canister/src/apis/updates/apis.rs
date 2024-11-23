@@ -297,9 +297,12 @@ fn api_add_to_collection(args: core::types::Collection) -> core::types::Response
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 async fn api_purchase_post(
-    post_id: u128,
+    post_id: core::types::PostId,
     post_canister_id: candid::Principal,
 ) -> core::types::Response {
+    // canister id validity
+    crate::utils::guards::validate_post_canister(post_canister_id)?;
+
     // checking if user already owns the post
     crate::with_read_state(
         |state| match state.purchased_post.get(&ic_cdk::api::caller()) {
@@ -318,13 +321,17 @@ async fn api_purchase_post(
     .map_err(|err| return format!("{}", err))?;
 
     // get price of post
-    let price = kaires::call_inter_canister::<u128, core::types::PostPrice>(
+    let price = kaires::call_inter_canister::<core::types::PostId, core::types::PostPrice>(
         core::constants::FUNCTION_GET_POST_PRICE,
         post_id,
         post_canister_id,
     )
     .await
     .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
+
+    if price <= 0 {
+        return Err(String::from(core::constants::WARNING_POST_IS_FREE));
+    }
 
     let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
         .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
@@ -357,6 +364,81 @@ async fn api_purchase_post(
                                 posts: vec![new_noti],
                             },
                         );
+                        Ok(())
+                    }
+                }
+            })
+        }
+        Err(err) => return Err(err),
+    }
+}
+
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
+async fn api_purchase_image_or_video(
+    args: core::types::SinglePurchaseArgs,
+) -> core::types::Response {
+    // to validate canister id
+    crate::utils::guards::validate_post_canister(args.canister_id)?;
+
+    // checking if user already owns the media
+    crate::with_read_state(
+        |state| match state.purchased_media.get(&ic_cdk::api::caller()) {
+            Some(pos) => {
+                let medias: Vec<u128> = pos.medias.iter().map(|e| e.post_id).collect();
+
+                if medias.contains(&args.media_id) {
+                    return Err(String::from(core::constants::WARNING_ALREADY_PURCHASED));
+                } else {
+                    Ok(())
+                }
+            }
+            None => Ok(()),
+        },
+    )
+    .map_err(|err| return format!("{}", err))?;
+
+    // get price of post
+    let price =
+        kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::PostPrice>(
+            core::constants::FUNCTION_GET_MEDIA_PRICE,
+            args.clone(),
+            args.canister_id,
+        )
+        .await
+        .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
+
+    let meta_data = crate::with_read_state(|state| state.canister_meta_data.get(&0))
+        .expect(core::constants::ERROR_FAILED_CANISTER_DATA);
+
+    // payment
+    match crate::apis::updates::payment_controller::icp_transfer_handler(
+        price as u64,
+        meta_data.payment_recipient,
+        meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
+    )
+    .await
+    {
+        Ok(val) => {
+            let new_purchase = crate::models::types::PurchasePostBody {
+                ledger_block: val,
+                post_id: args.media_id,
+            };
+
+            crate::with_write_state(|state| {
+                match state.purchased_media.get(&ic_cdk::api::caller()) {
+                    Some(mut posts) => {
+                        posts.medias.push(new_purchase);
+                        state.purchased_media.insert(ic_cdk::api::caller(), posts);
+                        Ok(())
+                    }
+                    None => {
+                        state.purchased_media.insert(
+                            ic_cdk::api::caller(),
+                            crate::PurchasedMedia {
+                                medias: vec![new_purchase],
+                            },
+                        );
+
                         Ok(())
                     }
                 }

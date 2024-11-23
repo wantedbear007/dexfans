@@ -9,6 +9,8 @@ pub(crate) struct ApplicationState {
         StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory>,
     pub purchased_post:
         StableBTreeMap<candid::Principal, crate::models::types::PurchasedPosts, StoreMemory>,
+    pub purchased_media:
+        StableBTreeMap<candid::Principal, crate::models::types::PurchasedMedia, StoreMemory>,
 }
 
 // pub(crate) struct ServicesState {
@@ -31,6 +33,7 @@ impl ApplicationState {
             canister_meta_data: init_canister_meta_data_state(),
             notifications: init_notifications_state(),
             purchased_post: init_purchased_state(),
+            purchased_media: init_purchased_media_state(),
         }
     }
 }
@@ -53,4 +56,9 @@ fn init_notifications_state(
 fn init_purchased_state(
 ) -> StableBTreeMap<candid::Principal, crate::models::types::PurchasedPosts, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_purchased_post_memory())
+}
+
+fn init_purchased_media_state(
+) -> StableBTreeMap<candid::Principal, crate::models::types::PurchasedMedia, StoreMemory> {
+    StableBTreeMap::init(crate::store::memory::get_purchased_media_memory())
 }

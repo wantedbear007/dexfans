@@ -38,10 +38,10 @@ echo "Approval Result: $APPROVE"
 
 # # Transfer a membership to the receiver
 # # Here, a purchase of a "Silver" membership variant is initiated.
-USER_TRANSFER=$(
-    dfx --identity minter canister call index_canister api_purchase_membership "(variant { Diamond })"
-)
-echo "User Membership Purchase Result: $USER_TRANSFER"
+# USER_TRANSFER=$(
+#     dfx --identity minter canister call index_canister api_purchase_post "(variant { Diamond })"
+# )
+# echo "User Membership Purchase Result: $USER_TRANSFER"
 
 # Debug balances for verification
 debug_print

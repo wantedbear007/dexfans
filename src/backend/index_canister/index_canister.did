@@ -27,7 +27,7 @@ type LikeNotificationArgs = record {
   username : text;
   post_owner : principal;
 };
-type Membership = variant { Guest; Gold; Platinum; Silver };
+type Membership = variant { Diamond; Guest };
 type NotificationBody = record {
   by : opt UserDetailsMinified;
   created_on : nat64;
@@ -42,6 +42,7 @@ type NotificationType = variant {
   NewSubscribingPost;
   NewSubscriber;
 };
+type PurchasePostBody = record { post_id : nat; ledger_block : nat };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
 type Result_2 = variant { Ok : text; Err : text };
@@ -51,6 +52,11 @@ type Result_5 = variant { Ok : UserProfileLittleMinified; Err : text };
 type Result_6 = variant { Ok : UserDetailsMinified; Err : text };
 type Result_7 = variant { Ok : CanisterMetaData; Err : text };
 type Result_8 = variant { Ok : vec principal; Err : text };
+type SinglePurchaseArgs = record {
+  post_id : nat;
+  canister_id : principal;
+  media_id : nat;
+};
 type UserDetailsMinified = record {
   username : text;
   cover : opt text;
@@ -106,11 +112,14 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_my_collection : () -> (Result_3) query;
   api_get_my_profile : () -> (Result_4) query;
   api_get_notifications : () -> (vec NotificationBody) query;
+  api_get_purchased_media_ids : () -> (vec PurchasePostBody) query;
+  api_get_purchased_posts_ids : () -> (vec PurchasePostBody) query;
   api_get_subscribed : () -> (vec UserDetailsMinified) query;
   api_get_subscribers : () -> (vec UserDetailsMinified) query;
   api_get_suggested_user : () -> (vec UserDetailsMinified) query;
   api_get_user_details : (principal) -> (Result_5) query;
   api_get_user_minified : (principal) -> (Result_6) query;
+  api_purchase_image_or_video : (SinglePurchaseArgs) -> (Result);
   api_purchase_membership : (Membership) -> (Result);
   api_purchase_post : (nat, principal) -> (Result);
   api_search_user : (text) -> (vec UserDetailsMinified) query;
