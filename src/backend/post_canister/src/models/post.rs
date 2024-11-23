@@ -1,7 +1,7 @@
 use core::types::{PostStatus, PostVisibility};
 use std::borrow::Cow;
 
-use crate::models::types::{PostId};
+use crate::models::types::PostId;
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
 
@@ -9,14 +9,14 @@ use serde::{Deserialize, Serialize};
 pub struct Image {
     pub source: core::types::MediaID,
     pub need_pay: bool,
-    pub price: Option<core::types::PostPrice>,
+    pub price: Option<core::types::ICPAmount>,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Video {
     pub source: core::types::MediaID,
     pub need_pay: bool,
-    pub price: Option<core::types::PostPrice>,
+    pub price: Option<core::types::ICPAmount>,
 }
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
@@ -30,21 +30,21 @@ pub struct Post {
     //pub post_type: core::types::PostType,
     pub post_visibility: PostVisibility,
     pub post_status: PostStatus,
-    pub price: Option<core::types::PostPrice>, // Has a value only if post_type is Paid
+    pub price: Option<core::types::ICPAmount>, // Has a value only if post_type is Paid
     pub likes: Vec<Principal>,
     pub views: Vec<Principal>,
-    pub like_count: usize,
-    pub views_count: usize,
+    pub like_count: core::types::Counters,
+    pub views_count: core::types::Counters,
     // pub comments: Vec<crate::models::comment::Comment>,
     pub creator_id: Principal,
-    pub comments_count: u32,
+    pub comments_count: core::types::Counters,
     pub created_at: core::types::TimestampMillis,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct PostPagination {
-    pub start: u32,
-    pub end: u32,
+    pub start: core::types::Counters,
+    pub end: core::types::Counters,
     pub post_id: PostId,
 }
 
@@ -58,7 +58,7 @@ pub struct CreatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<core::types::PostPrice>,
+    pub price: Option<core::types::ICPAmount>,
 }
 
 #[derive(Serialize, Deserialize, CandidType, Clone)]
@@ -72,7 +72,7 @@ pub struct UpdatePostArgs {
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
-    pub price: Option<core::types::PostPrice>,
+    pub price: Option<core::types::ICPAmount>,
 }
 
 impl Default for Post {

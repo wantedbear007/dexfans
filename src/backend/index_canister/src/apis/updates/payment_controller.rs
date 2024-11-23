@@ -5,12 +5,12 @@ use icrc_ledger_types::{
 
 // for handling icp payment
 pub(super) async fn icp_transfer_handler(
-    tokens: u64,
+    tokens: core::types::ICPAmount,
     recipient: candid::Principal,
     ledger_id: candid::Principal,
 ) -> Result<BlockIndex, String> {
     let transfer_args = TransferFromArgs {
-        amount: tokens.into(),
+        amount: tokens,
         to: Account {
             owner: recipient,
             subaccount: None,
@@ -35,5 +35,3 @@ pub(super) async fn icp_transfer_handler(
     .0
     .map_err(|e| format!("{} {:?}", core::constants::ERROR_PAYMENT_FAILED, e))
 }
-
-

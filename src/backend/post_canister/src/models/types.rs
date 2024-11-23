@@ -31,7 +31,7 @@ impl Default for UserProfileIC {
     fn default() -> Self {
         Self {
             user_id: candid::Principal::anonymous(),
-            username: String::from(""),
+            username: String::new(),
             posts: Vec::new(),
             likes: Vec::new(),
             collects: Vec::new(),

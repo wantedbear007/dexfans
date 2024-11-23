@@ -46,7 +46,6 @@ pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 pub const ERROR_PAYMENT_FAILED: &str = "ICP payment failed, try again or contact admin";
 pub const ERROR_INVALID_CANISTER: &str = "Unrecognized canister.";
 
-
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
 pub const SUCCESS_POST_CREATED: &str = "Post successfully created";

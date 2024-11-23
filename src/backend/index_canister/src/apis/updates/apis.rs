@@ -261,7 +261,7 @@ pub async fn api_purchase_membership(args: core::types::Membership) -> core::typ
 
     // payment
     match super::payment_controller::icp_transfer_handler(
-        meta_data.membership_plans[&args],
+        meta_data.membership_plans[&args].clone(),
         meta_data.payment_recipient,
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
@@ -321,7 +321,7 @@ async fn api_purchase_post(
     .map_err(|err| return format!("{}", err))?;
 
     // get price of post
-    let price = kaires::call_inter_canister::<core::types::PostId, core::types::PostPrice>(
+    let price = kaires::call_inter_canister::<core::types::PostId, core::types::ICPAmount>(
         core::constants::FUNCTION_GET_POST_PRICE,
         post_id,
         post_canister_id,
@@ -329,7 +329,7 @@ async fn api_purchase_post(
     .await
     .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
 
-    if price <= 0 {
+    if price == candid::Nat::default() {
         return Err(String::from(core::constants::WARNING_POST_IS_FREE));
     }
 
@@ -338,7 +338,7 @@ async fn api_purchase_post(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        price as u64,
+        price,
         meta_data.payment_recipient,
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
@@ -374,9 +374,7 @@ async fn api_purchase_post(
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_purchase_media(
-    args: core::types::SinglePurchaseArgs,
-) -> core::types::Response {
+async fn api_purchase_media(args: core::types::SinglePurchaseArgs) -> core::types::Response {
     // to validate canister id
     crate::utils::guards::validate_post_canister(args.canister_id)?;
 
@@ -399,7 +397,7 @@ async fn api_purchase_media(
 
     // get price of post
     let price =
-        kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::PostPrice>(
+        kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::ICPAmount>(
             core::constants::FUNCTION_GET_MEDIA_PRICE,
             args.clone(),
             args.canister_id,
@@ -412,7 +410,7 @@ async fn api_purchase_media(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        price as u64,
+        price,
         meta_data.payment_recipient,
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )

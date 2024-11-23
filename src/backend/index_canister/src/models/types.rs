@@ -12,7 +12,8 @@ pub struct DexFansCanisterInitArgs {
     pub canister_ids: std::collections::HashMap<String, candid::Principal>,
     pub controllers: std::collections::HashSet<Principal>,
     pub payment_recipient: candid::Principal,
-    pub membership_plans: std::collections::HashMap<core::types::Membership, u64>,
+    pub membership_plans:
+        std::collections::HashMap<core::types::Membership, core::types::ICPAmount>,
     pub active_post_canister: candid::Principal,
 }
 
@@ -22,7 +23,8 @@ pub struct CanisterMetaData {
     pub canister_ids: std::collections::HashMap<u8, candid::Principal>,
     pub all_post_canisters: std::collections::HashSet<Principal>,
     pub payment_recipient: candid::Principal,
-    pub membership_plans: std::collections::HashMap<core::types::Membership, u64>,
+    pub membership_plans:
+        std::collections::HashMap<core::types::Membership, core::types::ICPAmount>,
     pub active_post_canister: candid::Principal,
 }
 
@@ -224,4 +226,3 @@ impl ic_stable_structures::Storable for PurchasedMedia {
     const BOUND: ic_stable_structures::storable::Bound =
         ic_stable_structures::storable::Bound::Unbounded;
 }
-

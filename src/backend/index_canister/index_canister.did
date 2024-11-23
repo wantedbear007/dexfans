@@ -4,7 +4,7 @@ type CanisterMetaData = record {
   active_post_canister : principal;
   all_post_canisters : vec principal;
   payment_recipient : principal;
-  membership_plans : vec record { Membership; nat64 };
+  membership_plans : vec record { Membership; nat };
 };
 type Collection = record { post_id : nat; asset_canister : principal };
 type CommentNotificationArgs = record {
@@ -16,7 +16,7 @@ type DexFansCanisterInitArgs = record {
   canister_ids : vec record { text; principal };
   active_post_canister : principal;
   payment_recipient : principal;
-  membership_plans : vec record { Membership; nat64 };
+  membership_plans : vec record { Membership; nat };
 };
 type ICAddPostCanisterProfile = record {
   caller : principal;
@@ -119,7 +119,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_suggested_user : () -> (vec UserDetailsMinified) query;
   api_get_user_details : (principal) -> (Result_5) query;
   api_get_user_minified : (principal) -> (Result_6) query;
-  api_purchase_image_or_video : (SinglePurchaseArgs) -> (Result);
+  api_purchase_media : (SinglePurchaseArgs) -> (Result);
   api_purchase_membership : (Membership) -> (Result);
   api_purchase_post : (nat, principal) -> (Result);
   api_search_user : (text) -> (vec UserDetailsMinified) query;
