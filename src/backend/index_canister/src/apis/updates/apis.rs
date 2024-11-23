@@ -374,7 +374,7 @@ async fn api_purchase_post(
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_purchase_image_or_video(
+async fn api_purchase_media(
     args: core::types::SinglePurchaseArgs,
 ) -> core::types::Response {
     // to validate canister id

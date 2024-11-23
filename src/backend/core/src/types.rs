@@ -150,7 +150,6 @@ pub struct Collection {
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct SinglePurchaseArgs {
     pub post_id: PostId,
-    // pub media_price: PostPrice,
     pub media_id: ImageVideoId,
-    pub canister_id: candid::Principal
+    pub canister_id: candid::Principal,
 }

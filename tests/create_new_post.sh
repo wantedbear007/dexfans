@@ -9,7 +9,7 @@ RES=$(dfx canister call post_canister api_create_new_post "(
     image = opt vec {
       record {
         need_pay = true;
-        source = 11 : nat32;
+        source = 13 : nat32;
         price = opt (12000 : nat32);
       };
     };
