@@ -1,9 +1,0 @@
-[package]
-name = "msgpack"
-version.workspace = true
-edition.workspace = true
-categories.workspace = true
-
-[dependencies]
-rmp-serde = { workspace = true }
-serde = { workspace = true }

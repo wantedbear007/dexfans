@@ -12,8 +12,10 @@ pub type ImageVideoId = u128;
 pub type Response = Result<(), String>;
 pub type MediaID = u32;
 pub type Counters = usize;
+pub type CaptchaKey = u32;
 pub type ICPAmount = candid::Nat;
 pub type UserID = candid::Principal;
+pub type Milliseconds = u64;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType, Eq, PartialOrd, Ord)]
 pub enum PostType {

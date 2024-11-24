@@ -12,4 +12,5 @@ use utils::init::*;
 
 // init.rs contain the entry point of crate.
 
+
 ic_cdk::export_candid!();

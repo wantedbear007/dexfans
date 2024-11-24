@@ -4,7 +4,9 @@
     "index_canister": {
       "candid": "src/backend/index_canister/index_canister.did",
       "package": "index_canister",
-      "type": "rust"
+      "gzip": true,
+      "type": "rust",
+      "build": "cargo build --target wasm32-unknown-unknown --release"
     },
     "internet_identity": {
       "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",

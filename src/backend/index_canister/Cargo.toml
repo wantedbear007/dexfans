@@ -13,10 +13,14 @@ candid = { workspace = true }
 ic-cdk = { workspace = true }
 ic-stable-structures = { workspace = true }
 serde_bytes = { workspace = true }
-# candid-extractor = "0.1.2"
 serde = { workspace = true }
 ciborium = { workspace = true }
 core = { workspace = true }
 kaires = { workspace = true }
 icrc-ledger-types = { workspace = true }
-strsim = { workspace = true }
+rand = { workspace = true }
+ic-captcha = { workspace = true }
+
+[features]
+default = []
+debug = []

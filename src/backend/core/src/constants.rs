@@ -12,7 +12,10 @@ pub const ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD: u128 = 1_000_000_000_000; // 
 pub const ESSENTIAL_SUGGESTED_USER_THRESHOLD: u32 = 15;
 pub const ESSENTIAL_FUZZY_SEARCH_THRESHOLD: usize = 3;
 pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
-
+pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 5 * MINUTE_IN_MS;
+// TIME
+pub const SECOND_IN_MS: super::types::Milliseconds = 1000;
+pub const MINUTE_IN_MS: super::types::Milliseconds = SECOND_IN_MS * 60;
 // function names
 pub const FUNCTION_GET_POST_PRICE: &str = "ic_get_price";
 pub const FUNCTION_GET_MEDIA_PRICE: &str = "ic_get_media_price";
