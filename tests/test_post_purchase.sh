@@ -7,6 +7,7 @@ set -e  # Exit the script if any command fails
 DEFAULT=$(dfx --identity default identity get-principal)       # Principal ID for the default identity
 RECIEVER=$(dfx --identity Bhanu identity get-principal)       # Principal ID for the Bhanu identity
 SENDER=$(dfx --identity minter identity get-principal)        # Principal ID for the minter identity
+LOL=$(dfx --identity lol identity get-principal)        # Principal ID for the minter identity
 
 # Retrieve the canister ID for the index_canister
 INDEX_CANISTER=$(dfx canister id index_canister)
@@ -20,6 +21,7 @@ function debug_print() {
     echo "Balance of default: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$DEFAULT\"})")"
     echo "Balance of sender: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$SENDER\"})")"
     echo "Balance of receiver: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$RECIEVER\"})")"
+        echo "Balance of lol: $(dfx canister call icp_ledger_canister icrc1_balance_of "(record {owner = principal \"$LOL\"})")"
 }
 
 # Perform a dummy ICP transfer (for testing purposes only)
