@@ -1,21 +1,13 @@
+use rand::{rngs::StdRng, SeedableRng};
+
 thread_local! {
   pub static STATE: std::cell::RefCell<crate::store::storage_state::ApplicationState> = std::cell::RefCell::new(crate::store::storage_state::ApplicationState::new());
 
-//   pub static SERVICE_STATE: std::cell::RefCell<crate::store::storage_state::ServicesState> = std::cell::RefCell::new(crate::store::storage_state::ServicesState::new()) ;
+//   for rng
+   pub static RNG: std::cell::RefCell<Option<StdRng>> = std::cell::RefCell::new(None);
+
+  pub static CAPTCHA_STATE: std::cell::RefCell<crate::store::storage_state::CaptchaState> = std::cell::RefCell::new(crate::store::storage_state::CaptchaState::new()) ;
 }
-
-// // to get mutable reference
-// pub(crate) fn write_servies_state<R>(
-//     f: impl FnOnce(&mut crate::store::storage_state::ServicesState) -> R,
-// ) -> R {
-//     SERVICE_STATE.with(|cell| f(&mut cell.borrow_mut()))
-// }
-
-// pub(crate) fn read_services_state<R>(
-//     f: impl FnOnce(&crate::store::storage_state::ServicesState) -> R,
-// ) -> R {
-//     SERVICE_STATE.with(|cell| f(&cell.borrow()))
-// }
 
 // to get mutable reference
 pub(crate) fn with_write_state<R>(
@@ -34,6 +26,23 @@ pub(crate) fn with_read_state<R>(
 // init args
 #[ic_cdk::init]
 fn init(args: crate::models::types::DexFansCanisterInitArgs) {
+    // for rand
+    ic_cdk_timers::set_timer(std::time::Duration::ZERO, || {
+        ic_cdk::spawn(async {
+            let (seed,): ([u8; 32],) =
+                ic_cdk::call(candid::Principal::management_canister(), "raw_rand", ())
+                    .await
+                    .unwrap();
+            RNG.with(|rng| *rng.borrow_mut() = Some(StdRng::from_seed(seed)));
+        })
+    });
+
+    CAPTCHA_STATE.with_borrow_mut(|state| {
+        state
+            .captchas
+            .insert(0, crate::models::types::Captchas::default());
+    });
+
     with_write_state(|state| {
         state.canister_meta_data.insert(
             0,

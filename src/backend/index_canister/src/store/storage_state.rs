@@ -13,6 +13,10 @@ pub(crate) struct ApplicationState {
         StableBTreeMap<candid::Principal, crate::models::types::PurchasedMedia, StoreMemory>,
 }
 
+pub(crate) struct CaptchaState {
+    pub captchas: StableBTreeMap<u8, crate::models::types::Captchas, StoreMemory>,
+}
+
 // pub(crate) struct ServicesState {
 //     pub notifications:
 //     StableBTreeMap<candid::Principal, crate::models::types::Notification, StoreMemory>,
@@ -34,6 +38,14 @@ impl ApplicationState {
             notifications: init_notifications_state(),
             purchased_post: init_purchased_state(),
             purchased_media: init_purchased_media_state(),
+        }
+    }
+}
+
+impl CaptchaState {
+    pub fn new() -> Self {
+        Self {
+            captchas: init_captcha_state(),
         }
     }
 }
@@ -61,4 +73,8 @@ fn init_purchased_state(
 fn init_purchased_media_state(
 ) -> StableBTreeMap<candid::Principal, crate::models::types::PurchasedMedia, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_purchased_media_memory())
+}
+
+fn init_captcha_state() -> StableBTreeMap<u8, crate::models::types::Captchas, StoreMemory> {
+    StableBTreeMap::init(crate::store::memory::get_captcha_memory())
 }

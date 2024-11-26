@@ -15,6 +15,8 @@ const PURCHASED_POST: MemoryId = MemoryId::new(3);
 
 const PURCHASED_IMAGE_OR_VIDEO: MemoryId = MemoryId::new(4);
 
+const CAPTCHA_STATE: MemoryId = MemoryId::new(5);
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
@@ -48,4 +50,8 @@ pub fn get_purchased_media_memory() -> StoreMemory {
 
 pub fn get_canister_metadata_memory() -> StoreMemory {
     MEMORY_MANAGER.with(|m| m.borrow().get(CANISTER_DATA)) // New function for post storage
+}
+
+pub fn get_captcha_memory() -> StoreMemory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(CAPTCHA_STATE)) // New function for post storage
 }

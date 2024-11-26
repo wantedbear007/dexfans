@@ -5,6 +5,7 @@ mod store;
 mod utils;
 use core::types::*;
 use utils::init::*;
+use crate::utils::challanges::*;
 
 // dexfans v1.0: Index Canister
 // author: Vinayak Kalra

@@ -124,17 +124,47 @@ pub(crate) struct NotifySubscribersArgs {
     pub title_of_post: Option<String>,
 }
 
+#[derive(CandidType, Serialize, Deserialize, Debug, Clone)]
+pub struct CaptchaSolution {
+    pub created_by: candid::Principal,
+    pub created: core::types::TimestampMillis,
+    pub data: String,
+}
+
+
+#[derive(CandidType, Serialize, Deserialize, Clone, Default)]
+pub struct Captchas {
+    pub max: u8, // max captcha to store before deleting
+    pub all: Vec<CaptchaSolution>
+}
+
+
 impl Default for UserProfileInterCanister {
     fn default() -> Self {
         Self {
             user_id: candid::Principal::anonymous(),
-            username: String::from("NA"),
+            username: String::new(),
             posts: Vec::new(),
             likes: Vec::new(),
             collects: Vec::new(),
             membership: core::types::Membership::Guest,
         }
     }
+}
+
+impl ic_stable_structures::Storable for Captchas {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
 }
 
 impl ic_stable_structures::Storable for Notification {

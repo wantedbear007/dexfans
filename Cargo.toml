@@ -34,7 +34,6 @@ sha2 = "0.10"
 sha3 = "0.10"
 num-traits = "0.2"
 ic-cdk = "0.16"
-ic-cdk-timers = "0.10"
 ic-stable-structures = "0.6"
 ic-http-certification = { version = "2.6", features = ["serde"] }
 ic-agent = "0.38"
@@ -42,7 +41,9 @@ crc32fast = "1.4"
 url = "2.5"
 wasm-bindgen = "0.2.92"
 once_cell = "1.20"
-getrandom = { version = "0.2", features = ["custom"] }
+getrandom = { version = "0.2.15", features = ["custom"] }
+# getrandom = { version = "0.2", features = ["custom"] }
+ic-cdk-timers = "0.10.0"
 kaires = { git = "https://github.com/wantedbear007/kaires", rev = "f9e6ce3c67be26d1fed8f5a84a71eaec0ecf97e1" }
 rmp-serde = "1.3.0"
 core = { path = "src/backend/core", version = "*" }

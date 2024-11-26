@@ -12,7 +12,9 @@ pub const ESSENTIAL_POST_CANISTER_CYCLE_THRESHOLD: u128 = 1_000_000_000_000; // 
 pub const ESSENTIAL_SUGGESTED_USER_THRESHOLD: u32 = 15;
 pub const ESSENTIAL_FUZZY_SEARCH_THRESHOLD: usize = 3;
 pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
-pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 5 * MINUTE_IN_MS;
+pub const ESSENTIAL_CAPTCHA_THRESHOLD: usize = 50;
+pub const ESSENTIAL_CAPTCHA_HARDNESS: u8 = 32; // higher the hardness lower the performance (should not exceed 255)
+pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 3 * MINUTE_IN_MS; // 5 minute
 // TIME
 pub const SECOND_IN_MS: super::types::Milliseconds = 1000;
 pub const MINUTE_IN_MS: super::types::Milliseconds = SECOND_IN_MS * 60;
@@ -27,13 +29,14 @@ pub const WARNING_ACCOUNT_EXISTS: &str = "This Principal ID is already registere
 pub const WARNING_ADMIN_ONLY: &str = "Admin privileges are required";
 pub const WARNING_CONTROLLER_EXIST: &str = "Principal is already assigned as a controller";
 pub const WARNING_SAME_VALUE: &str = "User already possesses this membership level";
-pub const WARNING_ALERADY_EXIST: &str = "Already exist";
+pub const WARNING_ALERADY_EXIST: &str = "User Already exist";
 pub const WARNING_SAME_MEMBERSHIP: &str = "You are already a member of this category";
 pub const WARNING_HIGHER_MEMBERSHIP: &str =
     "Higher category of membership found, try after current membership expires";
 pub const WARNING_ALREADY_PURCHASED: &str = "Post is already purchased";
 pub const WARNING_POST_IS_FREE: &str = "Post is already free";
 pub const WARNING_POST_OWNER: &str = "You owns the post";
+pub const WARNING_CAPTCHA_REACHED: &str = "Wait for some time captcha threshold reached";
 
 // Erros
 pub const ERROR_ACCOUNT_ERROR: &str = "Accounts Error: ";
