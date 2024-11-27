@@ -15,7 +15,7 @@ pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
 pub const ESSENTIAL_CAPTCHA_THRESHOLD: usize = 50;
 pub const ESSENTIAL_CAPTCHA_HARDNESS: u8 = 32; // higher the hardness lower the performance (should not exceed 255)
 pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 3 * MINUTE_IN_MS; // 5 minute
-// TIME
+                                                                                     // TIME
 pub const SECOND_IN_MS: super::types::Milliseconds = 1000;
 pub const MINUTE_IN_MS: super::types::Milliseconds = SECOND_IN_MS * 60;
 // function names

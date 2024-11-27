@@ -202,7 +202,7 @@ fn ver_get_all_captcha() -> Vec<crate::models::types::CaptchaSolution> {
     super::init::CAPTCHA_STATE.with_borrow_mut(|state| {
         if let Some(mut val) = state.captchas.get(&0) {
             // remove all expired captchas
-           val.all
+            val.all
         } else {
             Vec::new()
         }

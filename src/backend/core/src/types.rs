@@ -57,7 +57,6 @@ pub struct PurchaseUserMedia {
     pub amt: ICPAmount,
 }
 
-
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
 pub struct UserProfile {
     pub user_id: Principal,

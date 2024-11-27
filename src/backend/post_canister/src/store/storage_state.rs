@@ -14,7 +14,6 @@ pub(crate) struct ApplicationState {
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
 }
 
-
 impl ApplicationState {
     pub fn new() -> Self {
         Self {

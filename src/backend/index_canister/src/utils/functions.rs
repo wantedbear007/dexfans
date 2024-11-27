@@ -31,8 +31,6 @@ pub(crate) fn random_number(low: u32) -> u32 {
 
         rng.gen_range(low, 100)
     })
-
-    
 }
 
 pub(crate) fn shuffle_vec<T>(vec: &mut Vec<T>, seed: &mut u32) {

@@ -110,8 +110,6 @@ pub(crate) struct PurchaseMediaBody {
     pub ledger_block: icrc_ledger_types::icrc1::transfer::BlockIndex,
 }
 
-
-
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {
     pub acc: candid::Principal,
@@ -139,13 +137,11 @@ pub struct CaptchaSolution {
     pub data: String,
 }
 
-
 #[derive(CandidType, Serialize, Deserialize, Clone, Default)]
 pub struct Captchas {
     pub max: u8, // max captcha to store before deleting
-    pub all: Vec<CaptchaSolution>
+    pub all: Vec<CaptchaSolution>,
 }
-
 
 impl Default for UserProfileInterCanister {
     fn default() -> Self {

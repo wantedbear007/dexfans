@@ -27,7 +27,7 @@ pub struct CommentBody {
     pub comment_id: core::types::CommentId,
     pub content: String,
     pub created_at: core::types::TimestampMillis,
-    pub creator: candid::Principal
+    pub creator: candid::Principal,
 }
 
 impl Storable for Comment {
