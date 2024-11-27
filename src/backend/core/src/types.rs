@@ -10,7 +10,8 @@ pub type TimestampMillis = u64;
 pub type PostPrice = u32;
 pub type ImageVideoId = u128;
 pub type Response = Result<(), String>;
-pub type MediaID = u32;
+// pub type MediaID = u32;
+pub type MediaID = String;
 pub type Counters = usize;
 pub type CaptchaKey = u32;
 pub type ICPAmount = candid::Nat;
@@ -49,6 +50,13 @@ pub struct UpdateMembershipIC {
     pub user: Principal,
     pub membership: Membership,
 }
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct PurchaseUserMedia {
+    pub owner: Principal,
+    pub amt: ICPAmount,
+}
+
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
 pub struct UserProfile {
@@ -148,7 +156,7 @@ pub struct Collection {
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct SinglePurchaseArgs {
     pub post_id: PostId,
-    pub media_id: ImageVideoId,
+    pub media_id: MediaID,
     pub created_by: UserID,
 }
 

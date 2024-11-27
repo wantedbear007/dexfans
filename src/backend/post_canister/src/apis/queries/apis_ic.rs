@@ -1,7 +1,9 @@
 use crate::utils::guards::*;
 
 #[ic_cdk::query(guard = guard_parent_canister_only)]
-fn ic_get_price(args: core::types::PostPurchaseArgs) -> Result<core::types::ICPAmount, String> {
+fn ic_get_price(
+    args: core::types::PostPurchaseArgs,
+) -> Result<core::types::PurchaseUserMedia, String> {
     crate::with_read_state(|state| match state.posts.get(&args.post_id) {
         Some(post) => {
             if post.creator_id == args.created_by {
@@ -9,15 +11,13 @@ fn ic_get_price(args: core::types::PostPurchaseArgs) -> Result<core::types::ICPA
             };
 
             match post.price {
-                Some(val) => Ok(val),
+                Some(val) => Ok(core::types::PurchaseUserMedia {
+                    amt: val,
+                    owner: post.creator_id,
+                }),
                 None => Err(String::from(core::constants::WARNING_POST_IS_FREE)),
             }
         }
-        // Some(post) =>
-        // match post.price {
-        //     Some(val) => Ok(val),
-        //     None => Err(String::from(core::constants::WARNING_POST_IS_FREE)),
-        // },
         None => Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
     })
 }
@@ -25,7 +25,7 @@ fn ic_get_price(args: core::types::PostPurchaseArgs) -> Result<core::types::ICPA
 #[ic_cdk::query(guard = guard_parent_canister_only)]
 fn ic_get_media_price(
     args: core::types::SinglePurchaseArgs,
-) -> Result<core::types::ICPAmount, String> {
+) -> Result<core::types::PurchaseUserMedia, String> {
     crate::with_read_state(|state| {
         if let Some(post) = state.posts.get(&args.post_id) {
             if post.creator_id == args.created_by {
@@ -34,21 +34,16 @@ fn ic_get_media_price(
 
             if let Some(images) = &post.image {
                 for img in images.iter() {
-                    if img.source == args.media_id as u32 && img.need_pay {
-                        return Ok(img.price.clone().unwrap_or(candid::Nat::default()));
+                    if img.source == args.media_id && img.need_pay {
+                        return Ok(core::types::PurchaseUserMedia {
+                            amt: img.price.clone().unwrap_or(candid::Nat::default()),
+                            owner: post.creator_id,
+                        });
                     }
                 }
             }
         }
-        // if let Some(post) = state.posts.get(&args.post_id) {
-        //     if let Some(images) = &post.image {
-        //         for img in images.iter() {
-        //             if img.source == args.media_id as u32 && img.need_pay {
-        //                 return Ok(img.price.clone().unwrap_or(candid::Nat::default()));
-        //             }
-        //         }
-        //     }
-        // }
+
         Err(String::from(core::constants::ERROR_POST_NOT_EXIST))
     })
 }

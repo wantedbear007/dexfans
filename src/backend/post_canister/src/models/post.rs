@@ -75,6 +75,12 @@ pub struct UpdatePostArgs {
     pub price: Option<core::types::ICPAmount>,
 }
 
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct GetByPostStatusArgs {
+    pub status: core::types::PostStatus,
+    pub pagination: core::types::Pagination,
+}
+
 impl Default for Post {
     fn default() -> Self {
         Self {

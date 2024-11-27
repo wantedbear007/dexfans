@@ -101,8 +101,16 @@ pub(crate) struct PurchasePostBody {
 
 #[derive(CandidType, Serialize, Deserialize, PartialEq, Eq)]
 pub(crate) struct PurchasedMedia {
-    pub medias: Vec<PurchasePostBody>,
+    pub medias: Vec<PurchaseMediaBody>,
 }
+
+#[derive(CandidType, Serialize, Deserialize, PartialEq, Eq, Clone)]
+pub(crate) struct PurchaseMediaBody {
+    pub post_id: core::types::MediaID,
+    pub ledger_block: icrc_ledger_types::icrc1::transfer::BlockIndex,
+}
+
+
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub(crate) struct Notification {

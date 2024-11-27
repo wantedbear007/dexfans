@@ -320,9 +320,9 @@ async fn api_purchase_post(
     )
     .map_err(|err| return format!("{}", err))?;
 
-    // get price of post
-    let price =
-        kaires::call_inter_canister::<core::types::PostPurchaseArgs, core::types::ICPAmount>(
+    // get post data (owner and price)
+    let post_data =
+        kaires::call_inter_canister::<core::types::PostPurchaseArgs, core::types::PurchaseUserMedia>(
             core::constants::FUNCTION_GET_POST_PRICE,
             core::types::PostPurchaseArgs {
                 created_by: ic_cdk::api::caller(),
@@ -333,7 +333,7 @@ async fn api_purchase_post(
         .await
         .expect(core::constants::ERROR_FAILED_INTER_CANISTER);
 
-    if price == candid::Nat::default() {
+    if post_data.amt == candid::Nat::default() {
         return Err(String::from(core::constants::WARNING_POST_IS_FREE));
     }
 
@@ -342,8 +342,8 @@ async fn api_purchase_post(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        price,
-        meta_data.payment_recipient,
+        post_data.amt,
+        post_data.owner,
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
     .await
@@ -377,10 +377,11 @@ async fn api_purchase_post(
     }
 }
 
+
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 async fn api_purchase_media(
     post_id: core::types::PostId,
-    media_id: core::types::ImageVideoId,
+    media_id: core::types::MediaID,
     canister_id: candid::Principal,
 ) -> core::types::Response {
     // to validate canister id
@@ -390,7 +391,7 @@ async fn api_purchase_media(
     crate::with_read_state(
         |state| match state.purchased_media.get(&ic_cdk::api::caller()) {
             Some(pos) => {
-                let medias: Vec<u128> = pos.medias.iter().map(|e| e.post_id).collect();
+                let medias: Vec<core::types::MediaID> = pos.medias.iter().map(|e| e.post_id.clone()).collect();
 
                 if medias.contains(&media_id) {
                     return Err(String::from(core::constants::WARNING_ALREADY_PURCHASED));
@@ -403,9 +404,9 @@ async fn api_purchase_media(
     )
     .map_err(|err| return format!("{}", err))?;
 
-    // get price of post
-    let price =
-        kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::ICPAmount>(
+    // get post data (owner and price)
+    let post_data =
+        kaires::call_inter_canister::<core::types::SinglePurchaseArgs, core::types::PurchaseUserMedia>(
             core::constants::FUNCTION_GET_MEDIA_PRICE,
             core::types::SinglePurchaseArgs {
                 created_by: ic_cdk::api::caller(),
@@ -422,14 +423,14 @@ async fn api_purchase_media(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        price,
-        meta_data.payment_recipient,
+        post_data.amt,
+        post_data.owner,
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
     .await
     {
         Ok(val) => {
-            let new_purchase = crate::models::types::PurchasePostBody {
+            let new_purchase = crate::models::types::PurchaseMediaBody {
                 ledger_block: val,
                 post_id: media_id,
             };

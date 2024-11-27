@@ -7,7 +7,7 @@ set -e  # Exit the script if any command fails
 DEFAULT=$(dfx --identity default identity get-principal)       # Principal ID for the default identity
 RECIEVER=$(dfx --identity Bhanu identity get-principal)       # Principal ID for the Bhanu identity
 SENDER=$(dfx --identity minter identity get-principal)        # Principal ID for the minter identity
-LOL=$(dfx --identity lol identity get-principal)        # Principal ID for the minter identity
+LOL=$(dfx --identity newminter identity get-principal)        # Principal ID for the minter identity
 
 # Retrieve the canister ID for the index_canister
 INDEX_CANISTER=$(dfx canister id index_canister)

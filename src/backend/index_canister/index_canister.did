@@ -48,6 +48,7 @@ type NotificationType = variant {
   NewSubscribingPost;
   NewSubscriber;
 };
+type PurchaseMediaBody = record { post_id : text; ledger_block : nat };
 type PurchasePostBody = record { post_id : nat; ledger_block : nat };
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : principal; Err : text };
@@ -115,14 +116,14 @@ service : (DexFansCanisterInitArgs) -> {
   api_get_my_collection : () -> (Result_4) query;
   api_get_my_profile : () -> (Result_5) query;
   api_get_notifications : () -> (vec NotificationBody) query;
-  api_get_purchased_media_ids : () -> (vec PurchasePostBody) query;
+  api_get_purchased_media_ids : () -> (vec PurchaseMediaBody) query;
   api_get_purchased_posts_ids : () -> (vec PurchasePostBody) query;
   api_get_subscribed : () -> (vec UserDetailsMinified) query;
   api_get_subscribers : () -> (vec UserDetailsMinified) query;
   api_get_suggested_user : () -> (vec UserDetailsMinified) query;
   api_get_user_details : (principal) -> (Result_6) query;
   api_get_user_minified : (principal) -> (Result_7) query;
-  api_purchase_media : (nat, nat, principal) -> (Result);
+  api_purchase_media : (nat, text, principal) -> (Result);
   api_purchase_membership : (Membership) -> (Result);
   api_purchase_post : (nat, principal) -> (Result);
   api_search_user : (text) -> (vec UserDetailsMinified) query;

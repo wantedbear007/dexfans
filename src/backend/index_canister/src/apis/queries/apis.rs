@@ -1,6 +1,5 @@
 use crate::utils::guards::*;
 
-// #[ic_cdk::query(guard="guard_prevent_anonymous", msgpack = true)]
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 
 fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
@@ -16,7 +15,6 @@ fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }
-// #[ic_cdk::query(guard = "guard_prevent_anonymous", msgpack = true)]
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 
 fn api_get_subscribed() -> Vec<core::types::UserDetailsMinified> {
@@ -212,7 +210,7 @@ fn api_get_purchased_posts_ids() -> Vec<crate::models::types::PurchasePostBody> 
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-fn api_get_purchased_media_ids() -> Vec<crate::models::types::PurchasePostBody> {
+fn api_get_purchased_media_ids() -> Vec<crate::models::types::PurchaseMediaBody> {
     crate::with_read_state(
         |state| match state.purchased_media.get(&ic_cdk::api::caller()) {
             Some(posts) => posts.medias,
