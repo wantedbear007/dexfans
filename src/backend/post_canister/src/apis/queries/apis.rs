@@ -93,7 +93,7 @@ fn api_get_post_by_status(
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
         for (_, pos) in state.posts.iter() {
-            if pos.post_status == args.status {
+            if pos.post_status == args.status && pos.creator_id == ic_cdk::api::caller() {
                 all_posts.push(pos);
             }
         }

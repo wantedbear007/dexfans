@@ -34,7 +34,7 @@ pub(crate) struct UserInputArgs {
     pub bio: Option<String>,
     pub avatar: Option<String>,
     pub cover_image: Option<String>,
-    // pub asset_canister_id:
+    pub captcha_solution: String, // pub asset_canister_id:
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -133,7 +133,7 @@ pub(crate) struct NotifySubscribersArgs {
 #[derive(CandidType, Serialize, Deserialize, Debug, Clone)]
 pub struct CaptchaSolution {
     pub created_by: candid::Principal,
-    pub created: core::types::TimestampMillis,
+    pub created_at: core::types::TimestampMillis,
     pub data: String,
 }
 

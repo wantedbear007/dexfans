@@ -23,6 +23,13 @@ pub(crate) fn with_read_state<R>(
     STATE.with(|cell| f(&cell.borrow()))
 }
 
+// to get inmutable reference
+pub(crate) fn captcha_write_state<R>(
+    f: impl FnOnce(&mut crate::store::storage_state::CaptchaState) -> R,
+) -> R {
+    CAPTCHA_STATE.with(|cell| f(&mut cell.borrow_mut()))
+}
+
 // init args
 #[ic_cdk::init]
 fn init(args: crate::models::types::DexFansCanisterInitArgs) {
@@ -37,10 +44,16 @@ fn init(args: crate::models::types::DexFansCanisterInitArgs) {
         })
     });
 
-    CAPTCHA_STATE.with_borrow_mut(|state| {
+    // CAPTCHA_STATE.with_borrow_mut(|state| {
+    //     state
+    //         .captchas
+    //         .insert(0, crate::models::types::Captchas::default());
+    // });
+
+    captcha_write_state(|state| {
         state
             .captchas
-            .insert(0, crate::models::types::Captchas::default());
+            .insert(0, crate::models::types::Captchas::default())
     });
 
     with_write_state(|state| {

@@ -7,8 +7,8 @@ type CanisterMetaData = record {
   membership_plans : vec record { Membership; nat };
 };
 type CaptchaSolution = record {
-  created : nat64;
   data : text;
+  created_at : nat64;
   created_by : principal;
 };
 type Challange = record { base64_img : text };
@@ -70,6 +70,7 @@ type UserInputArgs = record {
   bio : opt text;
   username : text;
   cover_image : opt text;
+  captcha_solution : text;
   avatar : opt text;
 };
 type UserProfile = record {
@@ -132,6 +133,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_update_profile : (UserInputArgs) -> (Result);
   api_update_user_likes : (principal, nat, bool) -> (Result);
   create_post_canister : () -> (Result_1);
+  debug_get_all_captchas : () -> (vec CaptchaSolution) query;
   get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_8) query;
   get_ledger_canister : () -> (Result_1) query;
@@ -142,6 +144,4 @@ service : (DexFansCanisterInitArgs) -> {
   notify_likes : (LikeNotificationArgs) -> (Result);
   notify_new_subscriber : (principal) -> (Result);
   notify_subscribers_newpost : (opt text) -> (Result);
-  ver_get_all_captcha : () -> (vec CaptchaSolution) query;
-  verify_captcha : (principal, text) -> (bool) query;
 }

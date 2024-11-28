@@ -13,6 +13,9 @@ fn greet(name: String) -> String {
 pub async fn api_create_account(
     args: crate::models::types::UserInputArgs,
 ) -> Result<String, String> {
+    // to verify captcha
+    crate::utils::challanges::verify_captcha(ic_cdk::api::caller(), &args.captcha_solution)?;
+
     super::controllers::controller_create_account(args)
         .await
         .map_err(|err| {

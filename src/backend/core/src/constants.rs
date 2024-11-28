@@ -14,8 +14,8 @@ pub const ESSENTIAL_FUZZY_SEARCH_THRESHOLD: usize = 3;
 pub const ESSENTIAL_IMAGE_COUNT_LIMIT: usize = 4;
 pub const ESSENTIAL_CAPTCHA_THRESHOLD: usize = 50;
 pub const ESSENTIAL_CAPTCHA_HARDNESS: u8 = 32; // higher the hardness lower the performance (should not exceed 255)
-pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 3 * MINUTE_IN_MS; // 5 minute
-                                                                                     // TIME
+pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 1 * 60 * 1_000_000_000; // 2 minute
+                                                                                           // TIME
 pub const SECOND_IN_MS: super::types::Milliseconds = 1000;
 pub const MINUTE_IN_MS: super::types::Milliseconds = SECOND_IN_MS * 60;
 // function names
@@ -52,6 +52,7 @@ pub const ERROR_POST_NOT_EXIST: &str = "No post associated with provided id";
 pub const ERROR_UNAUTHORIZED: &str = "Unauthorized call";
 pub const ERROR_PAYMENT_FAILED: &str = "ICP payment failed, try again or contact admin";
 pub const ERROR_INVALID_CANISTER: &str = "Unrecognized canister.";
+pub const ERROR_INVALID_CAPTCHA: &str = "Entered captcha is incorrect";
 
 // SUCCESS
 pub const SUCCESS_ACCOUNT_CREATED: &str = "Account successfully created";
