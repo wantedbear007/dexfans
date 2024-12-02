@@ -124,8 +124,20 @@ fn notify_subscribers_newpost(post_brief: Option<String>) -> core::types::Respon
                 match state.notifications.get(&x) {
                     Some(mut usr) => {
                         usr.notifications.push(core::types::NotificationBody {
+                            comment_content: None,
                             post_brief: post_brief.clone(),
-                            by: None,
+                            by: {
+                                let user_data = state
+                                    .account
+                                    .get(&ic_cdk::api::caller())
+                                    .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
+                                Some(core::types::UserDetailsMinified {
+                                    avatar: user_data.avatar,
+                                    // cover: user_data.cover_image,
+                                    user_id: user_data.user_id,
+                                    username: user_data.username,
+                                })
+                            },
                             category: core::types::NotificationType::NewPost,
                             created_on: ic_cdk::api::time(),
                             expiring_on: ic_cdk::api::time()
@@ -151,7 +163,8 @@ fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Respons
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
-                post_brief: None,
+                post_brief: Some(args.post_brief),
+                comment_content: None,
                 by: {
                     let user_data = state
                         .account
@@ -159,7 +172,7 @@ fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Respons
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        cover: user_data.cover_image,
+                        // cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
@@ -184,6 +197,7 @@ fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::R
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
+                comment_content: Some(args.comment_content),
                 post_brief: args.post_brief,
                 by: {
                     let user_data = state
@@ -192,7 +206,7 @@ fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::R
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        cover: user_data.cover_image,
+                        // cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
@@ -216,6 +230,7 @@ fn notify_new_subscriber(subscribed_to: candid::Principal) -> core::types::Respo
     crate::with_write_state(|state| match state.notifications.get(&subscribed_to) {
         Some(mut noti) => {
             noti.notifications.push(core::types::NotificationBody {
+                comment_content: None,
                 post_brief: None,
                 by: {
                     let user_data = state
@@ -224,7 +239,7 @@ fn notify_new_subscriber(subscribed_to: candid::Principal) -> core::types::Respo
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        cover: user_data.cover_image,
+                        // cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
