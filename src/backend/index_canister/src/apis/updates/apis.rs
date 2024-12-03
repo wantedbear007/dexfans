@@ -117,13 +117,17 @@ fn api_unsubscribe_account(id: candid::Principal) -> core::types::Response {
 
 // to create notification for new post
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-fn notify_subscribers_newpost(post_brief: Option<String>) -> core::types::Response {
+fn notify_subscribers_newpost(
+    post_brief: Option<String>,
+    post_id: core::types::PostId,
+) -> core::types::Response {
     crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => {
             for x in acc.subscribers.iter() {
                 match state.notifications.get(&x) {
                     Some(mut usr) => {
                         usr.notifications.push(core::types::NotificationBody {
+                            post_id: Some(post_id),
                             comment_content: None,
                             post_brief: post_brief.clone(),
                             by: {
@@ -133,7 +137,7 @@ fn notify_subscribers_newpost(post_brief: Option<String>) -> core::types::Respon
                                     .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                                 Some(core::types::UserDetailsMinified {
                                     avatar: user_data.avatar,
-                                    // cover: user_data.cover_image,
+                                    cover: user_data.cover_image,
                                     user_id: user_data.user_id,
                                     username: user_data.username,
                                 })
@@ -165,6 +169,7 @@ fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Respons
             val.notifications.push(core::types::NotificationBody {
                 post_brief: Some(args.post_brief),
                 comment_content: None,
+                post_id: Some(args.post_id),
                 by: {
                     let user_data = state
                         .account
@@ -172,7 +177,7 @@ fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Respons
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        // cover: user_data.cover_image,
+                        cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
@@ -199,6 +204,7 @@ fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::R
             val.notifications.push(core::types::NotificationBody {
                 comment_content: Some(args.comment_content),
                 post_brief: args.post_brief,
+                post_id: Some(args.post_id),
                 by: {
                     let user_data = state
                         .account
@@ -206,7 +212,7 @@ fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::R
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        // cover: user_data.cover_image,
+                        cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
@@ -232,6 +238,7 @@ fn notify_new_subscriber(subscribed_to: candid::Principal) -> core::types::Respo
             noti.notifications.push(core::types::NotificationBody {
                 comment_content: None,
                 post_brief: None,
+                post_id: None,
                 by: {
                     let user_data = state
                         .account
@@ -239,7 +246,7 @@ fn notify_new_subscriber(subscribed_to: candid::Principal) -> core::types::Respo
                         .expect(core::constants::ERROR_ACCOUNT_NOT_REGISTERED);
                     Some(core::types::UserDetailsMinified {
                         avatar: user_data.avatar,
-                        // cover: user_data.cover_image,
+                        cover: user_data.cover_image,
                         user_id: user_data.user_id,
                         username: user_data.username,
                     })
@@ -362,8 +369,8 @@ async fn api_purchase_post(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        post_data.amt,
-        post_data.owner,
+        post_data.amt.clone(),
+        post_data.owner.clone(),
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
     .await
@@ -375,6 +382,12 @@ async fn api_purchase_post(
             };
 
             crate::with_write_state(|state| {
+                // increasing create token amount
+                let mut creator = state.account.get(&post_data.owner).unwrap();
+
+                creator.token_amount = creator.token_amount + post_data.amt;
+                state.account.insert(post_data.owner, creator);
+
                 match state.purchased_post.get(&ic_cdk::api::caller()) {
                     Some(mut notis) => {
                         notis.posts.push(new_noti);
@@ -445,8 +458,8 @@ async fn api_purchase_media(
 
     // payment
     match crate::apis::updates::payment_controller::icp_transfer_handler(
-        post_data.amt,
-        post_data.owner,
+        post_data.amt.clone(),
+        post_data.owner.clone(),
         meta_data.canister_ids[&core::constants::ESSENTIAL_LEDGER_CANISTER_ID_CODE],
     )
     .await
@@ -458,6 +471,12 @@ async fn api_purchase_media(
             };
 
             crate::with_write_state(|state| {
+                // increasing create token amount
+                let mut creator = state.account.get(&post_data.owner).unwrap();
+
+                creator.token_amount = creator.token_amount + post_data.amt;
+                state.account.insert(post_data.owner, creator);
+
                 match state.purchased_media.get(&ic_cdk::api::caller()) {
                     Some(mut posts) => {
                         posts.medias.push(new_purchase);

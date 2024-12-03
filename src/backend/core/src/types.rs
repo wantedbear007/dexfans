@@ -72,7 +72,7 @@ pub struct UserDetailsMinified {
     pub user_id: UserID,
     pub username: String,
     pub avatar: Option<String>,
-    // pub cover: Option<String>,
+    pub cover: Option<String>,
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
@@ -101,7 +101,8 @@ pub struct NotificationBody {
     pub expiring_on: TimestampMillis,
     pub by: Option<UserDetailsMinified>,
     pub post_brief: Option<String>,
-    pub comment_content: Option<String>
+    pub comment_content: Option<String>,
+    pub post_id: Option<PostId>
 }
 
 #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
@@ -115,10 +116,12 @@ pub enum NotificationType {
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
 pub struct LikeNotificationArgs {
-    pub post_url: String,
+    // pub post_url: String,
     pub post_owner: UserID,
-    pub username: String,
-    pub post_brief: String
+    // pub username: String,
+    pub post_brief: String,
+    pub post_id: PostId
+
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -126,7 +129,8 @@ pub struct CommentNotificationArgs {
     // pub post_url: String,
     pub post_owner: UserID,
     pub post_brief: Option<String>,
-    pub comment_content: String
+    pub comment_content: String,
+    pub post_id: PostId
     // pub username: String,
 }
 

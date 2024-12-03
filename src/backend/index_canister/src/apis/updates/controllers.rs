@@ -17,6 +17,7 @@ pub async fn controller_create_account(
             state.account.insert(
                 ic_cdk::api::caller(),
                 crate::models::types::UserProfile {
+                    token_amount: candid::Nat::from(0u64),
                     avatar: args.avatar,
                     bio: args.bio,
                     all_post_canisters: std::collections::HashSet::from([

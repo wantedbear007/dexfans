@@ -14,6 +14,7 @@ type CaptchaSolution = record {
 type Challange = record { base64_img : text };
 type Collection = record { post_id : nat; asset_canister : principal };
 type CommentNotificationArgs = record {
+  post_id : nat;
   comment_content : text;
   post_owner : principal;
   post_brief : opt text;
@@ -30,14 +31,14 @@ type ICAddPostCanisterProfile = record {
   post_canister : principal;
 };
 type LikeNotificationArgs = record {
-  post_url : text;
-  username : text;
+  post_id : nat;
   post_owner : principal;
   post_brief : text;
 };
 type Membership = variant { Diamond; Guest };
 type NotificationBody = record {
   by : opt UserDetailsMinified;
+  post_id : opt nat;
   comment_content : opt text;
   created_on : nat64;
   category : NotificationType;
@@ -65,6 +66,7 @@ type Result_8 = variant { Ok : CanisterMetaData; Err : text };
 type Result_9 = variant { Ok : vec principal; Err : text };
 type UserDetailsMinified = record {
   username : text;
+  cover : opt text;
   user_id : principal;
   avatar : opt text;
 };
@@ -77,6 +79,7 @@ type UserInputArgs = record {
 };
 type UserProfile = record {
   bio : opt text;
+  token_amount : nat;
   username : text;
   asset_canister_id : principal;
   cover_image : opt text;
@@ -145,5 +148,5 @@ service : (DexFansCanisterInitArgs) -> {
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);
   notify_new_subscriber : (principal) -> (Result);
-  notify_subscribers_newpost : (opt text) -> (Result);
+  notify_subscribers_newpost : (opt text, nat) -> (Result);
 }

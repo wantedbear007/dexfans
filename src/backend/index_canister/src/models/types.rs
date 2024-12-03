@@ -58,6 +58,7 @@ pub(crate) struct UserProfile {
     pub membership_till: u64,
     pub membership_ledger_block:
         std::collections::HashSet<icrc_ledger_types::icrc1::transfer::BlockIndex>,
+    pub token_amount: candid::Nat,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
