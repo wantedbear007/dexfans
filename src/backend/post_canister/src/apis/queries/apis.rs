@@ -32,7 +32,7 @@ fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
     })
 }
 
-#[ic_cdk::query(guard = guard_prevent_anonymous)]
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
         Some(mut post) => {

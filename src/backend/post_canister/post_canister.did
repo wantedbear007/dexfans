@@ -95,7 +95,7 @@ service : (PostCanisterInitArgs) -> {
   api_delete_post : (nat) -> (Result_1);
   api_get_latest_posts : (Pagination) -> (vec Post) query;
   api_get_my_posts : (Pagination) -> (vec Post) query;
-  api_get_post_by_id : (nat) -> (Result_3) query;
+  api_get_post_by_id : (nat) -> (Result_3);
   api_get_post_by_status : (GetByPostStatusArgs) -> (vec Post) query;
   api_get_post_comments : (PostPagination) -> (vec CommentBody) query;
   api_get_subscribed_posts : (Pagination) -> (vec Post);
