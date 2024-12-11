@@ -69,6 +69,7 @@ pub(crate) struct UserProfileLittleMinified {
     pub username: String,
     pub bio: Option<String>,
     pub avatar: Option<String>,
+    pub token_amount: candid::Nat,
     pub asset_canister_id: Principal,
     pub cover_image: Option<String>,
     pub subscribers: std::collections::HashSet<Principal>, // Subscribers for the user

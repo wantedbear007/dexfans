@@ -99,6 +99,7 @@ type UserProfile = record {
 };
 type UserProfileLittleMinified = record {
   bio : opt text;
+  token_amount : nat;
   username : text;
   asset_canister_id : principal;
   cover_image : opt text;

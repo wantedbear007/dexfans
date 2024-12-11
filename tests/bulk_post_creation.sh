@@ -1,5 +1,5 @@
 # Number of posts to create
-COUNT=5000
+COUNT=10
 
 # Parameters
 content="hello from wantedbha"

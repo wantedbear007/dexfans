@@ -115,6 +115,7 @@ fn api_get_user_details(
             created_at: acc.created_at,
             membership: acc.membership,
             username: acc.username,
+            token_amount: acc.token_amount
         }),
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })

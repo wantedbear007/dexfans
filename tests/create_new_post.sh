@@ -14,7 +14,7 @@ RES=$(dfx canister call post_canister api_create_new_post "(
       };
     };
     price = null;
-    post_status = variant { Archived };
+    post_status = variant { Published };
   }
 )")
 
