@@ -50,6 +50,7 @@ dfx deploy index_canister --argument "( record {
       record { variant { Diamond }; 40_000 : nat };
     };
     controllers = vec {
+      principal \"${BHANU}\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";

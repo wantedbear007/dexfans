@@ -9,6 +9,10 @@ fn greet(name: String) -> String {
     )
 }
 
+
+
+
+
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
     args: crate::models::types::UserInputArgs,

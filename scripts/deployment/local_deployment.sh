@@ -31,7 +31,6 @@ LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
 IC_ASSET_CANISTER=$(dfx canister id asset_handler)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
-FRONTEND_CANISTER=$(dfx canister id post_canister)
 
 # FOR ICP LEDGER
 MINTER_ACCOUNT_ID=$(dfx --identity anonymous ledger account-id)
@@ -78,7 +77,7 @@ dfx deploy index_canister --argument "( record {
       record { variant { Diamond }; 40_000 : nat };
     };
     controllers = vec {
-      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
+      principal \"${BHANU}\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
@@ -95,8 +94,8 @@ dfx deploy index_canister --argument "( record {
 dfx deploy post_canister --argument "(
   record {
     controllers = vec {
-      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
-      principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
+      principal \"${INDEX_CANISTER}\";
+      principal \"${BHANU}\";
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
     canister_ids = vec {

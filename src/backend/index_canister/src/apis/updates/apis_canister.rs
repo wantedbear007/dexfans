@@ -66,6 +66,20 @@ pub fn admin_set_post_canister(id: candid::Principal) -> Result<candid::Principa
     })
 }
 
+#[ic_cdk::update(guard = guard_only_admin)]
+pub fn admin_set_payment_recipient(id: candid::Principal) -> Result<candid::Principal, String> {
+    crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
+        Some(mut canister_meta_data) => {
+            canister_meta_data.payment_recipient = id;
+
+            state.canister_meta_data.insert(0, canister_meta_data);
+
+            Ok(id)
+        }
+        None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
+    })
+}
+
 #[ic_cdk::query]
 pub fn get_canister_meta_data() -> Result<crate::models::types::CanisterMetaData, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
