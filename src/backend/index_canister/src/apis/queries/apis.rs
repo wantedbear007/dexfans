@@ -1,3 +1,4 @@
+
 use crate::utils::guards::*;
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
@@ -115,7 +116,7 @@ fn api_get_user_details(
             created_at: acc.created_at,
             membership: acc.membership,
             username: acc.username,
-            token_amount: acc.token_amount
+            token_amount: acc.token_amount,
         }),
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
@@ -171,6 +172,10 @@ fn api_get_suggested_user() -> Vec<crate::UserDetailsMinified> {
 // search user
 #[ic_cdk::query]
 fn api_search_user(args: String) -> Vec<crate::UserDetailsMinified> {
+    if args.len() > core::constants::VALIDATOR_USERNAME_LENGTH as usize || args.len() < 3 {
+        ic_cdk::trap("Provided param is too large")
+    }
+
     crate::with_read_state(|state| {
         state
             .account

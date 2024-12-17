@@ -1,6 +1,7 @@
 use candid::{CandidType, Principal};
 
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 pub type CanisterId = Principal;
 pub type CommentId = u128;
@@ -102,7 +103,7 @@ pub struct NotificationBody {
     pub by: Option<UserDetailsMinified>,
     pub post_brief: Option<String>,
     pub comment_content: Option<String>,
-    pub post_id: Option<PostId>
+    pub post_id: Option<PostId>,
 }
 
 #[derive(Clone, CandidType, Serialize, Copy, Deserialize)]
@@ -114,24 +115,24 @@ pub enum NotificationType {
     NewSubscribingPost,
 }
 
-#[derive(Clone, CandidType, Serialize, Deserialize)]
+#[derive(Clone, CandidType, Deserialize, Validate)]
 pub struct LikeNotificationArgs {
     // pub post_url: String,
     pub post_owner: UserID,
     // pub username: String,
+    #[validate(length(min = 3, max = super::constants::VALIDATOR_NOTIFICATION_POST_BRIEF_SIZE, message = "Post brief is too large"))]
     pub post_brief: String,
-    pub post_id: PostId
-
+    pub post_id: PostId,
 }
 
-#[derive(Clone, CandidType, Serialize, Deserialize)]
+#[derive(Clone, CandidType, Deserialize, Validate)]
 pub struct CommentNotificationArgs {
-    // pub post_url: String,
     pub post_owner: UserID,
+    #[validate(length(min = 3, max = super::constants::VALIDATOR_NOTIFICATION_POST_BRIEF_SIZE, message = "Post brief is too large"))]
     pub post_brief: Option<String>,
+    #[validate(length(min = 3, max = super::constants::VALIDATOR_NOTIFICATION_POST_BRIEF_SIZE, message = "Comment size is too large"))]
     pub comment_content: String,
-    pub post_id: PostId
-    // pub username: String,
+    pub post_id: PostId, // pub username: String,
 }
 
 #[derive(Clone, CandidType, Serialize, Deserialize)]
@@ -147,9 +148,11 @@ pub struct ICAddPostCanisterProfile {
     pub caller: UserID,
 }
 
-#[derive(CandidType, Serialize, Deserialize)]
+#[derive(CandidType, Deserialize, Validate)]
 pub struct Pagination {
+    #[validate(range(min = 0, max = super::constants::VALIDATOR_PAGINATION_LIMIT))]
     pub start: Counters,
+    #[validate(range(min = 0, max = super::constants::VALIDATOR_PAGINATION_LIMIT))]
     pub end: Counters,
 }
 

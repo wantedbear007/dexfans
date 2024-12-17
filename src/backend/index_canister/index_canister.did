@@ -133,7 +133,6 @@ service : (DexFansCanisterInitArgs) -> {
   api_subscribe_account : (principal) -> (Result);
   api_unsubscribe_account : (principal) -> (Result);
   api_update_profile : (UserInputArgs) -> (Result);
-  api_update_user_likes : (principal, nat, bool) -> (Result);
   get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_8) query;
   get_post_canister : () -> (Result_1) query;

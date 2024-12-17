@@ -1,13 +1,13 @@
 use crate::utils::guards::*;
 
-#[ic_cdk::query]
-fn greet(name: String) -> String {
-    format!(
-        "Hello, {}! from {}",
-        name,
-        core::constants::ESSENTIALS_APP_NAME
-    )
-}
+// #[ic_cdk::query]
+// fn greet(name: String) -> String {
+//     format!(
+//         "Hello, {}! from {}",
+//         name,
+//         core::constants::ESSENTIALS_APP_NAME
+//     )
+// }
 
 // debug
 // #[ic_cdk::query]
@@ -53,6 +53,7 @@ fn api_post_by_user_id(
     user_id: candid::Principal,
     page: core::types::Pagination,
 ) -> Vec<crate::models::post::Post> {
+    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -122,6 +123,7 @@ fn api_get_post_by_status(
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
+    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -157,6 +159,7 @@ fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::pos
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
+    core::functions::input_validator::<core::types::Pagination>(&args).unwrap();
     crate::with_read_state(|state| {
         let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
@@ -192,6 +195,7 @@ async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::p
 #[candid::candid_method(update)]
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
+    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
     match kaires::call_inter_canister::<
         candid::Principal,
         std::collections::HashSet<candid::Principal>,

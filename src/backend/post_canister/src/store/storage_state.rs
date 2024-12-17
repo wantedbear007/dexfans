@@ -15,7 +15,6 @@ pub(crate) struct ApplicationState {
     pub ids: StableBTreeMap<IdType, Id, StoreMemory>,
     // pub post_counter: u128,
     // pub comment_counter: u128,
-    // pub notifications: HashMap<Principal, Vec<Notification>>,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
 }
 

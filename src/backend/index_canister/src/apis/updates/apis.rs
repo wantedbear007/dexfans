@@ -1,22 +1,23 @@
+// use validator::Validate;
+
 use crate::utils::guards::*;
 
-#[ic_cdk::query]
-fn greet(name: String) -> String {
-    format!(
-        "Hello, {}! from {}",
-        name,
-        core::constants::ESSENTIALS_APP_NAME
-    )
-}
-
-
-
-
+// #[ic_cdk::query]
+// fn greet(name: String) -> String {
+//     format!(
+//         "Hello, {}! from {}",
+//         name,
+//         core::constants::ESSENTIALS_APP_NAME
+//     )
+// }
 
 #[ic_cdk::update(guard=guard_prevent_anonymous)]
 pub async fn api_create_account(
     args: crate::models::types::UserInputArgs,
 ) -> Result<String, String> {
+    // validation input args
+    core::functions::input_validator(&args)?;
+
     // to verify captcha
     crate::utils::challanges::verify_captcha(ic_cdk::api::caller(), &args.captcha_solution)?;
 
@@ -31,6 +32,44 @@ pub async fn api_create_account(
         })?;
 
     Ok(String::from(core::constants::SUCCESS_ACCOUNT_CREATED))
+
+    // match args.validate() {
+    //     Ok(_) => {
+    //         // to verify captcha
+    //         crate::utils::challanges::verify_captcha(
+    //             ic_cdk::api::caller(),
+    //             &args.captcha_solution,
+    //         )?;
+
+    //         super::controllers::controller_create_account(args)
+    //             .await
+    //             .map_err(|err| {
+    //                 format!(
+    //                     "{}{}",
+    //                     core::constants::ERROR_ACCOUNT_ERROR,
+    //                     err.to_string()
+    //                 )
+    //             })?;
+
+    //         Ok(String::from(core::constants::SUCCESS_ACCOUNT_CREATED))
+    //     }
+    //     Err(err) => Err(format!("Validation Error:  {}", err)),
+    // }
+
+    // // to verify captcha
+    // crate::utils::challanges::verify_captcha(ic_cdk::api::caller(), &args.captcha_solution)?;
+
+    // super::controllers::controller_create_account(args)
+    //     .await
+    //     .map_err(|err| {
+    //         format!(
+    //             "{}{}",
+    //             core::constants::ERROR_ACCOUNT_ERROR,
+    //             err.to_string()
+    //         )
+    //     })?;
+
+    // Ok(String::from(core::constants::SUCCESS_ACCOUNT_CREATED))
 }
 
 // update profile
@@ -75,33 +114,33 @@ pub async fn api_update_profile(
     }
 }
 
-#[ic_cdk::update]
-fn api_update_user_likes(
-    user_id: candid::Principal,
-    post_id: u128,
-    is_liked: bool,
-) -> core::types::Response {
-    crate::utils::init::STATE.with(|state| {
-        let mut app_state = state.borrow_mut();
+// #[ic_cdk::update(guard = guard_prevent_anonymous)]
+// fn api_update_user_likes(
+//     user_id: candid::Principal,
+//     post_id: u128,
+//     is_liked: bool,
+// ) -> core::types::Response {
+//     crate::utils::init::STATE.with(|state| {
+//         let mut app_state = state.borrow_mut();
 
-        // Remove the user profile from the map, if it exists
-        if let Some(mut user_profile) = app_state.account.remove(&user_id) {
-            if is_liked {
-                // If the post is already liked, remove it (unlike)
-                user_profile.likes.retain(|&p| p != post_id);
-            } else {
-                // If not liked, add the post_id to the likes list (like)
-                user_profile.likes.push(post_id);
-            }
+//         // Remove the user profile from the map, if it exists
+//         if let Some(mut user_profile) = app_state.account.remove(&user_id) {
+//             if is_liked {
+//                 // If the post is already liked, remove it (unlike)
+//                 user_profile.likes.retain(|&p| p != post_id);
+//             } else {
+//                 // If not liked, add the post_id to the likes list (like)
+//                 user_profile.likes.push(post_id);
+//             }
 
-            // Reinsert the modified profile back into the map
-            app_state.account.insert(user_id, user_profile);
-            Ok(())
-        } else {
-            Err("User not found.".to_string())
-        }
-    })
-}
+//             // Reinsert the modified profile back into the map
+//             app_state.account.insert(user_id, user_profile);
+//             Ok(())
+//         } else {
+//             Err("User not found.".to_string())
+//         }
+//     })
+// }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn api_subscribe_account(id: candid::Principal) -> core::types::Response {
@@ -164,10 +203,12 @@ fn notify_subscribers_newpost(
     })
 }
 
-// likes notification
-// TODO add guard
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Response {
+    // validating input
+    core::functions::input_validator(&args)?;
+
+
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {
@@ -203,6 +244,10 @@ fn notify_likes(args: core::types::LikeNotificationArgs) -> core::types::Respons
 // notify comments
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn notify_comments(args: core::types::CommentNotificationArgs) -> core::types::Response {
+    // validating input
+    core::functions::input_validator(&args)?;
+    
+
     crate::with_write_state(|state| match state.notifications.get(&args.post_owner) {
         Some(mut val) => {
             val.notifications.push(core::types::NotificationBody {

@@ -4,6 +4,7 @@ use std::borrow::Cow;
 use crate::models::types::PostId;
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 #[derive(Serialize, Deserialize, Clone, CandidType, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Image {
@@ -48,8 +49,9 @@ pub struct PostPagination {
     pub post_id: PostId,
 }
 
-#[derive(Serialize, Deserialize, CandidType, Clone)]
+#[derive(Deserialize, CandidType, Clone, Validate)]
 pub struct CreatePostArgs {
+    #[validate(length(min = 3, max = core::constants::VALIDATOR_POST_CONTENT_SIZE, message = "Post content is too large"))]
     pub content: String,
     //pub image: Option<String>,
     pub image: Option<Vec<Image>>,
@@ -61,10 +63,11 @@ pub struct CreatePostArgs {
     pub price: Option<core::types::ICPAmount>,
 }
 
-#[derive(Serialize, Deserialize, CandidType, Clone)]
+#[derive(Deserialize, CandidType, Clone, Validate)]
 pub struct UpdatePostArgs {
-    pub id: u128,
+    #[validate(length(min = 3, max = core::constants::VALIDATOR_POST_CONTENT_SIZE, message = "Post content is too large"))]
     pub content: String,
+    pub id: core::types::PostId,
     //pub image: Option<String>,
     pub image: Option<Vec<Image>>,
     //pub video: Option<String>,
@@ -75,7 +78,7 @@ pub struct UpdatePostArgs {
     pub price: Option<core::types::ICPAmount>,
 }
 
-#[derive(CandidType, Serialize, Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct GetByPostStatusArgs {
     pub status: core::types::PostStatus,
     pub pagination: core::types::Pagination,

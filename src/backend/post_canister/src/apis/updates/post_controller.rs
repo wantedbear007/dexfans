@@ -64,6 +64,10 @@ pub(super) fn controller_update_post(
 ) -> Result<(), String> {
     crate::with_write_state(|state| match state.posts.get(&args.id) {
         Some(mut val) => {
+            if val.creator_id != ic_cdk::api::caller() {
+                return Err(String::from(core::constants::ERROR_UNAUTHORIZED));
+            }
+
             if &val.content != &args.content {
                 val.content = args.content;
             }
@@ -84,28 +88,40 @@ pub(super) fn controller_update_post(
     })
 }
 
-pub(super) fn controller_save_post(
-    mut args: crate::models::post::UpdatePostArgs,
-) -> Result<(), String> {
-    args.post_status = core::types::PostStatus::Draft;
-    controller_update_post(args)
-}
+// pub(super) fn controller_save_post(
+//     mut args: crate::models::post::UpdatePostArgs,
+// ) -> Result<(), String> {
+//     args.post_status = core::types::PostStatus::Draft;
+//     controller_update_post(args)
+// }
 
-pub(super) fn controller_archive_post(
-    mut args: crate::models::post::UpdatePostArgs,
-) -> Result<(), String> {
-    args.post_status = core::types::PostStatus::Archived;
-    controller_update_post(args)
-}
+// pub(super) fn controller_archive_post(
+//     mut args: crate::models::post::UpdatePostArgs,
+// ) -> Result<(), String> {
+//     args.post_status = core::types::PostStatus::Archived;
+//     controller_update_post(args)
+// }
 
 //to delete post
-pub(super) fn controller_delete_post(post_id: u128) -> Result<(), String> {
+pub(super) fn controller_delete_post(post_id: core::types::PostId) -> Result<(), String> {
     crate::with_write_state(|state| {
-        if state.posts.remove(&post_id).is_some() {
-            Ok(())
-        } else {
-            Err(String::from(core::constants::ERROR_POST_NOT_EXIST))
+        match state.posts.get(&post_id) {
+            Some(post) => {
+                if post.creator_id != ic_cdk::api::caller() {
+                    return Err(String::from(core::constants::ERROR_UNAUTHORIZED));
+                }
+
+                state.posts.remove(&post_id);
+                Ok(())
+            }
+            None => Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
         }
+
+        // if state.posts.remove(&post_id).is_some() {
+        //     Ok(())
+        // } else {
+        //     Err(String::from(core::constants::ERROR_POST_NOT_EXIST))
+        // }
     })
 }
 

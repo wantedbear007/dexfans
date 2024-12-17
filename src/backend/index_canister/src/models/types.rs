@@ -2,6 +2,7 @@ use std::borrow::Cow;
 
 use candid::{CandidType, Principal};
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 pub type PostId = u128;
 
@@ -28,12 +29,17 @@ pub struct CanisterMetaData {
     pub active_post_canister: candid::Principal,
 }
 
-#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, CandidType, PartialEq, Serialize, Deserialize, Validate)]
 pub(crate) struct UserInputArgs {
+    #[validate(length(min = 3,max = core::constants::VALIDATOR_USERNAME_LENGTH, message = "Username size not allowed"))]
     pub username: String,
+    #[validate(length(min = 3, max = core::constants::VALIDATOR_BIO_LENGTH, message = "BIO size is not applicable"))]
     pub bio: Option<String>,
+    #[validate(length(max = 10, message = "Invalid avatar length"))]
     pub avatar: Option<String>,
+    #[validate(length(max = 10, message = "Invalid cover image length"))]
     pub cover_image: Option<String>,
+    #[validate(length(min = 3, max = 6, message = "Invalid Captha size"))]
     pub captcha_solution: String, // pub asset_canister_id:
 }
 
@@ -61,7 +67,7 @@ pub(crate) struct UserProfile {
     pub token_amount: candid::Nat,
 }
 
-#[derive(Clone, CandidType, Serialize, Deserialize)]
+#[derive(Clone, CandidType)]
 pub(crate) struct UserProfileLittleMinified {
     pub user_id: Principal,
     pub active_post_canister: Principal,
@@ -144,6 +150,7 @@ pub struct Captchas {
     pub max: u8, // max captcha to store before deleting
     pub all: Vec<CaptchaSolution>,
 }
+
 
 impl Default for UserProfileInterCanister {
     fn default() -> Self {

@@ -89,7 +89,6 @@ service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
   admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
-  api_archive_post : (UpdatePostArgs) -> (Result_1);
   api_comment_on_post : (nat, text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_2);
   api_delete_post : (nat) -> (Result_1);
@@ -101,13 +100,11 @@ service : (PostCanisterInitArgs) -> {
   api_get_subscribed_posts : (Pagination) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
   api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
-  api_save_post : (UpdatePostArgs) -> (Result_1);
   api_search_post : (text) -> (vec Post) query;
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_4) query;
   get_canister_meta_data : () -> (Result_5) query;
-  greet : (text) -> (text) query;
   ic_get_media_price : (SinglePurchaseArgs) -> (Result_6) query;
   ic_get_price : (PostPurchaseArgs) -> (Result_6) query;
 }

@@ -20,7 +20,9 @@ kaires = { workspace = true }
 icrc-ledger-types = { workspace = true }
 rand = { workspace = true }
 ic-captcha = { workspace = true }
-ic-cdk-timers = {workspace = true}
+ic-cdk-timers = { workspace = true }
+validator = {workspace = true}
+
 
 [features]
 default = []

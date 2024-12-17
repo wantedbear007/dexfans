@@ -16,6 +16,17 @@ pub const ESSENTIAL_CAPTCHA_THRESHOLD: usize = 50;
 pub const ESSENTIAL_CAPTCHA_HARDNESS: u8 = 32; // higher the hardness lower the performance (should not exceed 255)
 pub const ESSENTIAL_CAPTCHA_LIFETIME: super::types::Milliseconds = 1 * 60 * 1_000_000_000; // 2 minute
                                                                                            // TIME
+
+// VAlidators threshold
+pub const VALIDATOR_USERNAME_LENGTH: u64 = 15;
+pub const VALIDATOR_BIO_LENGTH: u64 = 100;
+pub const VALIDATOR_NOTIFICATION_POST_BRIEF_SIZE: u64 = 50;
+pub const VALIDATOR_COMMENT_SIZE: u64 = 90;
+pub const VALIDATOR_POST_CONTENT_SIZE: u64 = 500;
+pub const VALIDATOR_PAGINATION_LIMIT: usize = 100;
+
+// pub const
+
 pub const SECOND_IN_MS: super::types::Milliseconds = 1000;
 pub const MINUTE_IN_MS: super::types::Milliseconds = SECOND_IN_MS * 60;
 // function names
