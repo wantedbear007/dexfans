@@ -19,8 +19,17 @@ pub(super) async fn controller_create_post(
         Ok(()) => {
             crate::with_write_state(|state| match state.account.get(&ic_cdk::api::caller()) {
                 Some(val) => {
-                    let post_id = state.post_counter;
-                    state.post_counter += 1;
+                    let id = state
+                        .ids
+                        .get(&crate::models::types::IdType::PostID)
+                        .unwrap();
+
+                    let post_id = id + 1;
+                    state
+                        .ids
+                        .insert(crate::models::types::IdType::PostID, post_id.clone());
+
+                    // state.post_counter += 1;
 
                     state.posts.insert(
                         post_id.clone(),
@@ -124,8 +133,15 @@ pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String>
 pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Result<(), String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
         Some(mut post) => {
-            let comment_id = state.comment_counter + 1;
-            state.comment_counter = comment_id;
+            let id = state
+                .ids
+                .get(&crate::models::types::IdType::CommentID)
+                .unwrap();
+
+            let comment_id = id + 1;
+            state
+                .ids
+                .insert(crate::models::types::IdType::CommentID, post_id.clone());
 
             let new_comment = crate::models::comment::CommentBody {
                 comment_id,

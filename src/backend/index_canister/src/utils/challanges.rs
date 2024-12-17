@@ -95,18 +95,18 @@ pub(crate) fn verify_captcha(id: candid::Principal, text: &String) -> core::type
     })
 }
 
-#[ic_cdk::query]
-fn debug_get_all_captchas() -> Vec<crate::models::types::CaptchaSolution> {
-    super::init::captcha_write_state(|state| match state.captchas.get(&0) {
-        Some(cap) => {
-            // captcha_filter(&mut cap, false);
-            // state.captchas.insert(0, cap.clone());
+// #[ic_cdk::query]
+// fn debug_get_all_captchas() -> Vec<crate::models::types::CaptchaSolution> {
+//     super::init::captcha_write_state(|state| match state.captchas.get(&0) {
+//         Some(cap) => {
+//             // captcha_filter(&mut cap, false);
+//             // state.captchas.insert(0, cap.clone());
 
-            cap.all
-        }
-        None => Vec::new(),
-    })
-}
+//             cap.all
+//         }
+//         None => Vec::new(),
+//     })
+// }
 
 // filter captcha for time and user
 fn captcha_filter(args: &mut crate::models::types::Captchas, usr_based: bool, time_based: bool) {

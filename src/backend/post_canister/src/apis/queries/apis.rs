@@ -10,10 +10,10 @@ fn greet(name: String) -> String {
 }
 
 // debug
-#[ic_cdk::query]
-fn debug_total_posts() -> u128 {
-    crate::with_read_state(|state| state.post_counter)
-}
+// #[ic_cdk::query]
+// fn api_total_posts() -> u128 {
+//     crate::with_read_state(|state| state.post_counter)
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
@@ -33,7 +33,7 @@ fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
 }
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-fn api_get_post_by_id(post_id: u128) -> Result<crate::models::post::Post, String> {
+fn api_get_post_by_id(post_id: core::types::PostId) -> Result<crate::models::post::Post, String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
         Some(mut post) => {
             post.views.push(ic_cdk::api::caller());
@@ -67,6 +67,8 @@ fn api_post_by_user_id(
             }
         }
 
+        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+
         // Pagination logic
         let ending = all_posts.len();
 
@@ -97,6 +99,7 @@ fn api_get_post_by_status(
                 all_posts.push(pos);
             }
         }
+        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
         let ending = all_posts.len();
 
@@ -132,6 +135,8 @@ fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::pos
             }
         }
 
+        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+
         // Pagination logic
         let ending = all_posts.len();
 
@@ -164,6 +169,7 @@ async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::p
                 });
             }
         }
+        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
         let ending = all_posts.len();
 
@@ -183,6 +189,7 @@ async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::p
     })
 }
 
+#[candid::candid_method(update)]
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
     match kaires::call_inter_canister::<
@@ -213,6 +220,7 @@ async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::m
                     }
                 }
             });
+            all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
             // Pagination logic
             let ending = all_posts.len();
@@ -250,6 +258,8 @@ fn api_get_post_comments(
             for comment_body in com.comments.iter() {
                 all_comments.push(comment_body.to_owned());
             }
+
+            all_comments.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
             let ending = all_comments.len();
 

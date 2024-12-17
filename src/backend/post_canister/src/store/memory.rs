@@ -42,6 +42,8 @@ const COMMENT_DATA_MEMORY_ID: MemoryId = MemoryId::new(2);
 
 const CANISTER_DATA: MemoryId = MemoryId::new(3);
 
+const ID_COUNTER_DATA: MemoryId = MemoryId::new(4);
+
 pub type StoreMemory = ic_stable_structures::memory_manager::VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
@@ -62,4 +64,8 @@ pub fn get_comment_data_memory() -> StoreMemory {
 }
 pub fn get_canister_metadata_memory() -> StoreMemory {
     MEMORY_MANAGER.with(|m| m.borrow().get(CANISTER_DATA)) // New function for post storage
+}
+
+pub fn get_id_counter_memory() -> StoreMemory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(ID_COUNTER_DATA))
 }

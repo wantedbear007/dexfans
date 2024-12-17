@@ -1,6 +1,10 @@
 use ic_stable_structures::StableBTreeMap;
 
-use crate::models::{comment::Comment, post::Post, types::UserProfileIC};
+use crate::models::{
+    comment::Comment,
+    post::Post,
+    types::{Id, IdType, UserProfileIC},
+};
 
 use super::memory::StoreMemory;
 
@@ -8,8 +12,9 @@ pub(crate) struct ApplicationState {
     pub account: StableBTreeMap<candid::Principal, UserProfileIC, StoreMemory>,
     pub posts: StableBTreeMap<u128, Post, StoreMemory>,
     pub comments: StableBTreeMap<crate::models::types::PostId, Comment, StoreMemory>,
-    pub post_counter: u128,
-    pub comment_counter: u128,
+    pub ids: StableBTreeMap<IdType, Id, StoreMemory>,
+    // pub post_counter: u128,
+    // pub comment_counter: u128,
     // pub notifications: HashMap<Principal, Vec<Notification>>,
     pub canister_meta_data: StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory>,
 }
@@ -20,10 +25,10 @@ impl ApplicationState {
             account: init_account_state(),
             posts: init_post_state(),
             comments: init_comment_state(),
-            post_counter: 0,
-            comment_counter: 0,
+            // post_counter: 0,
+            // comment_counter: 0,
             canister_meta_data: init_canister_meta_data_state(),
-            // notifications: HashMap::new(),
+            ids: init_id_counter_state(), // notifications: HashMap::new(),
         }
     }
 
@@ -56,4 +61,8 @@ fn init_comment_state() -> StableBTreeMap<core::types::CommentId, Comment, Store
 fn init_canister_meta_data_state(
 ) -> StableBTreeMap<u8, crate::models::types::CanisterMetaData, StoreMemory> {
     StableBTreeMap::init(crate::store::memory::get_canister_metadata_memory())
+}
+
+fn init_id_counter_state() -> StableBTreeMap<IdType, crate::models::types::Id, StoreMemory> {
+    StableBTreeMap::init(crate::store::memory::get_id_counter_memory())
 }

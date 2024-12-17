@@ -20,6 +20,9 @@ pub(crate) fn with_read_state<R>(
 #[ic_cdk::init]
 async fn init(args: core::types::PostCanisterInitArgs) {
     with_write_state(|state| {
+        state.ids.insert(crate::models::types::IdType::PostID, 0);
+        state.ids.insert(crate::models::types::IdType::CommentID, 0);
+
         for x in args.accounts.iter() {
             state.account.insert(
                 x.user_id,

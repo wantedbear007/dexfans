@@ -6,8 +6,13 @@ use serde::{Deserialize, Serialize};
 
 // pub type CanisterId = Principal;
 pub type PostId = u128;
+pub type Id = u128;
 
-// pub type PostPrice = u8;
+#[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub(crate) enum IdType {
+    PostID,
+    CommentID,
+}
 
 #[derive(Clone, CandidType, PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct UserInputArgs {
@@ -41,6 +46,21 @@ impl Default for UserProfileIC {
 }
 
 impl ic_stable_structures::Storable for UserProfileIC {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = vec![];
+        ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        ciborium::from_reader(&bytes[..]).expect(core::constants::ERROR_DECODE_FAILED)
+    }
+
+    const BOUND: ic_stable_structures::storable::Bound =
+        ic_stable_structures::storable::Bound::Unbounded;
+}
+
+impl ic_stable_structures::Storable for IdType {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = vec![];
         ciborium::into_writer(self, &mut buf).expect(core::constants::ERROR_ENCODE_FAILED);

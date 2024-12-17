@@ -106,7 +106,6 @@ service : (PostCanisterInitArgs) -> {
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
   debug_get_user_profile : () -> (Result_4) query;
-  debug_total_posts : () -> (nat) query;
   get_canister_meta_data : () -> (Result_5) query;
   greet : (text) -> (text) query;
   ic_get_media_price : (SinglePurchaseArgs) -> (Result_6) query;
