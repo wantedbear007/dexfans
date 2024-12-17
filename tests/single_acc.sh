@@ -1,6 +1,6 @@
 
 USERNAME="BHANUPRATAP"
-CAPTCHA="jcAT"
+CAPTCHA="wUHn"
 
  RES=$(dfx canister call index_canister api_create_account "(
       record {
