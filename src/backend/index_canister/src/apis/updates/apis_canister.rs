@@ -3,7 +3,7 @@ use crate::utils::guards::*;
 // add post canister guardx
 
 // to add controller of canister
-#[ic_cdk::update(guard=guard_only_admin)]
+#[ic_cdk::update(guard=guard_super_controller)]
 pub fn admin_add_controller(id: candid::Principal) -> Result<(), String> {
     crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
@@ -26,7 +26,7 @@ pub fn admin_add_controller(id: candid::Principal) -> Result<(), String> {
 }
 
 // to remove controller of canister
-#[ic_cdk::update(guard=guard_only_admin)]
+#[ic_cdk::update(guard=guard_super_controller)]
 pub fn admin_remove_controller(id: candid::Principal) -> Result<(), String> {
     crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
@@ -66,7 +66,7 @@ pub fn admin_set_post_canister(id: candid::Principal) -> Result<candid::Principa
     })
 }
 
-#[ic_cdk::update(guard = guard_only_admin)]
+#[ic_cdk::update(guard = guard_super_controller)]
 pub fn admin_set_payment_recipient(id: candid::Principal) -> Result<candid::Principal, String> {
     crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
         Some(mut canister_meta_data) => {

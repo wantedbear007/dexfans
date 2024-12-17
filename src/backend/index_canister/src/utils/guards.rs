@@ -7,6 +7,15 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
     Ok(())
 }
 
+pub fn guard_super_controller() -> core::types::Response {
+    if ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
+        return Ok(());
+    }
+
+    Err(String::from(core::constants::WARNING_ADMIN_ONLY))
+}
+
+
 // controllers accesss
 pub fn guard_only_admin() -> Result<(), String> {
     guard_prevent_anonymous()?;

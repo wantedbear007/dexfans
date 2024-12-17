@@ -1,7 +1,7 @@
 use crate::with_read_state;
 
 // to prevent anonymous calls
-pub fn guard_prevent_anonymous() -> Result<(), String> {
+pub fn guard_prevent_anonymous() -> core::types::Response {
     if ic_cdk::api::caller() == candid::Principal::anonymous() {
         return Err(String::from(core::constants::WARNING_ANONYMOUS_CALL));
     }
@@ -9,8 +9,10 @@ pub fn guard_prevent_anonymous() -> Result<(), String> {
     Ok(())
 }
 
+
+
 // to allow parent canister only (for intercanister calls)
-pub fn guard_parent_canister_only() -> Result<(), String> {
+pub fn guard_parent_canister_only() -> core::types::Response {
     guard_prevent_anonymous()?;
     with_read_state(|state| match state.canister_meta_data.get(&0) {
         Some(val) => {
