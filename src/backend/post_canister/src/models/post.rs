@@ -81,7 +81,7 @@ pub struct UpdatePostArgs {
 #[derive(CandidType, Deserialize)]
 pub struct GetByPostStatusArgs {
     pub status: core::types::PostStatus,
-    pub pagination: core::types::Pagination,
+    pub pagination: core::types::PaginationArgs,
 }
 
 impl Default for Post {

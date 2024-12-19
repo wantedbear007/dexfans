@@ -18,10 +18,14 @@ type CreatePostArgs = record {
 };
 type GetByPostStatusArgs = record {
   status : PostStatus;
-  pagination : Pagination;
+  pagination : PaginationArgs;
 };
 type Membership = variant { Diamond; Guest };
-type Pagination = record { end : nat64; start : nat64 };
+type PaginationArgs = record {
+  page : nat64;
+  limit : nat64;
+  post_status : opt PostStatus;
+};
 type Post = record {
   views_count : nat64;
   post_id : nat;
@@ -92,14 +96,14 @@ service : (PostCanisterInitArgs) -> {
   api_comment_on_post : (nat, text) -> (Result_1);
   api_create_new_post : (CreatePostArgs) -> (Result_2);
   api_delete_post : (nat) -> (Result_1);
-  api_get_latest_posts : (Pagination) -> (vec Post) query;
-  api_get_my_posts : (Pagination) -> (vec Post) query;
+  api_get_latest_posts : (PaginationArgs) -> (vec Post) query;
+  api_get_my_posts : (PaginationArgs) -> (vec Post) query;
   api_get_post_by_id : (nat) -> (Result_3);
   api_get_post_by_status : (GetByPostStatusArgs) -> (vec Post) query;
   api_get_post_comments : (PostPagination) -> (vec CommentBody) query;
-  api_get_subscribed_posts : (Pagination) -> (vec Post);
+  api_get_subscribed_posts : (PaginationArgs) -> (vec Post);
   api_like_unlike_post : (nat) -> (Result_1);
-  api_post_by_user_id : (principal, Pagination) -> (vec Post) query;
+  api_post_by_user_id : (principal, PaginationArgs) -> (vec Post) query;
   api_search_post : (text) -> (vec Post) query;
   api_update_post : (UpdatePostArgs) -> (Result_1);
   debug_get_all_profile : () -> (vec UserProfileIC) query;

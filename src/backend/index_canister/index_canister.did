@@ -136,7 +136,6 @@ service : (DexFansCanisterInitArgs) -> {
   get_asset_canister : () -> (Result_1) query;
   get_canister_meta_data : () -> (Result_8) query;
   get_post_canister : () -> (Result_1) query;
-  greet : (text) -> (text) query;
   ic_get_subscribed_list : (principal) -> (Result_9) query;
   notify_comments : (CommentNotificationArgs) -> (Result);
   notify_likes : (LikeNotificationArgs) -> (Result);

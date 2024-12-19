@@ -174,3 +174,11 @@ pub struct PostPurchaseArgs {
     pub post_id: PostId,
     pub created_by: UserID,
 }
+
+
+#[derive(CandidType, Deserialize, Clone, Validate)]
+pub struct PaginationArgs {
+   pub page: Counters,
+   pub limit: Counters,
+   pub post_status: Option<PostStatus>
+}

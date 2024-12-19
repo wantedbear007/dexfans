@@ -1,19 +1,5 @@
 use crate::utils::guards::*;
 
-// #[ic_cdk::query]
-// fn greet(name: String) -> String {
-//     format!(
-//         "Hello, {}! from {}",
-//         name,
-//         core::constants::ESSENTIALS_APP_NAME
-//     )
-// }
-
-// debug
-// #[ic_cdk::query]
-// fn api_total_posts() -> u128 {
-//     crate::with_read_state(|state| state.post_counter)
-// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
@@ -51,151 +37,37 @@ fn api_get_post_by_id(post_id: core::types::PostId) -> Result<crate::models::pos
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_post_by_user_id(
     user_id: candid::Principal,
-    page: core::types::Pagination,
+    args: core::types::PaginationArgs,
 ) -> Vec<crate::models::post::Post> {
-    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
-    crate::with_read_state(|state| {
-        let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
-
-        for (_, pos) in state.posts.iter() {
-            if &pos.creator_id == &user_id && pos.post_status == core::types::PostStatus::Published
-            {
-                all_posts.push(crate::models::post::Post {
-                    like_count: pos.likes.len(),
-                    views_count: pos.views.len(),
-                    ..pos.clone()
-                });
-            }
-        }
-
-        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-
-        // Pagination logic
-        let ending = all_posts.len();
-
-        if ending == 0 {
-            return all_posts;
-        }
-
-        let start = page.start as usize;
-        let end = page.end as usize;
-        if start < ending {
-            let end = end.min(ending);
-            return all_posts[start..end].to_vec();
-        }
-
-        Vec::new()
-    })
+    // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, user_id))
+ 
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_post_by_status(
     args: crate::models::post::GetByPostStatusArgs,
 ) -> Vec<crate::models::post::Post> {
-    crate::with_read_state(|state| {
-        let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
 
-        for (_, pos) in state.posts.iter() {
-            if pos.post_status == args.status && pos.creator_id == ic_cdk::api::caller() {
-                all_posts.push(pos);
-            }
-        }
-        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-
-        let ending = all_posts.len();
-
-        if ending == 0 {
-            return all_posts;
-        }
-
-        let start = args.pagination.start as usize;
-        let end = args.pagination.end as usize;
-        if start < ending {
-            let end = end.min(ending);
-            return all_posts[start..end].to_vec();
-        }
-
-        Vec::new()
-    })
-
-    // Vec::new()
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args.pagination, state, args.status, true, ic_cdk::api::caller()))
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-fn api_get_latest_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
-    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
-    crate::with_read_state(|state| {
-        let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
-
-        for (_, pos) in state.posts.iter() {
-            if pos.post_status == core::types::PostStatus::Published {
-                all_posts.push(crate::models::post::Post {
-                    like_count: pos.likes.len(),
-                    views_count: pos.views.len(),
-                    ..pos.clone()
-                });
-            }
-        }
-
-        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-
-        // Pagination logic
-        let ending = all_posts.len();
-
-        if ending == 0 {
-            return all_posts;
-        }
-
-        let start = page.start as usize;
-        let end = page.end as usize;
-        if start < ending {
-            let end = end.min(ending);
-            return all_posts[start..end].to_vec();
-        }
-
-        Vec::new()
-    })
+pub fn api_get_latest_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, ic_cdk::api::caller()))
 }
 
+
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-async fn api_get_my_posts(args: core::types::Pagination) -> Vec<crate::models::post::Post> {
-    core::functions::input_validator::<core::types::Pagination>(&args).unwrap();
-    crate::with_read_state(|state| {
-        let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
-
-        for (_, pos) in state.posts.iter() {
-            if &pos.creator_id == &ic_cdk::api::caller() {
-                all_posts.push(crate::models::post::Post {
-                    like_count: pos.likes.len(),
-                    views_count: pos.views.len(),
-                    ..pos
-                });
-            }
-        }
-        all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-
-        let ending = all_posts.len();
-
-        if ending == 0 {
-            return all_posts;
-        }
-
-        let start = args.start as usize;
-        let end = args.end as usize;
-        if start < ending {
-            let end = end.min(ending);
-
-            return all_posts[start..end].to_vec();
-        }
-
-        Vec::new()
-    })
+async fn api_get_my_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args.clone(), state, args.post_status.unwrap_or(core::types::PostStatus::Published), true, ic_cdk::api::caller()))
+   
 }
 
 #[candid::candid_method(update)]
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::models::post::Post> {
-    core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
+async fn api_get_subscribed_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
+    // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
     match kaires::call_inter_canister::<
         candid::Principal,
         std::collections::HashSet<candid::Principal>,
@@ -224,23 +96,16 @@ async fn api_get_subscribed_posts(page: core::types::Pagination) -> Vec<crate::m
                     }
                 }
             });
-            all_posts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
-            // Pagination logic
-            let ending = all_posts.len();
 
-            if ending == 0 {
-                return all_posts;
-            }
+    let page = args.page.max(1);
+        
+    let limit = args.limit.min(100);
+    let offset = (page - 1) * limit;
+    all_posts.reverse();
+            
+    all_posts.into_iter().skip(offset as usize).take(limit as usize).collect()
 
-            let start = page.start as usize;
-            let end = page.end as usize;
-            if start < ending {
-                let end = end.min(ending);
-                return all_posts[start..end].to_vec();
-            }
-
-            all_posts
         }
         Err(err) => {
             ic_cdk::println!("{}", err.to_string()); // for debug only
@@ -263,7 +128,8 @@ fn api_get_post_comments(
                 all_comments.push(comment_body.to_owned());
             }
 
-            all_comments.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+            all_comments.reverse();
+            // all_comments.sort_by(|a, b| b.created_at.cmp(&a.created_at));
 
             let ending = all_comments.len();
 
