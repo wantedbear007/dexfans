@@ -1,6 +1,5 @@
 use crate::utils::guards::*;
 
-
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
     crate::with_read_state(|state| {
@@ -40,33 +39,84 @@ fn api_post_by_user_id(
     args: core::types::PaginationArgs,
 ) -> Vec<crate::models::post::Post> {
     // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
-    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, true, user_id))
- 
+    crate::with_read_state(|state| {
+        crate::utils::functions::filter_posts(
+            args,
+            state,
+            core::types::PostStatus::Published,
+            true,
+            user_id,
+        )
+    })
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_post_by_status(
     args: crate::models::post::GetByPostStatusArgs,
 ) -> Vec<crate::models::post::Post> {
+    crate::with_read_state(|state| {
+        crate::utils::functions::filter_posts(
+            args.pagination,
+            state,
+            args.status,
+            true,
+            ic_cdk::api::caller(),
+        )
+    })
+}
 
-    crate::with_read_state(|state| crate::utils::functions::filter_posts(args.pagination, state, args.status, true, ic_cdk::api::caller()))
+// DO NOT REMOVE
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// pub fn api_get_latest_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
+//     crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, ic_cdk::api::caller()))
+// }
+
+// Yet to be added in main stream (Test functions)
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_post_ids() -> std::collections::HashSet<core::types::PostId> {
+    crate::with_read_state(|state| state.posts.iter().map(|(id, _)| id).collect())
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-pub fn api_get_latest_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
-    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, ic_cdk::api::caller()))
+fn api_get_latest_posts(
+    args: std::collections::HashSet<core::types::PostId>,
+) -> Vec<crate::models::post::Post> {
+    crate::with_read_state(|state| {
+        state
+            .posts
+            .iter()
+            .filter_map(
+                |(id, post)| {
+                    if args.contains(&id) {
+                        Some(post)
+                    } else {
+                        None
+                    }
+                },
+            )
+            .collect::<Vec<_>>()
+    })
 }
-
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 async fn api_get_my_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
-    crate::with_read_state(|state| crate::utils::functions::filter_posts(args.clone(), state, args.post_status.unwrap_or(core::types::PostStatus::Published), true, ic_cdk::api::caller()))
-   
+    crate::with_read_state(|state| {
+        crate::utils::functions::filter_posts(
+            args.clone(),
+            state,
+            args.post_status
+                .unwrap_or(core::types::PostStatus::Published),
+            true,
+            ic_cdk::api::caller(),
+        )
+    })
 }
 
 #[candid::candid_method(update)]
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
-async fn api_get_subscribed_posts(args: core::types::PaginationArgs) -> Vec<crate::models::post::Post> {
+async fn api_get_subscribed_posts(
+    args: core::types::PaginationArgs,
+) -> Vec<crate::models::post::Post> {
     // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
     match kaires::call_inter_canister::<
         candid::Principal,
@@ -97,15 +147,17 @@ async fn api_get_subscribed_posts(args: core::types::PaginationArgs) -> Vec<crat
                 }
             });
 
+            let page = args.page.max(1);
 
-    let page = args.page.max(1);
-        
-    let limit = args.limit.min(100);
-    let offset = (page - 1) * limit;
-    all_posts.reverse();
-            
-    all_posts.into_iter().skip(offset as usize).take(limit as usize).collect()
+            let limit = args.limit.min(100);
+            let offset = (page - 1) * limit;
+            all_posts.reverse();
 
+            all_posts
+                .into_iter()
+                .skip(offset as usize)
+                .take(limit as usize)
+                .collect()
         }
         Err(err) => {
             ic_cdk::println!("{}", err.to_string()); // for debug only
