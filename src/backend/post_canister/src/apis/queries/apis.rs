@@ -40,7 +40,7 @@ fn api_post_by_user_id(
     args: core::types::PaginationArgs,
 ) -> Vec<crate::models::post::Post> {
     // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
-    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, user_id))
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, true, user_id))
  
 }
 
