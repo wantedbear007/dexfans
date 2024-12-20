@@ -146,7 +146,7 @@ pub(super) fn controller_like_unlike_post(post_id: u128) -> Result<bool, String>
     })
 }
 
-pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Result<(), String> {
+pub(super) fn controller_comment_on_post(post_id: u128, content: String, ) -> Result<(), String> {
     crate::with_write_state(|state| match state.posts.get(&post_id) {
         Some(mut post) => {
             let id = state
@@ -162,7 +162,7 @@ pub(super) fn controller_comment_on_post(post_id: u128, content: String) -> Resu
             let new_comment = crate::models::comment::CommentBody {
                 comment_id,
                 content,
-                creator: post.creator_id,
+                creator: ic_cdk::api::caller(),
                 created_at: ic_cdk::api::time(),
             };
 
