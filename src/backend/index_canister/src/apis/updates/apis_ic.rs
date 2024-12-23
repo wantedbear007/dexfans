@@ -87,6 +87,6 @@ pub fn ic_get_subscribed_list(
 ) -> Result<std::collections::HashSet<candid::Principal>, String> {
     crate::with_read_state(|state| match state.account.get(&id) {
         Some(acc) => Ok(acc.subscribing),
-        None => return Err(String::from(core::constants::ERROR_FAILED_CALL)),
+        None => return Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
     })
 }

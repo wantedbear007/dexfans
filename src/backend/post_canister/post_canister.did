@@ -16,16 +16,9 @@ type CreatePostArgs = record {
   price : opt nat;
   post_status : PostStatus;
 };
-type GetByPostStatusArgs = record {
-  status : PostStatus;
-  pagination : PaginationArgs;
-};
+type GetByPostStatusArgs = record { ids : vec nat; status : PostStatus };
 type Membership = variant { Diamond; Guest };
-type PaginationArgs = record {
-  page : nat64;
-  limit : nat64;
-  post_status : opt PostStatus;
-};
+type PaginationArgs = record { ids : vec nat; post_status : opt PostStatus };
 type Post = record {
   views_count : nat64;
   post_id : nat;
@@ -47,18 +40,18 @@ type PostCanisterInitArgs = record {
   canister_ids : vec record { text; principal };
   accounts : vec UserProfile;
 };
-type PostPagination = record { end : nat64; post_id : nat; start : nat64 };
 type PostPurchaseArgs = record { post_id : nat; created_by : principal };
 type PostStatus = variant { Draft; Archived; Published };
 type PostVisibility = variant { DiamondUser; Everyone };
 type PurchaseUserMedia = record { amt : nat; owner : principal };
-type Result = variant { Ok; Err : text };
-type Result_1 = variant { Ok : text; Err : text };
-type Result_2 = variant { Ok : nat; Err : text };
-type Result_3 = variant { Ok : Post; Err : text };
-type Result_4 = variant { Ok : UserProfileIC; Err : text };
-type Result_5 = variant { Ok : CanisterMetaData; Err : text };
-type Result_6 = variant { Ok : PurchaseUserMedia; Err : text };
+type Result = variant { Ok : vec principal; Err : text };
+type Result_1 = variant { Ok; Err : text };
+type Result_2 = variant { Ok : text; Err : text };
+type Result_3 = variant { Ok : nat; Err : text };
+type Result_4 = variant { Ok : Post; Err : text };
+type Result_5 = variant { Ok : UserProfileIC; Err : text };
+type Result_6 = variant { Ok : CanisterMetaData; Err : text };
+type Result_7 = variant { Ok : PurchaseUserMedia; Err : text };
 type SinglePurchaseArgs = record {
   post_id : nat;
   created_by : principal;
@@ -90,26 +83,29 @@ type UserProfileIC = record {
 };
 type Video = record { need_pay : bool; source : text; price : opt nat };
 service : (PostCanisterInitArgs) -> {
-  admin_add_user_profile : (UserProfileIC) -> (Result);
-  admin_update_membership : (UpdateMembershipIC) -> (Result);
-  admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result);
-  api_comment_on_post : (nat, text) -> (Result_1);
-  api_create_new_post : (CreatePostArgs) -> (Result_2);
-  api_delete_post : (nat) -> (Result_1);
-  api_get_latest_posts : (vec nat) -> (vec Post) query;
+  a_get_ids : () -> (Result);
+  admin_add_user_profile : (UserProfileIC) -> (Result_1);
+  admin_update_membership : (UpdateMembershipIC) -> (Result_1);
+  admin_update_user_profile : (UpdateUserProfileArgsIC) -> (Result_1);
+  api_comment_on_post : (nat, text) -> (Result_2);
+  api_create_new_post : (CreatePostArgs) -> (Result_3);
+  api_delete_post : (nat) -> (Result_2);
+  api_get_comment_ids : (nat) -> (vec nat) query;
   api_get_my_posts : (PaginationArgs) -> (vec Post) query;
-  api_get_post_by_id : (nat) -> (Result_3);
+  api_get_post : (vec nat) -> (vec Post) query;
+  api_get_post_by_id : (nat) -> (Result_4);
   api_get_post_by_status : (GetByPostStatusArgs) -> (vec Post) query;
-  api_get_post_comments : (PostPagination) -> (vec CommentBody) query;
-  api_get_subscribed_posts : (PaginationArgs) -> (vec Post);
-  api_like_unlike_post : (nat) -> (Result_1);
-  api_post_by_user_id : (principal, PaginationArgs) -> (vec Post) query;
+  api_get_post_comments : (vec nat, nat) -> (vec CommentBody) query;
+  api_get_subscribed_posts : () -> (vec Post);
+  api_like_unlike_post : (nat) -> (Result_2);
+  api_post_by_user_id : (principal, vec nat) -> (vec Post) query;
   api_post_ids : () -> (vec nat) query;
   api_search_post : (text) -> (vec Post) query;
-  api_update_post : (UpdatePostArgs) -> (Result_1);
+  api_subscribed_posts_ids : () -> (vec nat);
+  api_update_post : (UpdatePostArgs) -> (Result_2);
   debug_get_all_profile : () -> (vec UserProfileIC) query;
-  debug_get_user_profile : () -> (Result_4) query;
-  get_canister_meta_data : () -> (Result_5) query;
-  ic_get_media_price : (SinglePurchaseArgs) -> (Result_6) query;
-  ic_get_price : (PostPurchaseArgs) -> (Result_6) query;
+  debug_get_user_profile : () -> (Result_5) query;
+  get_canister_meta_data : () -> (Result_6) query;
+  ic_get_media_price : (SinglePurchaseArgs) -> (Result_7) query;
+  ic_get_price : (PostPurchaseArgs) -> (Result_7) query;
 }

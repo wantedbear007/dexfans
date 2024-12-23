@@ -178,7 +178,8 @@ pub struct PostPurchaseArgs {
 
 #[derive(CandidType, Deserialize, Clone, Validate)]
 pub struct PaginationArgs {
-   pub page: Counters,
-   pub limit: Counters,
+//    pub page: Countes,
+//    pub limit: Counters,/
+pub ids: Vec<PostId>,
    pub post_status: Option<PostStatus>
 }
