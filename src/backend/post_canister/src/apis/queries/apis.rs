@@ -1,4 +1,4 @@
-use crate::{models::comment, utils::guards::*};
+use crate::utils::guards::*;
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_search_post(args: String) -> Vec<crate::models::post::Post> {
@@ -30,6 +30,23 @@ fn api_get_post_by_id(post_id: core::types::PostId) -> Result<crate::models::pos
             })
         }
         None => return Err(String::from(core::constants::ERROR_POST_NOT_EXIST)),
+    })
+}
+
+#[ic_cdk::query(guard = guard_prevent_anonymous)]
+fn api_get_user_post_ids(args: candid::Principal) -> Vec<core::types::PostId> {
+    crate::with_read_state(|state| {
+        state
+            .posts
+            .iter()
+            .filter_map(|(id, post)| {
+                if post.creator_id == args && post.post_status == core::types::PostStatus::Published {
+                    Some(id)
+                } else {
+                    None
+                }
+            })
+            .collect()
     })
 }
 
@@ -69,8 +86,11 @@ fn api_post_ids() -> Vec<core::types::PostId> {
     let mut all_post_ids: Vec<core::types::PostId> = Vec::new();
 
     crate::with_read_state(|state| {
-        for (id, _) in state.posts.iter() {
-            all_post_ids.push(id);
+        for (id, pos) in state.posts.iter() {
+            if pos.post_status == core::types::PostStatus::Published {
+
+                all_post_ids.push(id);
+            }
         }
     });
 
@@ -149,22 +169,21 @@ async fn api_subscribed_posts_ids() -> std::collections::HashSet<core::types::Po
     )
     .await
     {
-        Ok(val) => {
-            crate::with_read_state(|state| {
-                let subscribed_acc: std::collections::HashSet<_> = val.iter().collect();
-                let mut all_post_ids: std::collections::HashSet<core::types::CommentId> = std::collections::HashSet::new();
+        Ok(val) => crate::with_read_state(|state| {
+            let subscribed_acc: std::collections::HashSet<_> = val.iter().collect();
+            let mut all_post_ids: std::collections::HashSet<core::types::CommentId> =
+                std::collections::HashSet::new();
 
-                for (id, post) in state.posts.iter() {
-                    if subscribed_acc.contains(&post.creator_id)
-                        && post.post_status == core::types::PostStatus::Published
-                    {
-                      all_post_ids.insert(id);
-                    }
+            for (id, post) in state.posts.iter() {
+                if subscribed_acc.contains(&post.creator_id)
+                    && post.post_status == core::types::PostStatus::Published
+                {
+                    all_post_ids.insert(id);
                 }
+            }
 
-                all_post_ids
-            })
-        }
+            all_post_ids
+        }),
         Err(err) => ic_cdk::trap(err.as_str()),
     }
 }
@@ -276,5 +295,3 @@ fn api_get_post_comments(
     //     None => Vec::new(),
     // })
 }
-
-
