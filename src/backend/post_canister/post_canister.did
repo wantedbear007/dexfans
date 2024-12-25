@@ -16,9 +16,17 @@ type CreatePostArgs = record {
   price : opt nat;
   post_status : PostStatus;
 };
-type GetByPostStatusArgs = record { ids : vec nat; status : PostStatus };
+type GetByPostStatusArgs = record {
+  status : PostStatus;
+  pagination : PaginationArgs0;
+};
 type Membership = variant { Diamond; Guest };
 type PaginationArgs = record { ids : vec nat; post_status : opt PostStatus };
+type PaginationArgs0 = record {
+  page : nat64;
+  limit : nat64;
+  post_status : opt PostStatus;
+};
 type Post = record {
   views_count : nat64;
   post_id : nat;
@@ -96,7 +104,7 @@ service : (PostCanisterInitArgs) -> {
   api_get_post_comments : (vec nat, nat) -> (vec CommentBody) query;
   api_get_user_post_ids : (principal) -> (vec nat) query;
   api_like_unlike_post : (nat) -> (Result_1);
-  api_post_by_user_id : (principal, vec nat) -> (vec Post) query;
+  api_post_by_user_id : (principal, PaginationArgs0) -> (vec Post) query;
   api_post_ids : () -> (vec nat) query;
   api_search_post : (text) -> (vec Post) query;
   api_subscribed_posts_ids : () -> (vec nat);

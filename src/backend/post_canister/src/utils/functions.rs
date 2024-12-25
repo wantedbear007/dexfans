@@ -38,35 +38,27 @@ pub fn get_parent_canister() -> Result<candid::Principal, String> {
 }
 
 
-// pub(crate) fn filter_posts(args: core::types::PaginationArgs, state: &ApplicationState, status: core::types::PostStatus, caller_filter: bool, caller: candid::Principal)  -> Vec<crate::models::post::Post> {
+pub(crate) fn filter_posts(args: core::types::PaginationArgs0, state: &ApplicationState, status: core::types::PostStatus, caller_filter: bool, caller: candid::Principal)  -> Vec<crate::models::post::Post> {
 
-//     // let page = args.page.max(1);
-
-//     let mut all_posts: Vec<crate::models::post::Post> = Vec::new();
-
-    
-
-
-
-//     all_posts
+    let page = args.page.max(1);
         
-//     // let limit = args.limit.min(100);
-//     // let offset = (page - 1) * limit;
-//     // let mut all_post: Vec<_> = state.posts.iter().filter_map(|(_, pos)| {
-//     //     if pos.post_status == status {
-//     //         if !caller_filter || caller == pos.creator_id {
-//     //             return Some(crate::models::post::Post {
-//     //                 like_count: pos.likes.len(),
-//     //                 views_count: pos.views.len(),
-//     //                 ..pos.clone()
-//     //             });
-//     //         }
-//     //     }
-//     //     None
-//     // }).collect();
-//     // all_post.reverse();
-//     // all_post.into_iter().skip(offset as usize).take(limit as usize).collect()
-// }
+    let limit = args.limit.min(100);
+    let offset = (page - 1) * limit;
+    let mut all_post: Vec<_> = state.posts.iter().filter_map(|(_, pos)| {
+        if pos.post_status == status {
+            if !caller_filter || caller == pos.creator_id {
+                return Some(crate::models::post::Post {
+                    like_count: pos.likes.len(),
+                    views_count: pos.views.len(),
+                    ..pos.clone()
+                });
+            }
+        }
+        None
+    }).collect();
+    all_post.reverse();
+    all_post.into_iter().skip(offset as usize).take(limit as usize).collect()
+}
 
 
 

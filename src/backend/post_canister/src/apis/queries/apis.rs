@@ -50,36 +50,53 @@ fn api_get_user_post_ids(args: candid::Principal) -> Vec<core::types::PostId> {
     })
 }
 
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// fn api_post_by_user_id(
+//     user_id: candid::Principal,
+//     args: Vec<core::types::PostId>,
+// ) -> Vec<crate::models::post::Post> {
+//     crate::with_read_state(|state| {
+//         crate::utils::functions::selective_post(
+//             args,
+//             state,
+//             core::types::PostStatus::Published,
+//             true,
+//             user_id,
+//         )
+//     })
+// }
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_post_by_user_id(
     user_id: candid::Principal,
-    args: Vec<core::types::PostId>,
+    args: core::types::PaginationArgs0,
 ) -> Vec<crate::models::post::Post> {
-    crate::with_read_state(|state| {
-        crate::utils::functions::selective_post(
-            args,
-            state,
-            core::types::PostStatus::Published,
-            true,
-            user_id,
-        )
-    })
+    // core::functions::input_validator::<core::types::Pagination>(&page).unwrap();
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args, state, core::types::PostStatus::Published, false, user_id))
+ 
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_get_post_by_status(
     args: crate::models::post::GetByPostStatusArgs,
 ) -> Vec<crate::models::post::Post> {
-    crate::with_read_state(|state| {
-        crate::utils::functions::selective_post(
-            args.ids,
-            state,
-            args.status,
-            true,
-            ic_cdk::api::caller(),
-        )
-    })
+
+    crate::with_read_state(|state| crate::utils::functions::filter_posts(args.pagination, state, args.status, true, ic_cdk::api::caller()))
 }
+
+// #[ic_cdk::query(guard = guard_prevent_anonymous)]
+// fn api_get_post_by_status(
+//     args: crate::models::post::GetByPostStatusArgs,
+// ) -> Vec<crate::models::post::Post> {
+//     crate::with_read_state(|state| {
+//         crate::utils::functions::selective_post(
+//             args.ids,
+//             state,
+//             args.status,
+//             true,
+//             ic_cdk::api::caller(),
+//         )
+//     })
+// }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
 fn api_post_ids() -> Vec<core::types::PostId> {

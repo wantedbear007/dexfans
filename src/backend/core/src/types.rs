@@ -183,3 +183,10 @@ pub struct PaginationArgs {
 pub ids: Vec<PostId>,
    pub post_status: Option<PostStatus>
 }
+
+#[derive(CandidType, Deserialize, Clone, Validate)]
+pub struct PaginationArgs0 {
+   pub page: Counters,
+   pub limit: Counters,
+   pub post_status: Option<PostStatus>
+}
