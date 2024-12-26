@@ -157,7 +157,7 @@ pub(super) fn controller_comment_on_post(post_id: u128, content: String, ) -> Re
             let comment_id = id + 1;
             state
                 .ids
-                .insert(crate::models::types::IdType::CommentID, post_id.clone());
+                .insert(crate::models::types::IdType::CommentID, comment_id.clone());
 
             let new_comment = crate::models::comment::CommentBody {
                 comment_id,
