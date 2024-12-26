@@ -50,7 +50,7 @@ async fn api_like_unlike_post(post_id: u128) -> Result<String, String> {
 
 #[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn api_comment_on_post(post_id: core::types::PostId, content: String) -> Result<String, String> {
-    if content.len() > core::constants::VALIDATOR_COMMENT_SIZE as usize || content.len() < 3 {
+    if content.len() > core::constants::VALIDATOR_COMMENT_SIZE as usize {
         return Err(String::from(
             "Validator Error: Comment size is not applicable",
         ));
