@@ -61,9 +61,6 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
   })
 "
 
-
-
-
 dfx deploy ic_oss_bucket --argument "(opt variant {Init =
   record {
     name = \"dex Labs\";

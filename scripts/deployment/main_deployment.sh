@@ -16,19 +16,19 @@ BHANU=$(dfx identity get-principal --identity Bhanu)
 # dfx deps pull
 # for creating canisters IDS
 # dfx canister create icp_ledger_canister
-dfx canister create asset_handler --ic
+dfx canister create ic_oss_bucket --ic
 dfx canister create post_canister --ic
 dfx canister create index_canister --ic
 
 # for compiling canisters
 # dfx build icp_ledger_canister
-dfx build asset_handler --ic
+dfx build ic_oss_bucket --ic
 dfx build post_canister --ic
 dfx build index_canister --ic
 
 # Canister IDS
 LEDGER_CANISTER="ryjl3-tyaaa-aaaaa-aaaba-cai"
-IC_ASSET_CANISTER=$(dfx canister id asset_handler --ic)
+IC_ASSET_CANISTER=$(dfx canister id ic_oss_bucket --ic)
 INDEX_CANISTER=$(dfx canister id index_canister --ic)
 POST_CANISTER=$(dfx canister id post_canister --ic)
 FRONTEND_CANISTER=$(dfx canister id post_canister --ic)
@@ -41,6 +41,31 @@ DEFAULT_ACCOUNT_ID=$(dfx --identity default ledger account-id)
 
 # IMP: Review below warnings
 # Update code in /src/index_canister/src/lib.rs if below keys are changed 
+
+dfx deploy ic_oss_bucket --argument "(opt variant {Init =
+  record {
+    name = \"dex Labs\";
+    file_id = 0;
+    max_file_size = 0;
+    max_folder_depth = 10;
+    max_children = 10000;
+    visibility = 1;
+    max_custom_data_size = 4096;
+    enable_hash_index = false;
+  }
+})" --ic
+
+dfx deploy ic_oss_cluster --argument "(opt variant {Init =
+  record {
+    name = \"LDC Labs\";
+    ecdsa_key_name = \"dfx_test_key\";
+    schnorr_key_name = \"dfx_test_key\";
+    token_expiration = 3600;
+    bucket_topup_threshold = 1_000_000_000_000;
+    bucket_topup_amount = 5_000_000_000_000;
+  }
+})" --ic
+
 
 
 dfx deploy index_canister --argument "( record {
