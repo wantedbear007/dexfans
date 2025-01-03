@@ -26,12 +26,21 @@
       },
       "specified_id": "ryjl3-tyaaa-aaaaa-aaaba-cai"
     },
-    "asset_handler": {
+    "ic_oss_bucket": {
       "candid": "src/backend/ic_asset_handler/ic_oss_bucket/ic_oss_bucket.did",
       "declarations": {
         "node_compatibility": true
       },
       "package": "ic_oss_bucket",
+      "optimize": "cycles",
+      "type": "rust"
+    },
+    "ic_oss_cluster": {
+      "candid": "src/backend/ic_asset_handler/ic_oss_cluster/ic_oss_cluster.did",
+      "declarations": {
+        "node_compatibility": true
+      },
+      "package": "ic_oss_cluster",
       "optimize": "cycles",
       "type": "rust"
     }

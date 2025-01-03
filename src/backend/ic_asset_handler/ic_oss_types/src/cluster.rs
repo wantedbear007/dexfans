@@ -13,11 +13,13 @@ pub struct ClusterInfo {
     pub weak_ed25519_token_public_key: String,
     pub token_expiration: u64, // in seconds
     pub managers: BTreeSet<Principal>,
+    pub committers: BTreeSet<Principal>,
     pub subject_authz_total: u64,
     pub bucket_latest_version: ByteArray<32>,
     pub bucket_wasm_total: u64,
     pub bucket_deployed_total: u64,
     pub bucket_deployment_logs: u64,
+    pub governance_canister: Option<Principal>,
 }
 
 #[derive(CandidType, Clone, Debug, Deserialize, Serialize)]

@@ -16,19 +16,19 @@ BHANU=$(dfx identity get-principal --identity Bhanu)
 # dfx deps pull
 # for creating canisters IDS
 dfx canister create icp_ledger_canister
-dfx canister create asset_handler
+# dfx canister create asset_handler
 dfx canister create post_canister
 dfx canister create index_canister
 
 # for compiling canisters
 dfx build icp_ledger_canister
-dfx build asset_handler
+# dfx build asset_handler
 dfx build post_canister
 dfx build index_canister
 
 # Canister IDS
 LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
-IC_ASSET_CANISTER=$(dfx canister id asset_handler)
+IC_ASSET_CANISTER=$(dfx canister id icp_ledger_canister)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
 
@@ -60,6 +60,33 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
     }
   })
 "
+
+
+
+
+dfx deploy ic_oss_bucket --argument "(opt variant {Init =
+  record {
+    name = \"dex Labs\";
+    file_id = 0;
+    max_file_size = 0;
+    max_folder_depth = 10;
+    max_children = 10000;
+    visibility = 1;
+    max_custom_data_size = 4096;
+    enable_hash_index = false;
+  }
+})"
+
+dfx deploy ic_oss_cluster --argument "(opt variant {Init =
+  record {
+    name = \"LDC Labs\";
+    ecdsa_key_name = \"dfx_test_key\";
+    schnorr_key_name = \"dfx_test_key\";
+    token_expiration = 3600;
+    bucket_topup_threshold = 1_000_000_000_000;
+    bucket_topup_amount = 5_000_000_000_000;
+  }
+})"
 
 
 

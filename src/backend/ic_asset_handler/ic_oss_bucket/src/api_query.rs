@@ -17,25 +17,25 @@ fn api_version() -> u16 {
 }
 
 #[ic_cdk::query]
-fn get_bucket_info(access_token: Option<ByteBuf>) -> Result<BucketInfo, String> {
-    let canister = ic_cdk::id();
-    let ctx = match store::state::with(|s| {
-        s.read_permission(
-            ic_cdk::caller(),
-            &canister,
-            access_token,
-            ic_cdk::api::time() / SECONDS,
-        )
-    }) {
-        Ok(ctx) => ctx,
-        Err((_, err)) => {
-            return Err(err);
-        }
-    };
+fn get_bucket_info(_access_token: Option<ByteBuf>) -> Result<BucketInfo, String> {
+    // let canister = ic_cdk::id();
+    // let ctx = match store::state::with(|s| {
+    //     s.read_permission(
+    //         ic_cdk::caller(),
+    //         &canister,
+    //         access_token,
+    //         ic_cdk::api::time() / SECONDS,
+    //     )
+    // }) {
+    //     Ok(ctx) => ctx,
+    //     Err((_, err)) => {
+    //         return Err(err);
+    //     }
+    // };
 
-    if !permission::check_bucket_read(&ctx.ps, &canister) {
-        return Err("permission denied".to_string());
-    }
+    // if !permission::check_bucket_read(&ctx.ps, &canister) {
+    //     return Err("permission denied".to_string());
+    // }
 
     Ok(store::state::with(|r| BucketInfo {
         name: r.name.clone(),
@@ -55,6 +55,7 @@ fn get_bucket_info(access_token: Option<ByteBuf>) -> Result<BucketInfo, String> 
         auditors: r.auditors.clone(),
         trusted_ecdsa_pub_keys: r.trusted_ecdsa_pub_keys.clone(),
         trusted_eddsa_pub_keys: r.trusted_eddsa_pub_keys.clone(),
+        governance_canister: r.governance_canister,
     }))
 }
 
@@ -92,23 +93,25 @@ fn get_file_info(id: u32, access_token: Option<ByteBuf>) -> Result<FileInfo, Str
     match store::fs::get_file(id) {
         None => Err("file not found".to_string()),
         Some(file) => {
-            let canister = ic_cdk::id();
-            let ctx = match store::state::with(|s| {
-                s.read_permission(
-                    ic_cdk::caller(),
-                    &canister,
-                    access_token,
-                    ic_cdk::api::time() / SECONDS,
-                )
-            }) {
-                Ok(ctx) => ctx,
-                Err((_, err)) => {
-                    return Err(err);
-                }
-            };
+            if !file.read_by_hash(&access_token) {
+                let canister = ic_cdk::id();
+                let ctx = match store::state::with(|s| {
+                    s.read_permission(
+                        ic_cdk::caller(),
+                        &canister,
+                        access_token,
+                        ic_cdk::api::time() / SECONDS,
+                    )
+                }) {
+                    Ok(ctx) => ctx,
+                    Err((_, err)) => {
+                        return Err(err);
+                    }
+                };
 
-            if !permission::check_file_read(&ctx.ps, &canister, id, file.parent) {
-                Err("permission denied".to_string())?;
+                if !permission::check_file_read(&ctx.ps, &canister, id, file.parent) {
+                    Err("permission denied".to_string())?;
+                }
             }
 
             Ok(file.into_info(id))
@@ -162,27 +165,29 @@ fn get_file_chunks(
     match store::fs::get_file(id) {
         None => Err("file not found".to_string()),
         Some(file) => {
-            let canister = ic_cdk::id();
-            let ctx = match store::state::with(|s| {
-                s.read_permission(
-                    ic_cdk::caller(),
-                    &canister,
-                    access_token,
-                    ic_cdk::api::time() / SECONDS,
-                )
-            }) {
-                Ok(ctx) => ctx,
-                Err((_, err)) => {
-                    return Err(err);
+            if !file.read_by_hash(&access_token) {
+                let canister = ic_cdk::id();
+                let ctx = match store::state::with(|s| {
+                    s.read_permission(
+                        ic_cdk::caller(),
+                        &canister,
+                        access_token,
+                        ic_cdk::api::time() / SECONDS,
+                    )
+                }) {
+                    Ok(ctx) => ctx,
+                    Err((_, err)) => {
+                        return Err(err);
+                    }
+                };
+
+                if file.status < 0 && ctx.role < store::Role::Auditor {
+                    Err("file archived".to_string())?;
                 }
-            };
 
-            if file.status < 0 && ctx.role < store::Role::Auditor {
-                Err("file archived".to_string())?;
-            }
-
-            if !permission::check_file_read(&ctx.ps, &canister, id, file.parent) {
-                Err("permission denied".to_string())?;
+                if !permission::check_file_read(&ctx.ps, &canister, id, file.parent) {
+                    Err("permission denied".to_string())?;
+                }
             }
 
             Ok(store::fs::get_chunks(id, index, take.unwrap_or(8).min(8)))

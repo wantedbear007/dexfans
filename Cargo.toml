@@ -2,9 +2,10 @@
 members = [
     "src/backend/index_canister",
     "src/backend/post_canister",
-    "src/backend/ic_asset_handler/ic_oss_bucket",
-    "src/backend/ic_asset_handler/ic_oss_types",
     "src/backend/core",
+    "src/backend/ic_asset_handler/ic_oss_bucket",
+    "src/backend/ic_asset_handler/ic_oss_cluster",
+    "src/backend/ic_asset_handler/ic_oss_types",
 ]
 resolver = "2"
 
@@ -13,11 +14,15 @@ resolver = "2"
 version = "0.9.3"
 edition = "2021"
 categories = ["blockchain"]
+keywords = ["file", "storage", "oss", "s3", "icp"]
+license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
+coset = "0.3"
 bytes = "1"
 base64 = "0.21"
 candid = "0.10"
+futures = "0.3"
 ciborium = "0.2"
 # futures = "0.3"
 serde = "1"

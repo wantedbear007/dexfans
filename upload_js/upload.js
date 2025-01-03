@@ -22,12 +22,12 @@ const files = [
     name: '',
     contentType: ''
   },
-  {
-    parent: 0,
-    content: '30mv.mp4',
-    name: '',
-    contentType: ''
-  },
+  // {
+  //   parent: 0,
+  //   content: '30mv.mp4',
+  //   name: '',
+  //   contentType: ''
+  // },
   // {
   //   parent: 0,
   //   content: 'video.mp4',

@@ -7,7 +7,8 @@ use ic_http_certification::{
 use ic_oss_types::{
     cose::{Token, BUCKET_TOKEN_AAD},
     file::{
-        FileChunk, FileInfo, UpdateFileInput, CHUNK_SIZE, MAX_FILE_SIZE, MAX_FILE_SIZE_PER_CALL,
+        FileChunk, FileInfo, UpdateFileInput, CHUNK_SIZE, CUSTOM_KEY_BY_HASH, MAX_FILE_SIZE,
+        MAX_FILE_SIZE_PER_CALL,
     },
     folder::{FolderInfo, FolderName, UpdateFolderInput},
     permission::Policies,
@@ -66,6 +67,8 @@ pub struct Bucket {
     // used to verify the request token signed with ED25519
     #[serde(rename = "ed", alias = "trusted_eddsa_pub_keys")]
     pub trusted_eddsa_pub_keys: Vec<ByteArray<32>>,
+    #[serde(default, rename = "gov")]
+    pub governance_canister: Option<Principal>,
 }
 
 impl Default for Bucket {
@@ -85,6 +88,7 @@ impl Default for Bucket {
             auditors: BTreeSet::new(),
             trusted_ecdsa_pub_keys: Vec::new(),
             trusted_eddsa_pub_keys: Vec::new(),
+            governance_canister: None,
         }
     }
 }
@@ -144,9 +148,11 @@ impl Bucket {
                 now_sec as i64,
             )
             .map_err(|err| (401, err))?;
-            if token.subject == ctx.caller && &token.audience == canister {
+
+            if &token.audience == canister {
                 ctx.ps =
                     Policies::try_from(token.policies.as_str()).map_err(|err| (403u16, err))?;
+                ctx.caller = token.subject;
                 return Ok(ctx);
             }
         }
@@ -190,9 +196,10 @@ impl Bucket {
                 now_sec as i64,
             )
             .map_err(|err| (401, err))?;
-            if token.subject == ctx.caller && &token.audience == canister {
+            if &token.audience == canister {
                 ctx.ps =
                     Policies::try_from(token.policies.as_str()).map_err(|err| (403u16, err))?;
+                ctx.caller = token.subject;
                 return Ok(ctx);
             }
         }
@@ -297,6 +304,22 @@ impl FileMetadata {
             dek: self.dek,
             custom: self.custom,
             ex: self.ex,
+        }
+    }
+
+    pub fn read_by_hash(&self, access_token: &Option<ByteBuf>) -> bool {
+        if let Some(access_token) = access_token {
+            self.status >= 0
+                && self
+                    .custom
+                    .as_ref()
+                    .map_or(false, |c| c.contains_key(CUSTOM_KEY_BY_HASH))
+                && self
+                    .hash
+                    .as_ref()
+                    .map_or(false, |h| h.as_slice() == access_token.as_ref())
+        } else {
+            false
         }
     }
 }
@@ -548,7 +571,8 @@ impl FoldersTree {
             Err("parent folder is not writable".to_string())?;
         }
 
-        if parent.folders.len() + parent.files.len() >= max_children {
+        // no limit for root folder
+        if metadata.parent > 0 && parent.folders.len() + parent.files.len() >= max_children {
             Err("children exceeds limit".to_string())?;
         }
         parent.folders.insert(id);
@@ -581,7 +605,8 @@ impl FoldersTree {
             Err("parent folder is not writable".to_string())?;
         }
 
-        if folder.folders.len() + folder.files.len() >= max_children {
+        // no limit for root folder
+        if parent > 0 && folder.folders.len() + folder.files.len() >= max_children {
             Err("children exceeds limit".to_string())?;
         }
 
@@ -629,7 +654,7 @@ impl FoldersTree {
             Err(format!("folder {} is not writable", to))?;
         }
 
-        if to_folder.folders.len() + to_folder.files.len() >= max_children {
+        if to > 0 && to_folder.folders.len() + to_folder.files.len() >= max_children {
             Err("children exceeds limit".to_string())?;
         }
 
@@ -679,7 +704,7 @@ impl FoldersTree {
             Err(format!("folder {} is not writable", to))?;
         }
 
-        if to_folder.folders.len() + to_folder.files.len() >= max_children {
+        if to > 0 && to_folder.folders.len() + to_folder.files.len() >= max_children {
             Err("children exceeds limit".to_string())?;
         }
 
@@ -697,12 +722,7 @@ impl FoldersTree {
         });
     }
 
-    fn delete_folder(
-        &mut self,
-        id: u32,
-        now_ms: u64,
-        checker: impl FnOnce(&FolderMetadata) -> Result<(), String>,
-    ) -> Result<bool, String> {
+    fn delete_folder(&mut self, id: u32, now_ms: u64) -> Result<bool, String> {
         if id == 0 {
             Err("root folder cannot be deleted".to_string())?;
         }
@@ -710,7 +730,6 @@ impl FoldersTree {
         let parent_id = match self.get(&id) {
             None => return Ok(false),
             Some(folder) => {
-                checker(folder)?;
                 if folder.status > 0 {
                     Err("folder is readonly".to_string())?;
                 }
@@ -806,6 +825,15 @@ pub mod state {
 
     pub fn with_mut<R>(f: impl FnOnce(&mut Bucket) -> R) -> R {
         BUCKET.with(|r| f(&mut r.borrow_mut()))
+    }
+
+    pub fn is_controller(caller: &Principal) -> bool {
+        BUCKET.with(|r| {
+            r.borrow()
+                .governance_canister
+                .as_ref()
+                .map_or(false, |p| p == caller)
+        })
     }
 
     pub fn http_tree_with<R>(f: impl FnOnce(&HttpCertificationTree) -> R) -> R {
@@ -1273,7 +1301,6 @@ pub mod fs {
                     }
 
                     checker(&file)?;
-
                     file.updated_at = now_ms;
                     file.filled += chunk.len() as u64;
                     if file.filled > max {
@@ -1284,14 +1311,16 @@ pub mod fs {
                         r.borrow_mut()
                             .insert(FileId(file_id, chunk_index), Chunk(chunk))
                     }) {
-                        None => {
-                            if file.chunks <= chunk_index {
-                                file.chunks = chunk_index + 1;
+                        None => {}
+                        Some(old) => {
+                            if chunk_index < file.chunks {
+                                file.filled = file.filled.saturating_sub(old.0.len() as u64);
                             }
                         }
-                        Some(old) => {
-                            file.filled -= old.0.len() as u64;
-                        }
+                    }
+
+                    if file.chunks <= chunk_index {
+                        file.chunks = chunk_index + 1;
                     }
 
                     let filled = file.filled;
@@ -1314,7 +1343,44 @@ pub mod fs {
         now_ms: u64,
         checker: impl FnOnce(&FolderMetadata) -> Result<(), String>,
     ) -> Result<bool, String> {
-        FOLDERS.with(|r| r.borrow_mut().delete_folder(id, now_ms, checker))
+        if id == 0 {
+            Err("root folder cannot be deleted".to_string())?;
+        }
+
+        FOLDERS.with(|r| {
+            let mut folders = r.borrow_mut();
+            let folder = folders.parent_to_update(id)?;
+            let files = folder.files.clone();
+            checker(folder)?;
+
+            FS_METADATA_STORE.with(|r| {
+                let mut fs_metadata = r.borrow_mut();
+
+                FS_CHUNKS_STORE.with(|r| {
+                    let mut fs_data = r.borrow_mut();
+                    for id in files {
+                        match fs_metadata.get(&id) {
+                            Some(file) => {
+                                if file.status < 1 && fs_metadata.remove(&id).is_some() {
+                                    folder.files.remove(&id);
+                                    if let Some(hash) = file.hash {
+                                        HASHS.with(|r| r.borrow_mut().remove(&hash));
+                                    }
+
+                                    for i in 0..file.chunks {
+                                        fs_data.remove(&FileId(id, i));
+                                    }
+                                }
+                            }
+                            None => {
+                                folder.files.remove(&id);
+                            }
+                        }
+                    }
+                });
+            });
+            folders.delete_folder(id, now_ms)
+        })
     }
 
     pub fn delete_file(
@@ -1873,10 +1939,33 @@ mod test {
                 1,
                 1,
             )
+            .is_ok());
+        assert!(tree
+            .add_folder(
+                FolderMetadata {
+                    parent: 1,
+                    name: "fd2".to_string(),
+                    ..Default::default()
+                },
+                3,
+                2,
+                1,
+            )
+            .is_ok());
+        assert!(tree
+            .add_folder(
+                FolderMetadata {
+                    parent: 1,
+                    name: "fd2".to_string(),
+                    ..Default::default()
+                },
+                4,
+                2,
+                1,
+            )
             .err()
             .unwrap()
             .contains("children exceeds limit"));
-
         tree.get_mut(&0).unwrap().status = 1;
         assert!(tree
             .add_folder(
@@ -1885,7 +1974,7 @@ mod test {
                     name: "fd2".to_string(),
                     ..Default::default()
                 },
-                2,
+                4,
                 1,
                 2,
             )
@@ -1900,7 +1989,7 @@ mod test {
                     name: "fd2".to_string(),
                     ..Default::default()
                 },
-                2,
+                4,
                 1,
                 2,
             )
@@ -2081,11 +2170,11 @@ mod test {
     fn test_folders_delete_folder() {
         let mut tree = FoldersTree::new();
         assert!(tree
-            .delete_folder(0, 99, |_| Ok(()))
+            .delete_folder(0, 99)
             .err()
             .unwrap()
             .contains("root folder cannot be deleted"));
-        assert!(!tree.delete_folder(1, 99, |_| Ok(())).unwrap());
+        assert!(!tree.delete_folder(1, 99).unwrap());
         tree.add_folder(
             FolderMetadata {
                 parent: 0,
@@ -2100,25 +2189,25 @@ mod test {
         )
         .unwrap();
         assert!(tree
-            .delete_folder(1, 99, |_| Ok(()))
+            .delete_folder(1, 99)
             .err()
             .unwrap()
             .contains("folder is readonly"));
         tree.get_mut(&1).unwrap().status = 0;
         assert!(tree
-            .delete_folder(1, 99, |_| Ok(()))
+            .delete_folder(1, 99)
             .err()
             .unwrap()
             .contains("folder is not empty"));
         tree.get_mut(&1).unwrap().files.clear();
         tree.get_mut(&0).unwrap().status = 1;
         assert!(tree
-            .delete_folder(1, 99, |_| Ok(()))
+            .delete_folder(1, 99)
             .err()
             .unwrap()
             .contains("parent folder is not writable"));
         tree.get_mut(&0).unwrap().status = 0;
-        assert!(tree.delete_folder(1, 99, |_| Ok(())).unwrap());
+        assert!(tree.delete_folder(1, 99).unwrap());
         assert_eq!(tree.len(), 1);
         assert_eq!(tree.get_mut(&0).unwrap().folders, BTreeSet::new());
         assert_eq!(tree.get_mut(&0).unwrap().updated_at, 99);
