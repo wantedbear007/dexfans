@@ -73,14 +73,22 @@ fn api_get_subscribers() -> Vec<core::types::UserDetailsMinified> {
     // })
 }
 
-#[ic_cdk::query(guard = guard_prevent_anonymous)]
+#[ic_cdk::update(guard = guard_prevent_anonymous)]
 fn api_get_notifications() -> Vec<crate::NotificationBody> {
-    crate::with_read_state(
-        |state| match state.notifications.get(&ic_cdk::api::caller()) {
-            Some(noti) => noti.notifications,
-            None => Vec::new(),
-        },
-    )
+
+    crate::with_write_state(|state| {
+        if let Some(mut f_notifications) = state.notifications.get(&ic_cdk::api::caller()) {
+            f_notifications.notifications.retain(|noti| {
+                noti.expiring_on > ic_cdk::api::time()
+            });
+
+        state.notifications.insert(ic_cdk::api::caller(), f_notifications.clone());
+        f_notifications.notifications
+        } else {
+            Vec::new()
+        }
+    })
+
 }
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
