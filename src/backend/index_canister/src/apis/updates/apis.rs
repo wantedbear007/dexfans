@@ -548,3 +548,20 @@ async fn api_purchase_media(
         Err(err) => return Err(err),
     }
 }
+
+#[ic_cdk::update(guard = guard_super_controller)]
+pub fn admin_set_asset_canister(id: candid::Principal) -> Result<candid::Principal, String> {
+    crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
+        Some(mut canister_meta_data) => {
+            canister_meta_data.all_post_canisters.insert(id);
+
+            canister_meta_data
+                .canister_ids
+                .insert(core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE, id);
+            state.canister_meta_data.insert(0, canister_meta_data);
+
+            Ok(id)
+        }
+        None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
+    })
+}

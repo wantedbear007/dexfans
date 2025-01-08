@@ -111,6 +111,7 @@ service : (DexFansCanisterInitArgs) -> {
   admin_add_controller : (principal) -> (Result);
   admin_profile_post_canister : (ICAddPostCanisterProfile) -> (Result);
   admin_remove_controller : (principal) -> (Result);
+  admin_set_asset_canister : (principal) -> (Result_1);
   admin_set_payment_recipient : (principal) -> (Result_1);
   admin_set_post_canister : (principal) -> (Result_1);
   api_add_to_collection : (Collection) -> (Result);
@@ -118,7 +119,7 @@ service : (DexFansCanisterInitArgs) -> {
   api_create_captcha : () -> (Result_3);
   api_get_my_collection : () -> (Result_4) query;
   api_get_my_profile : () -> (Result_5) query;
-  api_get_notifications : () -> (vec NotificationBody) query;
+  api_get_notifications : () -> (vec NotificationBody);
   api_get_purchased_media_ids : () -> (vec PurchaseMediaBody) query;
   api_get_purchased_posts_ids : () -> (vec PurchasePostBody) query;
   api_get_subscribed : () -> (vec UserDetailsMinified) query;

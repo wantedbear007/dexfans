@@ -14,6 +14,8 @@ pub fn get_post_canister() -> Result<candid::Principal, String> {
     })
 }
 
+
+
 // #[ic_cdk::query]
 // pub fn get_ledger_canister() -> Result<candid::Principal, String> {
 //     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {

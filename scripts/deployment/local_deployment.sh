@@ -17,18 +17,20 @@ BHANU=$(dfx identity get-principal --identity Bhanu)
 # for creating canisters IDS
 dfx canister create icp_ledger_canister
 # dfx canister create asset_handler
+dfx canister create ic_oss_bucket
 dfx canister create post_canister
 dfx canister create index_canister
 
 # for compiling canisters
 dfx build icp_ledger_canister
 # dfx build asset_handler
+dfx build ic_oss_bucket
 dfx build post_canister
 dfx build index_canister
 
 # Canister IDS
 LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
-IC_ASSET_CANISTER=$(dfx canister id icp_ledger_canister)
+IC_ASSET_CANISTER=$(dfx canister id ic_oss_bucket)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
 

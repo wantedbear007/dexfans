@@ -2,7 +2,6 @@
 use crate::utils::guards::*;
 
 #[ic_cdk::query(guard = guard_prevent_anonymous)]
-
 fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
     crate::with_read_state(|state| match state.account.get(&ic_cdk::api::caller()) {
         Some(acc) => Ok(crate::models::types::UserProfile {
