@@ -35,7 +35,7 @@ LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
 IC_ASSET_CANISTER=$(dfx canister id ic_oss_bucket)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
-IC_OSS_CLUSTER_CANISTER=$(dfx canister id ic_oss_cluster)
+IC_OSS_BUCKET_CANISTER=$(dfx canister id ic_oss_bucket)
 
 # FOR ICP LEDGER
 MINTER_ACCOUNT_ID=$(dfx --identity anonymous ledger account-id)
@@ -111,7 +111,7 @@ dfx deploy index_canister --argument "( record {
     
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };
-      record { \"asset_canister\"; principal \"${IC_OSS_CLUSTER_CANISTER}\" };
+      record { \"asset_canister\"; principal \"${IC_OSS_BUCKET_CANISTER}\" };
 
     };
   }
@@ -128,7 +128,7 @@ dfx deploy post_canister --argument "(
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
     canister_ids = vec {
-      record { \"asset_canister\"; principal \"${IC_OSS_CLUSTER_CANISTER}\" };
+      record { \"asset_canister\"; principal \"${IC_OSS_BUCKET_CANISTER}\" };
       record { \"index_canister\"; principal \"${INDEX_CANISTER}\" };
 
     };
