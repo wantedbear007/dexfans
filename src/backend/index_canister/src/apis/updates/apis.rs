@@ -557,11 +557,32 @@ pub fn admin_set_asset_canister(id: candid::Principal) -> Result<candid::Princip
 
             canister_meta_data
                 .canister_ids
-                .insert(core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE, id);
+                .insert(core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE, id);
             state.canister_meta_data.insert(0, canister_meta_data);
 
             Ok(id)
         }
         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
+}
+
+
+#[ic_cdk::update(guard = guard_super_controller)]
+pub async fn admin_create_bucket() -> Result<candid::Principal, String> {
+
+    let cluster_canister = crate::with_read_state(|state| state.canister_meta_data.get(&0).unwrap().canister_ids[&core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE]);
+
+    let canister_id = kaires::call_inter_canister::< (),candid::Principal>( "admin_create_bucket", (), cluster_canister).await.map_err(|err| err)?;
+
+    crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
+        Some(mut val) => {
+            val.canister_ids.insert(core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE, canister_id);
+            state.canister_meta_data.insert(0, val);
+            Ok(canister_id)
+        },
+        None => Err(String::from(core::constants::ERROR_FAILED_CANISTER_DATA))
+    })
+    // Ok(canister_id)
+
+    // Ok(candid::Principal::anonymous())
 }

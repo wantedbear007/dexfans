@@ -1,4 +1,4 @@
-use rand::{rngs::StdRng, SeedableRng};
+use rand::rngs::StdRng;
 
 thread_local! {
   pub static STATE: std::cell::RefCell<crate::store::storage_state::ApplicationState> = std::cell::RefCell::new(crate::store::storage_state::ApplicationState::new());
@@ -34,15 +34,15 @@ pub(crate) fn captcha_write_state<R>(
 #[ic_cdk::init]
 fn init(args: crate::models::types::DexFansCanisterInitArgs) {
     // for rand
-    ic_cdk_timers::set_timer(std::time::Duration::ZERO, || {
-        ic_cdk::spawn(async {
-            let (seed,): ([u8; 32],) =
-                ic_cdk::call(candid::Principal::management_canister(), "raw_rand", ())
-                    .await
-                    .unwrap();
-            RNG.with(|rng| *rng.borrow_mut() = Some(StdRng::from_seed(seed)));
-        })
-    });
+    // ic_cdk_timers::set_timer(std::time::Duration::ZERO, || {
+    //     ic_cdk::spawn(async {
+    //         let (seed,): ([u8; 32],) =
+    //             ic_cdk::call(candid::Principal::management_canister(), "raw_rand", ())
+    //                 .await
+    //                 .unwrap();
+    //         RNG.with(|rng| *rng.borrow_mut() = Some(StdRng::from_seed(seed)));
+    //     })
+    // });
 
     // CAPTCHA_STATE.with_borrow_mut(|state| {
     //     state
@@ -60,13 +60,14 @@ fn init(args: crate::models::types::DexFansCanisterInitArgs) {
         state.canister_meta_data.insert(
             0,
             crate::models::types::CanisterMetaData {
+                // active_asset_canister: candid::Principal::anonymous(),
                 membership_plans: args.membership_plans,
                 canister_ids: {
                     let mut canister_ids: std::collections::HashMap<u8, candid::Principal> =
                         std::collections::HashMap::with_capacity(args.canister_ids.len());
 
                     canister_ids.insert(
-                        core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE,
+                        core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE,
                         args.canister_ids["asset_canister"],
                     );
                     canister_ids.insert(

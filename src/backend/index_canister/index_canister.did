@@ -109,6 +109,7 @@ type UserProfileLittleMinified = record {
 };
 service : (DexFansCanisterInitArgs) -> {
   admin_add_controller : (principal) -> (Result);
+  admin_create_bucket : () -> (Result_1);
   admin_profile_post_canister : (ICAddPostCanisterProfile) -> (Result);
   admin_remove_controller : (principal) -> (Result);
   admin_set_asset_canister : (principal) -> (Result_1);

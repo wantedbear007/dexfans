@@ -20,6 +20,7 @@ dfx canister create icp_ledger_canister
 dfx canister create ic_oss_bucket
 dfx canister create post_canister
 dfx canister create index_canister
+dfx canister create ic_oss_cluster
 
 # for compiling canisters
 dfx build icp_ledger_canister
@@ -27,12 +28,14 @@ dfx build icp_ledger_canister
 dfx build ic_oss_bucket
 dfx build post_canister
 dfx build index_canister
+dfx build ic_oss_cluster
 
 # Canister IDS
 LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
 IC_ASSET_CANISTER=$(dfx canister id ic_oss_bucket)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
+IC_OSS_CLUSTER_CANISTER=$(dfx canister id ic_oss_cluster)
 
 # FOR ICP LEDGER
 MINTER_ACCOUNT_ID=$(dfx --identity anonymous ledger account-id)
@@ -63,6 +66,17 @@ dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icp_ledger_canister --argu
   })
 "
 
+dfx deploy ic_oss_cluster --argument "(opt variant {Init =
+  record {
+    name = \"LDC Labs\";
+    ecdsa_key_name = \"dfx_test_key\";
+    schnorr_key_name = \"dfx_test_key\";
+    token_expiration = 3600;
+    bucket_topup_threshold = 1_000_000_000_000;
+    bucket_topup_amount = 5_000_000_000_000;
+  }
+})"
+
 dfx deploy ic_oss_bucket --argument "(opt variant {Init =
   record {
     name = \"dex Labs\";
@@ -76,26 +90,12 @@ dfx deploy ic_oss_bucket --argument "(opt variant {Init =
   }
 })"
 
-dfx deploy ic_oss_cluster --argument "(opt variant {Init =
-  record {
-    name = \"LDC Labs\";
-    ecdsa_key_name = \"dfx_test_key\";
-    schnorr_key_name = \"dfx_test_key\";
-    token_expiration = 3600;
-    bucket_topup_threshold = 1_000_000_000_000;
-    bucket_topup_amount = 5_000_000_000_000;
-  }
-})"
+
 
 
 
 # IMP: Review below warnings
 # Update code in /src/index_canister/src/lib.rs if below keys are changed 
-
-      # record { variant { Silver }; 10000 : nat64 };
-      # record { variant { Gold }; 20000 : nat64 };
-      # record { variant { Platinum }; 40000 : nat64 };
-
 dfx deploy index_canister --argument "( record {
     active_post_canister = principal \"${POST_CANISTER}\";
     payment_recipient = principal \"${BHANU}\";
@@ -109,12 +109,15 @@ dfx deploy index_canister --argument "( record {
     };
     canister_ids = vec {
     
-      record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };
+      record { \"asset_canister\"; principal \"${IC_OSS_CLUSTER_CANISTER}\" };
+
     };
   }
 )"
+
+      # record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
 
 
 dfx deploy post_canister --argument "(
@@ -125,7 +128,7 @@ dfx deploy post_canister --argument "(
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
     canister_ids = vec {
-      record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
+      record { \"asset_canister\"; principal \"${IC_OSS_CLUSTER_CANISTER}\" };
       record { \"index_canister\"; principal \"${INDEX_CANISTER}\" };
 
     };
@@ -138,15 +141,11 @@ dfx deploy post_canister --argument "(
 
 
 
-# FOR TESTING INIT ARGS OF POST CANISTER
- # record {
-  #       username = \"bhanuprata\";
-  #       user_id = principal \"fsefm-f46ro-lulwk-ex4sf-z33o5-oihe2-lly2w-uommw-7u5xl-6spjb-eae\";
-  #       membership = variant { Guest };
-       
-  #     };
-
 dfx deploy 
 
+dfx canister update-settings ic_oss_cluster --add-controller $INDEX_CANISTER
+# chmod 777 ./scripts/deployment/add_wasm.sh
+# ./scripts/deployment/add_wasm.sh
 
-
+dfx ledger fabricate-cycles --all --cycles 8000000000000
+# dfx canister call ic_oss_cluster admin_create_bucket  

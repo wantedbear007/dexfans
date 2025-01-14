@@ -35,7 +35,7 @@ pub async fn controller_create_account(
                     user_id: ic_cdk::api::caller(),
                     username: args.username.clone(),
                     asset_canister_id: canister_meta_data
-                        [&core::constants::ESSENTIAL_ASSET_CANISTER_ID_CODE],
+                        [&core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE],
                     active_post_canister: canister_meta_data
                         [&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE],
                     membership_till: 0,

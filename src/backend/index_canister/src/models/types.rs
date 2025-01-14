@@ -27,6 +27,7 @@ pub struct CanisterMetaData {
     pub membership_plans:
         std::collections::HashMap<core::types::Membership, core::types::ICPAmount>,
     pub active_post_canister: candid::Principal,
+    // pub active_asset_canister : candid::Principal
 }
 
 #[derive(Clone, CandidType, PartialEq, Serialize, Deserialize, Validate)]
