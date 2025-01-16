@@ -60,7 +60,7 @@ fn init(args: crate::models::types::DexFansCanisterInitArgs) {
         state.canister_meta_data.insert(
             0,
             crate::models::types::CanisterMetaData {
-                // active_asset_canister: candid::Principal::anonymous(),
+                active_asset_canister: args.active_asset_canister,
                 membership_plans: args.membership_plans,
                 canister_ids: {
                     let mut canister_ids: std::collections::HashMap<u8, candid::Principal> =
@@ -68,7 +68,7 @@ fn init(args: crate::models::types::DexFansCanisterInitArgs) {
 
                     canister_ids.insert(
                         core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE,
-                        args.canister_ids["asset_canister"],
+                        args.canister_ids["cluster_canister"],
                     );
                     canister_ids.insert(
                         core::constants::ESSENTIAL_POST_CANISTER_ID_CODE,

@@ -10,6 +10,7 @@ fn api_get_my_profile() -> Result<crate::models::types::UserProfile, String> {
                 .get(&0)
                 .unwrap()
                 .active_post_canister,
+            asset_canister_id: state.canister_meta_data.get(&0).unwrap().active_asset_canister,
             ..acc
         }),
         None => Err(String::from(core::constants::ERROR_ACCOUNT_NOT_REGISTERED)),
@@ -111,8 +112,8 @@ fn api_get_user_details(
 ) -> Result<crate::models::types::UserProfileLittleMinified, String> {
     crate::with_read_state(|state| match state.account.get(&id) {
         Some(acc) => Ok(crate::models::types::UserProfileLittleMinified {
-            active_post_canister: acc.active_post_canister,
-            asset_canister_id: acc.asset_canister_id,
+            active_post_canister: state.canister_meta_data.get(&0).unwrap().active_post_canister,
+            asset_canister_id: state.canister_meta_data.get(&0).unwrap().active_asset_canister,
             user_id: acc.user_id,
             all_post_canisters: acc.all_post_canisters,
             subscribers: acc.subscribers,

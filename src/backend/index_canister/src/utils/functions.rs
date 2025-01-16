@@ -1,7 +1,8 @@
 #[ic_cdk::query]
 pub fn get_asset_canister() -> Result<candid::Principal, String> {
     crate::with_read_state(|state| match state.canister_meta_data.get(&0) {
-        Some(val) => Ok(val.canister_ids[&core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE]),
+        Some(val) => Ok(val.active_asset_canister),
+        // Some(val) => Ok(val.canister_ids[&core::constants::ESSENTIAL_IC_OSS_BUCKET_ID_CODE]),
         None => return Err(String::from(core::constants::ERROR_CANISTER_ID)),
     })
 }

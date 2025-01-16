@@ -34,10 +34,10 @@ pub async fn controller_create_account(
                     subscribing: std::collections::HashSet::new(),
                     user_id: ic_cdk::api::caller(),
                     username: args.username.clone(),
-                    asset_canister_id: canister_meta_data
-                        [&core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE],
-                    active_post_canister: canister_meta_data
-                        [&core::constants::ESSENTIAL_POST_CANISTER_ID_CODE],
+                    asset_canister_id: state.canister_meta_data.get(&0).unwrap().active_asset_canister,
+                    // asset_canister_id: canister_meta_data
+                    //     [&core::constants::ESSENTIAL_IC_OSS_BUCKET_ID_CODE],
+                    active_post_canister: state.canister_meta_data.get(&0).unwrap().active_post_canister,
                     membership_till: 0,
                     membership_ledger_block: std::collections::HashSet::new(),
                 },

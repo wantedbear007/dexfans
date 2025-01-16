@@ -18,6 +18,8 @@ BHANU=$(dfx identity get-principal --identity Bhanu)
 dfx canister create icp_ledger_canister
 # dfx canister create asset_handler
 dfx canister create ic_oss_bucket
+dfx canister create ic_oss_cluster
+
 dfx canister create post_canister
 dfx canister create index_canister
 dfx canister create ic_oss_cluster
@@ -26,6 +28,7 @@ dfx canister create ic_oss_cluster
 dfx build icp_ledger_canister
 # dfx build asset_handler
 dfx build ic_oss_bucket
+dfx build ic_oss_cluster
 dfx build post_canister
 dfx build index_canister
 dfx build ic_oss_cluster
@@ -36,6 +39,7 @@ IC_ASSET_CANISTER=$(dfx canister id ic_oss_bucket)
 INDEX_CANISTER=$(dfx canister id index_canister)
 POST_CANISTER=$(dfx canister id post_canister)
 IC_OSS_BUCKET_CANISTER=$(dfx canister id ic_oss_bucket)
+IC_OSS_CLUSTER=$(dfx canister id ic_oss_cluster)
 
 # FOR ICP LEDGER
 MINTER_ACCOUNT_ID=$(dfx --identity anonymous ledger account-id)
@@ -98,6 +102,8 @@ dfx deploy ic_oss_bucket --argument "(opt variant {Init =
 # Update code in /src/index_canister/src/lib.rs if below keys are changed 
 dfx deploy index_canister --argument "( record {
     active_post_canister = principal \"${POST_CANISTER}\";
+    active_asset_canister = principal \"${IC_ASSET_CANISTER}\";
+
     payment_recipient = principal \"${BHANU}\";
     membership_plans = vec {
       record { variant { Diamond }; 40_000 : nat };
@@ -111,7 +117,7 @@ dfx deploy index_canister --argument "( record {
     
       record { \"ledger_canister\"; principal \"${LEDGER_CANISTER}\" };
       record { \"post_canister\"; principal \"${POST_CANISTER}\" };
-      record { \"asset_canister\"; principal \"${IC_OSS_BUCKET_CANISTER}\" };
+      record { \"cluster_canister\"; principal \"${IC_OSS_CLUSTER}\" };
 
     };
   }
@@ -128,7 +134,7 @@ dfx deploy post_canister --argument "(
       principal \"bd3sg-teaaa-aaaaa-qaaba-cai\";
     };
     canister_ids = vec {
-      record { \"asset_canister\"; principal \"${IC_OSS_BUCKET_CANISTER}\" };
+      record { \"asset_canister\"; principal \"${IC_ASSET_CANISTER}\" };
       record { \"index_canister\"; principal \"${INDEX_CANISTER}\" };
 
     };

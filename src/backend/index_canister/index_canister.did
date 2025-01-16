@@ -4,6 +4,7 @@ type CanisterMetaData = record {
   active_post_canister : principal;
   all_post_canisters : vec principal;
   payment_recipient : principal;
+  active_asset_canister : principal;
   membership_plans : vec record { Membership; nat };
 };
 type Challange = record { base64_img : text };
@@ -19,6 +20,7 @@ type DexFansCanisterInitArgs = record {
   canister_ids : vec record { text; principal };
   active_post_canister : principal;
   payment_recipient : principal;
+  active_asset_canister : principal;
   membership_plans : vec record { Membership; nat };
 };
 type ICAddPostCanisterProfile = record {
@@ -112,7 +114,6 @@ service : (DexFansCanisterInitArgs) -> {
   admin_create_bucket : () -> (Result_1);
   admin_profile_post_canister : (ICAddPostCanisterProfile) -> (Result);
   admin_remove_controller : (principal) -> (Result);
-  admin_set_asset_canister : (principal) -> (Result_1);
   admin_set_payment_recipient : (principal) -> (Result_1);
   admin_set_post_canister : (principal) -> (Result_1);
   api_add_to_collection : (Collection) -> (Result);

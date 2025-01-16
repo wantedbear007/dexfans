@@ -16,6 +16,7 @@ pub struct DexFansCanisterInitArgs {
     pub membership_plans:
         std::collections::HashMap<core::types::Membership, core::types::ICPAmount>,
     pub active_post_canister: candid::Principal,
+    pub active_asset_canister: candid::Principal
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, CandidType)]
@@ -27,6 +28,7 @@ pub struct CanisterMetaData {
     pub membership_plans:
         std::collections::HashMap<core::types::Membership, core::types::ICPAmount>,
     pub active_post_canister: candid::Principal,
+    pub active_asset_canister: candid::Principal
     // pub active_asset_canister : candid::Principal
 }
 
