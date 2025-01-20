@@ -1,5 +1,7 @@
 // use validator::Validate;
 
+use ic_cdk::api::management_canister::main::CanisterSettings;
+
 use crate::utils::guards::*;
 
 // #[ic_cdk::query]
@@ -571,9 +573,13 @@ async fn api_purchase_media(
 pub async fn admin_create_bucket() -> Result<candid::Principal, String> {
 
     let cluster_canister = crate::with_read_state(|state| state.canister_meta_data.get(&0).unwrap().canister_ids[&core::constants::ESSENTIAL_IC_OSS_CLUSTER_ID_CODE]);
-
-    let canister_id = kaires::call_inter_canister::<(),candid::Principal>( "admin_create_bucket", (), cluster_canister).await.map_err(|err| err)?;
-
+    let canister_settings = CanisterSettings {
+        controllers: Some(vec![ic_cdk::api::caller()]),
+        ..Default::default()
+    };
+    // let canister_id = kaires::call_inter_canister::<(),candid::Principal>( "admin_create_bucket", (), cluster_canister).await.map_err(|err| err)?;
+    let canister_id = kaires::call_inter_canister::<Option<CanisterSettings>,candid::Principal>( "admin_create_bucket", Some(canister_settings), cluster_canister).await.map_err(|err| err)?;
+    
     crate::with_write_state(|state| match state.canister_meta_data.get(&0) {
         Some(mut val) => {
             val.active_asset_canister = canister_id;

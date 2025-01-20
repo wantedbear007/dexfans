@@ -4,11 +4,11 @@
 
 
 export MYID=$(dfx identity get-principal)
-dfx canister call ic_oss_bucket admin_set_managers "(vec {principal \"$MYID\"; principal \"pxfqr-x3orr-z5yip-7yzdd-hyxgd-dktgh-3awsk-ohzma-lfjzi-753j7-tae\"})"
+dfx canister call by6od-j4aaa-aaaaa-qaadq-cai admin_set_managers "(vec {principal \"$MYID\"; principal \"pxfqr-x3orr-z5yip-7yzdd-hyxgd-dktgh-3awsk-ohzma-lfjzi-753j7-tae\"})"
 
 
 # For enabling link access
-dfx canister call ic_oss_bucket admin_update_bucket "(
+dfx canister call by6od-j4aaa-aaaaa-qaadq-cai admin_update_bucket "(
   record {
     status = null;
     trusted_eddsa_pub_keys = null;
