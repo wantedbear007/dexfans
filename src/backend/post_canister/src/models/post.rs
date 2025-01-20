@@ -17,6 +17,7 @@ pub struct Image {
 pub struct Video {
     pub source: core::types::MediaID,
     pub need_pay: bool,
+    pub poster: core::types::MediaID,
     pub price: Option<core::types::ICPAmount>,
 }
 
@@ -40,6 +41,8 @@ pub struct Post {
     pub creator_id: Principal,
     pub comments_count: core::types::Counters,
     pub created_at: core::types::TimestampMillis,
+    pub poster: Option<core::types::MediaID>
+    
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -72,6 +75,7 @@ pub struct UpdatePostArgs {
     pub image: Option<Vec<Image>>,
     //pub video: Option<String>,
     pub video: Option<Video>,
+    
     //pub post_type: core::types::PostType,
     pub post_visibility: core::types::PostVisibility,
     pub post_status: core::types::PostStatus,
@@ -107,6 +111,7 @@ impl Default for Post {
             views: Vec::new(),
             like_count: 0,
             views_count: 0,
+            poster: None
         }
     }
 }

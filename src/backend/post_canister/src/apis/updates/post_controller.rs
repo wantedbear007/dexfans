@@ -80,6 +80,7 @@ pub(super) fn controller_update_post(
                 val.post_status = args.post_status;
             }
 
+            
             state.posts.insert(val.post_id, val);
 
             Ok(())

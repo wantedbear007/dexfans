@@ -12,7 +12,7 @@ type CreatePostArgs = record {
   content : text;
   video : opt Video;
   post_visibility : PostVisibility;
-  image : opt vec Video;
+  image : opt vec Image;
   price : opt nat;
   post_status : PostStatus;
 };
@@ -20,6 +20,7 @@ type GetByPostStatusArgs = record {
   status : PostStatus;
   pagination : PaginationArgs0;
 };
+type Image = record { need_pay : bool; source : text; price : opt nat };
 type Membership = variant { Diamond; Guest };
 type PaginationArgs = record { ids : vec nat; post_status : opt PostStatus };
 type PaginationArgs0 = record {
@@ -38,10 +39,11 @@ type Post = record {
   post_visibility : PostVisibility;
   created_at : nat64;
   likes : vec principal;
-  image : opt vec Video;
+  image : opt vec Image;
   comments_count : nat64;
   price : opt nat;
   post_status : PostStatus;
+  poster : opt text;
 };
 type PostCanisterInitArgs = record {
   controllers : vec principal;
@@ -70,7 +72,7 @@ type UpdatePostArgs = record {
   content : text;
   video : opt Video;
   post_visibility : PostVisibility;
-  image : opt vec Video;
+  image : opt vec Image;
   price : opt nat;
   post_status : PostStatus;
 };
@@ -88,7 +90,12 @@ type UserProfileIC = record {
   posts : vec nat;
   collects : vec nat;
 };
-type Video = record { need_pay : bool; source : text; price : opt nat };
+type Video = record {
+  need_pay : bool;
+  source : text;
+  price : opt nat;
+  poster : text;
+};
 service : (PostCanisterInitArgs) -> {
   admin_add_user_profile : (UserProfileIC) -> (Result);
   admin_update_membership : (UpdateMembershipIC) -> (Result);
