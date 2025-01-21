@@ -19,19 +19,17 @@ dfx canister create icp_ledger_canister
 # dfx canister create asset_handler
 dfx canister create ic_oss_bucket
 dfx canister create ic_oss_cluster
-
 dfx canister create post_canister
 dfx canister create index_canister
-dfx canister create ic_oss_cluster
+# dfx canister create ic_oss_cluster
 
 # for compiling canisters
 dfx build icp_ledger_canister
-# dfx build asset_handler
 dfx build ic_oss_bucket
 dfx build ic_oss_cluster
 dfx build post_canister
 dfx build index_canister
-dfx build ic_oss_cluster
+# dfx build ic_oss_cluster 
 
 # Canister IDS
 LEDGER_CANISTER=$(dfx canister id icp_ledger_canister)
