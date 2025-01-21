@@ -82,13 +82,15 @@ jobs:
     - name: Creating Canisters
       run: |
         dfx canister create icp_ledger_canister
-        dfx canister create asset_handler
+        dfx canister create ic_oss_bucket
+        dfx canister create ic_oss_cluster
         dfx canister create post_canister
         dfx canister create index_canister
     - name: Building Canisters
       run: |
         dfx build icp_ledger_canister
-        dfx build asset_handler
+        dfx build ic_oss_bucket
+        dfx build ic_oss_cluster
         dfx build post_canister
         dfx build index_canister
     - name: Test deployment
