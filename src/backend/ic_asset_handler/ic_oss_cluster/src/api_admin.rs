@@ -226,8 +226,6 @@ async fn admin_create_bucket(
     let mut settings = settings.unwrap_or_default();
     let controllers = settings.controllers.get_or_insert_with(Default::default);
     if !controllers.contains(&self_id) {
-                // temp change added for testing 
-                controllers.push(ic_cdk::api::caller());
         controllers.push(self_id);
     }
 
@@ -275,13 +273,10 @@ async fn admin_create_bucket_on(
     args: Option<ByteBuf>,
 ) -> Result<Principal, String> {
     let self_id = ic_cdk::id();
-
     let mut settings = settings.unwrap_or_default();
     let controllers = settings.controllers.get_or_insert_with(Default::default);
     if !controllers.contains(&self_id) {
         controllers.push(self_id);
-        // temp change added for testing 
-        controllers.push(ic_cdk::api::caller());
     }
 
     let canister_id = create_canister_on(subnet, Some(settings), 2_000_000_000_000)

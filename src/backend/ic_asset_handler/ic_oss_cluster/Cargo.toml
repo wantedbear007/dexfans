@@ -5,6 +5,7 @@ publish = false
 repository = "https://github.com/ldclabs/ic-oss/tree/main/src/ic_oss_cluster"
 version.workspace = true
 edition.workspace = true
+keywords.workspace = true
 categories.workspace = true
 license.workspace = true
 
