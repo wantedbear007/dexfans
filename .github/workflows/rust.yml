@@ -1,0 +1,98 @@
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+name: Backend compilation and test deployment 
+
+# to prevent conflits 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+# to format rust code
+  fmt:
+    name: run fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.82.0
+          override: true
+      - run: rustup component add rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          # args: --all -- --check
+
+
+
+  compile:
+    runs-on: ubuntu-latest 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Cache Rust cargo registry
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+    - name: Cache Rust cargo index
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-index-
+    - name: Cache DFX version and installation
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/dfinity
+        key: ${{ runner.os }}-dfx-${{ hashFiles('dfx.json') }}
+        restore-keys: |
+          ${{ runner.os }}-dfx-
+    - name: Install dfx
+      if: steps.cache-dfx.outputs.cache-hit != 'true'
+      uses: dfinity/setup-dfx@main
+
+    - name: Confirm successful installation
+      run: dfx --version
+
+    - name: Setup Rust target
+      run: rustup target add wasm32-unknown-unknown
+
+    - name: Cache build output
+      uses: actions/cache@v2
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
+    - name: Starting DFX instance
+      run: dfx start --clean --background
+
+    - name: Creating Canisters
+      run: |
+        dfx canister create icp_ledger_canister
+        dfx canister create ic_oss_bucket
+        dfx canister create ic_oss_cluster
+        dfx canister create post_canister
+        dfx canister create index_canister
+    - name: Building Canisters
+      run: |
+        dfx build icp_ledger_canister
+        dfx build ic_oss_bucket
+        dfx build ic_oss_cluster
+        dfx build post_canister
+        dfx build index_canister
+    - name: Test deployment
+      run: ./scripts/deployment/local_deployment.sh
+
